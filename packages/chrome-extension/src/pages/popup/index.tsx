@@ -16,5 +16,3 @@ export function PopupPage() {
     </div>
   );
 }
-// test
-// test 1763612278

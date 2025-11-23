@@ -7,6 +7,7 @@ interface ButtonProps {
   variant?: "primary" | "secondary";
   type?: "button" | "submit";
   className?: string;
+  title?: string;
 }
 
 export function Button({
@@ -16,6 +17,7 @@ export function Button({
   variant = "primary",
   type = "button",
   className = "",
+  title,
 }: ButtonProps) {
   const baseStyles = "px-4 py-2 rounded font-medium transition-colors";
   const variantStyles = {
@@ -29,6 +31,7 @@ export function Button({
       onClick={onClick}
       disabled={disabled}
       className={`${baseStyles} ${variantStyles[variant]} ${className}`}
+      title={title}
     >
       {children}
     </button>

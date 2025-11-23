@@ -1,0 +1,18 @@
+{
+  "name": "eslint-plugin-fsd",
+  "version": "0.0.1",
+  "description": "ESLint plugin for Feature-Sliced Design",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {},
+  "dependencies": {
+    "@typescript-eslint/utils": "^8.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "eslint": "^9.0.0"
+  },
+  "peerDependencies": {
+    "eslint": ">=9.0.0"
+  }
+}

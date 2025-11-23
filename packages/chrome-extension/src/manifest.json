@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Jobz Extension",
-  "version": "0.0.333",
+  "version": "0.0.389",
   "description": "Match job descriptions with your resume using AI",
   "permissions": [
     "storage",

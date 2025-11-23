@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { JobExtractorFactory } from "@/features/extract-job";
 import { useMatchingStore } from "@/features/match-job";
 import { Alert, Button, CodeBlock, LoadingSpinner } from "@/shared/ui";
 
@@ -75,7 +76,7 @@ export function JobTab({ debugInfo, onJobExtracted }: JobTabProps) {
 
       // Extract job
       const response = await chrome.tabs.sendMessage(tab.id, {
-        action: "extractJob",
+        action: JobExtractorFactory.ACTION,
       });
 
       if (!response || !response.success || !response.job) {

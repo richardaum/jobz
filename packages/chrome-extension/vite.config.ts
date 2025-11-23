@@ -1,9 +1,9 @@
-import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
-import webExtension from "vite-plugin-web-extension";
-import { resolve, dirname } from "node:path";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { copyFileSync, mkdirSync, existsSync, readFileSync, writeFileSync, unlinkSync } from "fs";
+import { defineConfig, Plugin } from "vite";
+import webExtension from "vite-plugin-web-extension";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -60,9 +60,6 @@ function autoVersionPlugin(): Plugin {
 
       // Reconstruct version string
       manifest.version = versionParts.join(".");
-
-      // Write back to manifest
-      writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n", "utf-8");
 
       // Update state with new counter
       writeVersionState({

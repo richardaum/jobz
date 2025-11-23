@@ -6,6 +6,7 @@ import { LinkedInCollectionExtractor } from "./extractors/linkedin-collection-ex
 import { LinkedInExtractor } from "./extractors/linkedin-extractor";
 
 export class JobExtractorFactory {
+  public static readonly ACTION = "extractJob";
   private extractors: BaseJobExtractor[];
 
   constructor() {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import type { Resume } from "@/entities/resume";
-import { loadResumeFromAssets } from "@/shared/lib";
+import { loadResumeFromAssets } from "@/entities/resume";
 
 export function useResume() {
   const [resume, setResume] = useState<Resume | null>(null);

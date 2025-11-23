@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     return false;
   }
 
-  if (request.action === "extractJob") {
+  if (request.action === JobExtractorFactory.ACTION) {
     (async () => {
       try {
         const factory = new JobExtractorFactory();

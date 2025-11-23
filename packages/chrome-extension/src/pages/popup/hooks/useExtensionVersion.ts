@@ -6,7 +6,6 @@ export function useExtensionVersion(): string {
   useEffect(() => {
     const loadVersion = async () => {
       try {
-        // Try to load version.json from dist (contains the counter)
         const versionUrl = chrome.runtime.getURL("version.json");
         const response = await fetch(versionUrl);
 
@@ -14,21 +13,14 @@ export function useExtensionVersion(): string {
           const data = await response.json();
           setVersion(String(data.counter || 0));
         } else {
-          // Fallback to manifest version if version.json doesn't exist
-          const manifest = chrome.runtime.getManifest();
-          const manifestVersion = manifest.version || "0.0.0";
-          // Extract patch version (last number) as counter
-          const parts = manifestVersion.split(".");
-          setVersion(parts[parts.length - 1] || "0");
+          const manifestVersion = getManifestVersion();
+          setVersion(manifestVersion);
         }
       } catch (error) {
         console.error("Failed to get extension version:", error);
-        // Fallback to manifest version
         try {
-          const manifest = chrome.runtime.getManifest();
-          const manifestVersion = manifest.version || "0.0.0";
-          const parts = manifestVersion.split(".");
-          setVersion(parts[parts.length - 1] || "0");
+          const manifestVersion = getManifestVersion();
+          setVersion(manifestVersion);
         } catch {
           setVersion("0");
         }
@@ -39,4 +31,11 @@ export function useExtensionVersion(): string {
   }, []);
 
   return version;
+}
+
+function getManifestVersion() {
+  const manifest = chrome.runtime.getManifest();
+  const manifestVersion = manifest.version || "0.0.0";
+  const parts = manifestVersion.split(".");
+  return parts[parts.length - 1] || "0";
 }

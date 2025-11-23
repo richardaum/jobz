@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 
-import type { JobDescription } from "@/entities/job";
+import { JobExtractorFactory } from "@/features/extract-job";
 import type { MatchResult } from "@/features/match-job";
 import { getCachedMatch } from "@/features/match-job";
+import { sendTabMessage } from "@/shared/utils/messaging";
 
 interface UseCacheCheckParams {
   onCacheFound: (result: MatchResult) => void;
@@ -71,8 +72,8 @@ export function useCacheCheck({ onCacheFound, onNoCache, onError }: UseCacheChec
         }
 
         // Extract job from page
-        const response = await chrome.tabs.sendMessage(tab.id, {
-          action: "extractJob",
+        const response = await sendTabMessage(tab.id, {
+          action: JobExtractorFactory.ACTION,
         });
 
         if (!response || !response.success || !response.job) {
@@ -80,10 +81,8 @@ export function useCacheCheck({ onCacheFound, onNoCache, onError }: UseCacheChec
           return;
         }
 
-        const job: JobDescription = response.job;
-
         // Check cache
-        const cachedResult = await getCachedMatch(job);
+        const cachedResult = await getCachedMatch(response.job);
 
         if (cachedResult) {
           onCacheFound(cachedResult);

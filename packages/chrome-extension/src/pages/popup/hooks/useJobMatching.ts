@@ -1,10 +1,16 @@
 import type { Resume } from "@/entities/resume";
+import { JobExtractorFactory } from "@/features/extract-job";
 import type { MatchResult } from "@/features/match-job";
 import { matchJobWithResume } from "@/features/match-job";
-import { getOpenAIApiKey } from "@/shared/config";
 import { clearCachedMatch } from "@/features/match-job";
 import { useMatchingStore } from "@/features/match-job";
+import { getOpenAIApiKey } from "@/shared/config";
+import { sendTabMessage } from "@/shared/utils/messaging";
+import { checkContentScriptReady, injectContentScript } from "@/shared/utils/scripting";
+import { getActiveTab } from "@/shared/utils/tabs";
 import type { DebugInfo } from "@/widgets/debug-panel";
+
+import { MatchingDebugger } from "../utils/MatchingDebugger";
 
 interface UseJobMatchingParams {
   resume: Resume | null;
@@ -28,108 +34,54 @@ export function useJobMatching({ resume, setLoading, setMatchResult, setError, s
     setError(null);
     setMatchResult(null);
 
-    const startTime = Date.now();
-    const steps: DebugInfo["steps"] = [];
-    const currentDebugInfo: DebugInfo = {
-      resume,
-      steps,
-      startTime,
-    };
-
-    const addStep = (step: string, status: "success" | "error" | "info", details?: string, duration?: number) => {
-      steps.push({
-        step,
-        timestamp: Date.now(),
-        status,
-        details,
-        duration,
-      });
-      setDebugInfo({ ...currentDebugInfo, steps: [...steps] });
-    };
+    const debug = new MatchingDebugger(resume, setDebugInfo);
 
     try {
-      addStep("Starting job match", "info");
+      debug.addStep("Starting job match", "info");
 
-      // Get current tab - try current window first, then last active tab
+      // Get current tab
       const tabStart = Date.now();
-      let tab = (await chrome.tabs.query({ active: true, currentWindow: true }))[0];
-
-      // If no active tab in current window (e.g., popup is detached), try to get last active tab
-      if (!tab?.id || !tab?.url) {
-        const tabs = await chrome.tabs.query({ active: true });
-        tab = tabs[0];
-      }
-
-      // If still no tab, try to get any tab
-      if (!tab?.id || !tab?.url) {
-        const allTabs = await chrome.tabs.query({});
-        tab =
-          allTabs.find((t) => t.url && !t.url.startsWith("chrome://") && !t.url.startsWith("chrome-extension://")) ||
-          allTabs[0];
-      }
-
-      if (!tab?.id || !tab?.url) {
-        throw new Error("Could not get current tab. Please open a webpage and try again.");
-      }
-      addStep("Got current tab", "success", tab.url, Date.now() - tabStart);
-
-      // Check if URL is valid for content scripts
-      if (
-        tab.url?.startsWith("chrome://") ||
-        tab.url?.startsWith("chrome-extension://") ||
-        tab.url?.startsWith("about:")
-      ) {
-        throw new Error("Content scripts cannot run on this page. Please navigate to a regular webpage.");
-      }
+      const tab = await getActiveTab();
+      debug.addStep("Got current tab", "success", tab.url, Date.now() - tabStart);
 
       // Check if content script is available
-      let contentScriptReady = false;
       const pingStart = Date.now();
-      try {
-        const pingResponse = await chrome.tabs.sendMessage(tab.id, { action: "ping" });
-        contentScriptReady = pingResponse?.success === true;
-        addStep(
-          "Content script ping",
-          "success",
-          contentScriptReady ? "Already loaded" : "Not loaded",
-          Date.now() - pingStart
-        );
-      } catch (error) {
-        contentScriptReady = false;
-        addStep("Content script ping", "info", "Not available, will inject", Date.now() - pingStart);
-      }
+      const contentScriptReady = await checkContentScriptReady(tab.id);
+
+      debug.addStep(
+        "Content script ping",
+        contentScriptReady ? "success" : "info",
+        contentScriptReady ? "Already loaded" : "Not available, will inject",
+        Date.now() - pingStart
+      );
 
       if (!contentScriptReady) {
         // Inject content script programmatically
         const injectStart = Date.now();
         try {
-          await chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            files: ["src/content.js"],
-          });
-          await new Promise((resolve) => setTimeout(resolve, 200));
-          addStep("Content script injection", "success", undefined, Date.now() - injectStart);
+          await injectContentScript(tab.id);
+          debug.addStep("Content script injection", "success", undefined, Date.now() - injectStart);
         } catch (injectError) {
           const errorMsg = injectError instanceof Error ? injectError.message : "Unknown error";
-          addStep("Content script injection", "error", errorMsg, Date.now() - injectStart);
+          debug.addStep("Content script injection", "error", errorMsg, Date.now() - injectStart);
           throw new Error(`Failed to inject content script. Please reload the page and try again. Error: ${errorMsg}`);
         }
       }
 
       // Send message to content script to extract job
       const extractStart = Date.now();
-      const response = await chrome.tabs.sendMessage(tab.id, {
-        action: "extractJob",
+      const response = await sendTabMessage(tab.id, {
+        action: JobExtractorFactory.ACTION,
       });
 
       if (!response || !response.success || !response.job) {
-        addStep("Job extraction", "error", response?.error || "Failed to extract job");
+        debug.addStep("Job extraction", "error", response?.error || "Failed to extract job");
         throw new Error(response?.error || "Failed to extract job description");
       }
 
       const job = response.job;
-      currentDebugInfo.job = job;
-      addStep(
+      debug.setJob(job);
+      debug.addStep(
         "Job extraction",
         "success",
         `Source: ${job.source}, Length: ${job.description.length} chars`,
@@ -138,16 +90,15 @@ export function useJobMatching({ resume, setLoading, setMatchResult, setError, s
 
       // Match job with resume
       const matchStart = Date.now();
-      addStep("Starting API match", "info");
+      debug.addStep("Starting API match", "info");
 
       const promptLength = job.description.length + resume.content.length;
-      currentDebugInfo.apiRequest = {
+      debug.setApiRequest({
         model: "gpt-4o-mini",
         promptLength,
         resumeLength: resume.content.length,
         jobDescriptionLength: job.description.length,
-      };
-      setDebugInfo({ ...currentDebugInfo });
+      });
 
       if (!apiKey) {
         throw new Error("API key not configured");
@@ -155,36 +106,28 @@ export function useJobMatching({ resume, setLoading, setMatchResult, setError, s
 
       const result = await matchJobWithResume(job, resume, apiKey, skipCache);
 
-      const endTime = Date.now();
-      currentDebugInfo.endTime = endTime;
-      currentDebugInfo.apiResponse = {
+      debug.setApiResponse({
         matchPercentage: result.matchPercentage,
         analysis: result.analysis,
         checklist: result.checklist,
-      };
+      });
 
       const cacheStatus = result.isCached ? "from cache" : "fresh";
-      addStep(
+      debug.addStep(
         "API match complete",
         "success",
         `Match: ${result.matchPercentage}% (${cacheStatus})`,
         Date.now() - matchStart
       );
-      addStep("Job match complete", "success", `Total time: ${endTime - startTime}ms`);
+      debug.addStep("Job match complete", "success", `Total time: ${Date.now() - debug.getStartTime()}ms`);
+      debug.complete();
 
       setMatchResult(result);
-      setDebugInfo({ ...currentDebugInfo });
     } catch (err) {
-      const endTime = Date.now();
       const error = err instanceof Error ? err : new Error(String(err));
-      currentDebugInfo.endTime = endTime;
-      currentDebugInfo.error = {
-        message: error.message,
-        stack: error.stack,
-      };
-      addStep("Error occurred", "error", error.message);
+      debug.addStep("Error occurred", "error", error.message);
+      debug.setError(error);
       setError(error.message);
-      setDebugInfo({ ...currentDebugInfo });
     } finally {
       setLoading(false);
     }

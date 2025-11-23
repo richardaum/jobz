@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
+import { loadResumeFromAssets, loadResumeFromStorage } from "@/entities/resume";
 import { JobExtractorFactory } from "@/features/extract-job";
 import { matchJobWithResume } from "@/features/match-job";
 import { getCachedMatch } from "@/features/match-job";
-import { loadResumeFromAssets, loadResumeFromStorage } from "@/entities/resume";
 import { LinkedInButton, LinkedInTooltip } from "@/shared/ui";
 
 interface MatchState {
