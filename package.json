@@ -14,8 +14,8 @@
     "build:chrome:filter": "bun run --filter @jobz/chrome-extension build",
     "clean": "rm -rf packages/*/dist packages/*/node_modules",
     "clean:all": "rm -rf node_modules packages/*/node_modules packages/*/dist",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,html,css,scss}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,html,css,scss}\"",
     "type-check": "tsc --noEmit --project packages/*/tsconfig.json",
@@ -25,10 +25,15 @@
     "prepare": "bun run check"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
-    "eslint": "^8.56.0",
+    "eslint": "9",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^16.5.0",
+    "jiti": "^2.6.1",
     "prettier": "^3.1.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "typescript-eslint": "8"
   }
 }
