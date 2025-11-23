@@ -1,0 +1,11 @@
+node_modules
+dist
+build
+*.lock
+*.log
+.DS_Store
+coverage
+*.min.js
+*.min.css
+bun.lock
+
