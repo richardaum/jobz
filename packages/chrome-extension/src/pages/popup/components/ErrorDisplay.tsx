@@ -1,4 +1,4 @@
-import { useMatchingStore } from "@/shared/stores";
+import { useMatchingStore } from "@/features/match-job";
 import { Alert } from "@/shared/ui";
 
 import { useResume } from "../hooks/useResume";

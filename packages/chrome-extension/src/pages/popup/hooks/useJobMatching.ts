@@ -2,8 +2,8 @@ import type { Resume } from "@/entities/resume";
 import type { MatchResult } from "@/features/match-job";
 import { matchJobWithResume } from "@/features/match-job";
 import { getOpenAIApiKey } from "@/shared/config";
-import { clearCachedMatch } from "@/shared/lib/match-cache";
-import { useMatchingStore } from "@/shared/stores";
+import { clearCachedMatch } from "@/features/match-job";
+import { useMatchingStore } from "@/features/match-job";
 import type { DebugInfo } from "@/widgets/debug-panel";
 
 interface UseJobMatchingParams {

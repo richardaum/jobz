@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import type { MatchResult } from "@/features/match-job";
-import { useMatchingStore } from "@/shared/stores";
+import { useMatchingStore } from "@/features/match-job";
 import { Alert } from "@/shared/ui";
 import { DebugPanel } from "@/widgets/debug-panel";
 import { MatchResultWidget } from "@/widgets/match-result";

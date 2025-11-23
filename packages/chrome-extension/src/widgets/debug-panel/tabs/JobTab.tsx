@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useMatchingStore } from "@/shared/stores";
+import { useMatchingStore } from "@/features/match-job";
 import { Alert, Button, CodeBlock, LoadingSpinner } from "@/shared/ui";
 
 import type { DebugInfo } from "../DebugPanel";

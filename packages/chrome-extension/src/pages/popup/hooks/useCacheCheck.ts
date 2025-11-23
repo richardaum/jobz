@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import type { JobDescription } from "@/entities/job";
 import type { MatchResult } from "@/features/match-job";
-import { getCachedMatch } from "@/shared/lib/match-cache";
+import { getCachedMatch } from "@/features/match-job";
 
 interface UseCacheCheckParams {
   onCacheFound: (result: MatchResult) => void;

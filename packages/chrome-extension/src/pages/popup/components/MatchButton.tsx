@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useMatchingStore } from "@/shared/stores";
+import { useMatchingStore } from "@/features/match-job";
 import { Button } from "@/shared/ui";
 
 import { useJobMatching } from "../hooks/useJobMatching";

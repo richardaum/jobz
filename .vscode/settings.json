@@ -4,5 +4,6 @@
   // fix lint on save
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always"
-  }
+  },
+  "css.validate": false
 }

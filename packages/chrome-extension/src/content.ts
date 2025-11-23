@@ -1,5 +1,5 @@
 import { JobExtractorFactory } from "@/features/extract-job";
-import { injectJobzMatchButton } from "@/features/inject-linkedin-button";
+import { injectJobzMatchButton } from "@/widgets/job-actions";
 
 // Inject Jobz Match button on LinkedIn pages
 if (window.location.href.includes("linkedin.com/jobs/")) {

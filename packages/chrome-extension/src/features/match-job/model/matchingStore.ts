@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
-import type { MatchResult } from "@/features/match-job";
-import type { DebugInfo } from "@/widgets/debug-panel";
+import type { MatchResult } from "../lib/match-job";
+import type { DebugInfo } from "./types";
 
 interface MatchingState {
   matchResult: MatchResult | null;

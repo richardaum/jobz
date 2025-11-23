@@ -1,42 +1,10 @@
 import { useState } from "react";
 
-import type { JobDescription } from "@/entities/job";
-import type { Resume } from "@/entities/resume";
-import type { ChecklistItem } from "@/shared/api";
+import type { DebugInfo } from "@/features/match-job";
 import { Button, Card, Tabs } from "@/shared/ui";
 
 import { ApiTab, JobTab, OverviewTab, ResumeTab, TimelineTab } from "./tabs";
-
-export interface DebugInfo {
-  job?: JobDescription;
-  resume?: Resume;
-  startTime?: number;
-  endTime?: number;
-  apiRequest?: {
-    model: string;
-    promptLength: number;
-    resumeLength: number;
-    jobDescriptionLength: number;
-  };
-  apiResponse?: {
-    matchPercentage: number;
-    analysis: string;
-    checklist?: ChecklistItem[];
-    rawResponse?: unknown;
-  };
-  error?: {
-    message: string;
-    stack?: string;
-    details?: unknown;
-  };
-  steps: Array<{
-    step: string;
-    timestamp: number;
-    duration?: number;
-    status: "success" | "error" | "info";
-    details?: string;
-  }>;
-}
+export type { DebugInfo };
 
 interface DebugPanelProps {
   debugInfo: DebugInfo;

@@ -2,7 +2,7 @@ import type { JobDescription } from "@/entities/job";
 import type { Resume } from "@/entities/resume";
 import type { ChecklistItem } from "@/shared/api";
 import { OpenAIClient } from "@/shared/api";
-import { getCachedMatch, saveMatchToCache } from "@/shared/lib/match-cache";
+import { getCachedMatch, saveMatchToCache } from "./match-cache";
 
 export interface MatchResult {
   matchPercentage: number;
