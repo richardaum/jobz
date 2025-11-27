@@ -14,6 +14,23 @@ export { Divider } from "./divider";
 export { Grid, GridItem } from "./grid";
 export { Input } from "./input";
 export { Label } from "./label";
+export {
+  Menu,
+  MenuAnchor,
+  MenuCheckboxItem,
+  MenuContent,
+  MenuGroup,
+  MenuItem,
+  MenuLabel,
+  MenuPortal,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuSeparator,
+  MenuShortcut,
+  MenuSub,
+  MenuSubContent,
+  MenuSubTrigger,
+} from "./menu";
 export { Popover, PopoverContent, PopoverTrigger } from "./popover";
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 export { Textarea } from "./textarea";

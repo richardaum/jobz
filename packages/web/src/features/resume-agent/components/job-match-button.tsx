@@ -45,7 +45,7 @@ function getIconColorClasses(percentage: number): string {
 export function JobMatchButton({ matchResult, isMatching, hasResume, hasJobDescription }: JobMatchButtonProps) {
   const hasData = hasResume && hasJobDescription;
   const isDisabled = !hasData || (!matchResult && !isMatching);
-  
+
   const matchPercentage = matchResult?.matchPercentage ?? 0;
   const buttonColorClasses = matchResult ? getMatchColorClasses(matchPercentage) : "";
   const iconColorClasses = matchResult ? getIconColorClasses(matchPercentage) : "";
@@ -70,11 +70,7 @@ export function JobMatchButton({ matchResult, isMatching, hasResume, hasJobDescr
                     : "text-muted-foreground"
               }`}
             />
-            {isMatching
-              ? "Matching..."
-              : matchResult
-                ? `Match: ${matchResult.matchPercentage}%`
-                : "Job Match"}
+            {isMatching ? "Matching..." : matchResult ? `Match: ${matchResult.matchPercentage}%` : "Job Match"}
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="max-w-sm">
@@ -97,4 +93,3 @@ export function JobMatchButton({ matchResult, isMatching, hasResume, hasJobDescr
     </TooltipProvider>
   );
 }
-

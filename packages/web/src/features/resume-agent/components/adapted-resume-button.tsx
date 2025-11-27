@@ -1,14 +1,17 @@
+"use client";
+
 import { IconInfoCircle, IconLoader2 } from "@tabler/icons-react";
 
+import { Button } from "@/shared/ui";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
 
-interface ResumeChangesTooltipProps {
+interface AdaptedResumeButtonProps {
   changes: { section: string; description: string }[];
   hasValue: boolean;
   isLoading?: boolean;
 }
 
-export function ResumeChangesTooltip({ changes, hasValue, isLoading = false }: ResumeChangesTooltipProps) {
+export function AdaptedResumeButton({ changes, hasValue, isLoading = false }: AdaptedResumeButtonProps) {
   const hasChanges = changes.length > 0 && hasValue;
   const shouldShow = hasChanges || isLoading;
 
@@ -18,21 +21,18 @@ export function ResumeChangesTooltip({ changes, hasValue, isLoading = false }: R
 
   return (
     <TooltipProvider>
-      <Tooltip defaultOpen={false}>
+      <Tooltip>
         <TooltipTrigger asChild>
-          <button
-            type="button"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="View changes made to resume"
-          >
+          <Button variant="hoverable" size="sm" type="button" className="group gap-2">
             {isLoading ? (
-              <IconLoader2 className="h-4 w-4 animate-spin" style={{ animationDuration: "1s" }} />
+              <IconLoader2 className="h-4 w-4 animate-spin text-muted-foreground" style={{ animationDuration: "1s" }} />
             ) : (
-              <IconInfoCircle className="h-4 w-4" />
+              <IconInfoCircle className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
             )}
-          </button>
+            {isLoading ? "Processing..." : "Changes"}
+          </Button>
         </TooltipTrigger>
-        <TooltipContent side="right" className="max-w-sm">
+        <TooltipContent side="bottom" className="max-w-sm">
           {isLoading ? (
             <div className="flex items-center gap-2">
               <IconLoader2 className="h-4 w-4 animate-spin text-muted-foreground" style={{ animationDuration: "1s" }} />

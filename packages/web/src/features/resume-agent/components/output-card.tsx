@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 import { Label } from "@/shared/ui";
 import { Textarea } from "@/shared/ui";
 
-import { ResumeChangesTooltip } from "./resume-changes-tooltip";
+import { AdaptedResumeButton } from "./adapted-resume-button";
 
 interface OutputCardProps {
   title: string;
@@ -37,16 +37,15 @@ export function OutputCard({
   onHide,
 }: OutputCardProps) {
   const hasActions = (showDownload && onDownload && value.trim()) || (showCopy && onCopy && value.trim());
+  const hasChanges = changes.length > 0 && value.trim();
+  const shouldShowAdaptedResumeButton = showDownload && (hasChanges || isLoading);
 
   return (
     <Card>
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <CardTitle>{title}</CardTitle>
-              <ResumeChangesTooltip changes={changes} hasValue={!!value.trim()} />
-            </div>
+            <CardTitle>{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
           <div className="ml-4 flex items-center gap-2 shrink-0">
@@ -57,6 +56,9 @@ export function OutputCard({
               </>
             ) : (
               <>
+                {shouldShowAdaptedResumeButton && (
+                  <AdaptedResumeButton changes={changes} hasValue={!!value.trim()} isLoading={isLoading} />
+                )}
                 {hasActions && (
                   <>
                     {showCopy && onCopy && value.trim() && (

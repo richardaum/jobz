@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { useSettingsStore } from "@/shared/stores/settings-store";
 
-import { useResumeAgent } from "./resume-agent";
+import { useResumeAgent, ApiKeyError } from "./resume-agent";
 import type { MatchResult } from "../stores/resume-store";
 
 interface ProcessedData {
@@ -39,8 +39,7 @@ export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
         mutation.error instanceof Error ? mutation.error.message : "An error occurred while processing your resume";
 
       // Check if it's an API key error
-      const isApiKeyError =
-        mutation.error instanceof Error && mutation.error.message.includes("OpenAI API key not configured");
+      const isApiKeyError = mutation.error instanceof ApiKeyError;
 
       if (isApiKeyError) {
         toast.error(errorMessage, {
@@ -79,7 +78,10 @@ export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
       toast.success("Resume processed successfully!");
     } catch (err) {
       // Error is handled by useEffect above
-      console.error("Error processing resume:", err);
+      // Only log errors that aren't handled (API key errors are handled via toast)
+      if (!(err instanceof ApiKeyError)) {
+        console.error("Error processing resume:", err);
+      }
     }
   };
 

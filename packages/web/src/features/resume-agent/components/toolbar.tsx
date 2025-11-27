@@ -1,9 +1,9 @@
 "use client";
 
-import { IconHistory, IconCode, IconFileText, IconBriefcase, IconEye, IconTrash } from "@tabler/icons-react";
+import { IconHistory, IconCode, IconFileText, IconBriefcase, IconEye, IconTrash, IconChevronDown } from "@tabler/icons-react";
 import { useState } from "react";
 
-import { Button, Divider } from "@/shared/ui";
+import { Button, Divider, Menu, MenuAnchor, MenuContent, MenuItem } from "@/shared/ui";
 import { useResumeStore } from "../stores/resume-store";
 import { useCardsVisibilityStore } from "../stores/cards-visibility-store";
 
@@ -24,10 +24,12 @@ interface ToolbarProps {
 export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: ToolbarProps) {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isPromptOpen, setIsPromptOpen] = useState(false);
+  const [isClearMenuOpen, setIsClearMenuOpen] = useState(false);
   const resume = useResumeStore((state) => state.resume);
   const jobDescription = useResumeStore((state) => state.jobDescription);
   const setResume = useResumeStore((state) => state.setResume);
   const setJobDescription = useResumeStore((state) => state.setJobDescription);
+  const clearResults = useResumeStore((state) => state.clearResults);
   const clearAll = useResumeStore((state) => state.clearAll);
 
   const visibleCards = useCardsVisibilityStore((state) => state.visibleCards);
@@ -36,10 +38,18 @@ export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: To
   const isAdaptedResumeHidden = !visibleCards.has("adapted-resume");
   const isGapsAnalysisHidden = !visibleCards.has("gaps-analysis");
 
-  const handleClear = () => {
-    if (confirm("Are you sure you want to clear all content? This action cannot be undone.")) {
+  const handleClearResults = () => {
+    if (confirm("Are you sure you want to clear all results? This will remove the adapted resume, gaps analysis, and match results, but keep your resume and job description.")) {
+      clearResults();
+      setIsClearMenuOpen(false);
+    }
+  };
+
+  const handleClearAll = () => {
+    if (confirm("Are you sure you want to clear all content? This will remove everything including your resume and job description. This action cannot be undone.")) {
       clearAll();
       useCardsVisibilityStore.getState().showAllCards();
+      setIsClearMenuOpen(false);
     }
   };
 
@@ -108,16 +118,41 @@ export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: To
           <IconHistory className="h-4 w-4 mr-2" />
           History
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleClear}
-          type="button"
-          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-        >
-          <IconTrash className="h-4 w-4 mr-2" />
-          Clear
-        </Button>
+        <Menu open={isClearMenuOpen} onOpenChange={setIsClearMenuOpen}>
+          <MenuAnchor asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={() => setIsClearMenuOpen(!isClearMenuOpen)}
+              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            >
+              <IconTrash className="h-4 w-4 mr-2" />
+              Clear
+              <IconChevronDown className="h-4 w-4 ml-2" />
+            </Button>
+          </MenuAnchor>
+          <MenuContent align="end" className="w-64">
+            <MenuItem
+              onClick={handleClearResults}
+              className="flex flex-col items-start px-3 py-2.5 cursor-pointer"
+            >
+              <div className="font-medium text-sm">Clear Results</div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                Remove adapted resume, gaps analysis, and match results
+              </div>
+            </MenuItem>
+            <MenuItem
+              onClick={handleClearAll}
+              className="flex flex-col items-start px-3 py-2.5 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
+            >
+              <div className="font-medium text-sm">Clear All</div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                Remove everything including resume and job description
+              </div>
+            </MenuItem>
+          </MenuContent>
+        </Menu>
         <Button
           variant="default"
           size="sm"

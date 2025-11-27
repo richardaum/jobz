@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Grid, GridItem } from "@/shared/ui";
@@ -58,10 +59,20 @@ export function ResumeAgent() {
     }
   };
 
-  const hasResume = !!resume.trim();
-  const hasJobDescription = !!jobDescription.trim();
+  // Ensure we're on the client before rendering
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Safe checks - store always provides string defaults, but be defensive
+  const hasResume = !!resume?.trim();
+  const hasJobDescription = !!jobDescription?.trim();
   const hasInputs = hasResume && hasJobDescription;
-  const hasOutputs = !!adaptedResume.trim() || !!gaps.trim();
+  const hasOutputs = !!adaptedResume?.trim() || !!gaps?.trim();
+
+  // Show empty state if we don't have inputs or outputs
   const showEmptyState = !hasInputs || !hasOutputs;
 
   const visibleCards = useCardsVisibilityStore((state) => state.visibleCards);
@@ -69,6 +80,25 @@ export function ResumeAgent() {
 
   const isAdaptedResumeVisible = visibleCards.has("adapted-resume");
   const isGapsAnalysisVisible = visibleCards.has("gaps-analysis");
+
+  // Show nothing during SSR to prevent hydration mismatch
+  if (!isClient) {
+    return (
+      <div className="h-full flex flex-col overflow-hidden">
+        <div className="shrink-0 mb-4">
+          <Toolbar
+            onProcess={handleProcess}
+            isProcessing={processing.isLoading}
+            matchResult={currentMatchResult}
+            isMatching={processing.isMatching}
+          />
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          {/* Minimal loading state - could be replaced with a spinner if desired */}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
