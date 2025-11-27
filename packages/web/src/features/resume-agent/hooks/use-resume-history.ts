@@ -1,3 +1,5 @@
+"use client";
+
 import { useLocalStorage } from "@/shared/hooks/use-local-storage";
 
 import type { MatchResult } from "./use-resume-outputs";

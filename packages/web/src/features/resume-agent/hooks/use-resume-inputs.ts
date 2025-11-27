@@ -1,3 +1,5 @@
+"use client";
+
 import { useLocalStorage } from "@/shared/hooks/use-local-storage";
 
 const STORAGE_KEYS = {

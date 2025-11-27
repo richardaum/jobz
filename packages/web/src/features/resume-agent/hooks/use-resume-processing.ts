@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -13,6 +15,16 @@ interface ProcessedData {
 
 interface UseResumeProcessingParams {
   onSuccess: (data: ProcessedData) => void;
+}
+
+function createMatchResult(data: {
+  matchJob: { matchPercentage: number; analysis: string; checklist: MatchResult["checklist"] };
+}): MatchResult {
+  return {
+    matchPercentage: data.matchJob.matchPercentage,
+    analysis: data.matchJob.analysis,
+    checklist: data.matchJob.checklist,
+  };
 }
 
 export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
@@ -38,11 +50,7 @@ export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
         jobDescription,
       });
 
-      const matchResult: MatchResult = {
-        matchPercentage: result.matchJob.matchPercentage,
-        analysis: result.matchJob.analysis,
-        checklist: result.matchJob.checklist,
-      };
+      const matchResult = createMatchResult(result);
 
       onSuccess({
         adaptedResume: result.adaptResume.adaptedResume,
@@ -62,12 +70,6 @@ export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
     process,
     isLoading: mutation.isPending,
     isMatching: mutation.isPending,
-    currentMatchResult: mutation.data
-      ? {
-          matchPercentage: mutation.data.matchJob.matchPercentage,
-          analysis: mutation.data.matchJob.analysis,
-          checklist: mutation.data.matchJob.checklist,
-        }
-      : null,
+    currentMatchResult: mutation.data ? createMatchResult(mutation.data) : null,
   };
 }

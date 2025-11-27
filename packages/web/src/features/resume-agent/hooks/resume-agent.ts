@@ -1,3 +1,5 @@
+"use client";
+
 import { OpenAIClient, type ProcessResumeRequest, type ProcessResumeResponse } from "@jobz/ai";
 import { useMutation } from "@tanstack/react-query";
 
