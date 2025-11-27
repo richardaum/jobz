@@ -72,8 +72,8 @@ export function ResumeAgent() {
   const hasInputs = hasResume && hasJobDescription;
   const hasOutputs = !!adaptedResume?.trim() || !!gaps?.trim();
 
-  // Show empty state if we don't have inputs or outputs
-  const showEmptyState = !hasInputs || !hasOutputs;
+  // Show empty state if we don't have inputs or outputs, but not when processing (show loading cards instead)
+  const showEmptyState = (!hasInputs || !hasOutputs) && !processing.isLoading;
 
   const visibleCards = useCardsVisibilityStore((state) => state.visibleCards);
   const hideCard = useCardsVisibilityStore((state) => state.hideCard);
