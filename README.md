@@ -7,7 +7,9 @@ A monorepo for the Jobz project.
 ```
 jobz/
 ├── packages/
-│   └── chrome-extension/  # Chrome extension built with Vite
+│   ├── chrome-extension/  # Chrome extension built with Vite
+│   ├── web/              # Next.js web application
+│   └── ai/               # AI functions and utilities
 └── package.json
 ```
 
@@ -30,7 +32,14 @@ bun run dev
 Run a specific package:
 
 ```bash
-bun run dev:chrome-extension
+# Chrome extension
+bun run dev:chrome
+
+# Web application
+bun run dev:web
+
+# Web application with HTTPS tunnel (ngrok)
+bun run dev:web:tunnel
 ```
 
 Or run from within the package directory:
@@ -51,7 +60,8 @@ bun run build
 Build a specific package:
 
 ```bash
-bun run build:chrome-extension
+bun run build:chrome
+bun run build:web
 ```
 
 ## Linting and Formatting
@@ -115,6 +125,28 @@ Clean everything including node_modules:
 ```bash
 bun run clean:all
 ```
+
+## Development with HTTPS (ngrok)
+
+The web application supports running with an HTTPS tunnel using ngrok for free:
+
+1. **Configure ngrok:**
+   ```bash
+   bunx ngrok config add-authtoken your_token_here
+   ```
+   Get your free auth token from [dashboard.ngrok.com/get-started/your-authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)
+
+2. **Start the dev server:**
+   ```bash
+   bun run dev:web
+   ```
+
+3. **In a separate terminal, start ngrok:**
+   ```bash
+   bun run dev:web:ngrok
+   ```
+
+   This will automatically open your browser to the HTTPS URL. See [packages/web/README.md](./packages/web/README.md) for more details.
 
 ## Other Commands
 

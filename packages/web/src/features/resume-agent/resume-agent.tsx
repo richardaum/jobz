@@ -3,6 +3,7 @@
 import { toast } from "sonner";
 
 import { Grid, GridItem } from "@/shared/ui";
+import { copyToClipboard } from "@/shared/lib";
 
 import { EmptyState } from "./components/empty-state";
 import { OutputCard } from "./components/output-card";
@@ -49,12 +50,11 @@ export function ResumeAgent() {
   };
 
   const handleCopyGaps = async () => {
-    try {
-      await navigator.clipboard.writeText(gaps);
+    const success = await copyToClipboard(gaps);
+    if (success) {
       toast.success("Gaps analysis copied to clipboard!");
-    } catch (error) {
+    } else {
       toast.error("Failed to copy to clipboard");
-      console.error("Failed to copy:", error);
     }
   };
 

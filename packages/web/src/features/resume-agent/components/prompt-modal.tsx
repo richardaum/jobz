@@ -1,12 +1,13 @@
 "use client";
 
 import { IconCode, IconCopy } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { MacScrollbar } from "mac-scrollbar";
 
 import { Button } from "@/shared/ui";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/shared/ui";
+import { copyToClipboard } from "@/shared/lib";
 import { buildProcessResumePrompt } from "@jobz/ai";
 
 interface PromptModalProps {
@@ -17,24 +18,26 @@ interface PromptModalProps {
 }
 
 export function PromptModal({ open, onOpenChange, resume, jobDescription }: PromptModalProps) {
-  const [prompt, setPrompt] = useState("");
-
-  useEffect(() => {
-    if (open && resume && jobDescription) {
-      const fullPrompt = buildProcessResumePrompt(jobDescription, resume);
-      setPrompt(fullPrompt);
+  const prompt = useMemo(() => {
+    if (resume?.trim() && jobDescription?.trim()) {
+      return buildProcessResumePrompt(jobDescription.trim(), resume.trim());
     }
-  }, [open, resume, jobDescription]);
+    return "";
+  }, [resume, jobDescription]);
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(prompt);
+  const handleCopy = useCallback(async () => {
+    if (!prompt || !prompt.trim()) {
+      toast.error("No prompt available to copy");
+      return;
+    }
+
+    const success = await copyToClipboard(prompt);
+    if (success) {
       toast.success("Prompt copied to clipboard!");
-    } catch (error) {
+    } else {
       toast.error("Failed to copy prompt");
-      console.error("Failed to copy:", error);
     }
-  };
+  }, [prompt]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -49,7 +52,7 @@ export function PromptModal({ open, onOpenChange, resume, jobDescription }: Prom
 
         <div className="flex flex-col gap-4">
           <div className="flex justify-end">
-            <Button variant="outline" size="sm" onClick={handleCopy} type="button">
+            <Button variant="outline" size="sm" onClick={handleCopy} type="button" disabled={!prompt || !prompt.trim()}>
               <IconCopy className="h-4 w-4 mr-2" />
               Copy Prompt
             </Button>

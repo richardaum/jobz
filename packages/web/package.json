@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo -H 0.0.0.0",
+    "dev:ngrok": "bun run scripts/start-ngrok.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import type { JobDescription } from "@/entities/job";
 import type { DebugInfo } from "@/features/match-job/model/types";
+import { copyToClipboard as copyToClipboardUtil } from "@/shared/utils/clipboard";
 
 import type { ActionItem } from "./useActionItems";
 
@@ -36,30 +37,17 @@ export function useCopyToClipboard(
       })),
     };
 
-    try {
-      const jsonString = JSON.stringify(dataToCopy, null, 2);
-      await navigator.clipboard.writeText(jsonString);
+    const jsonString = JSON.stringify(dataToCopy, null, 2);
+    const success = await copyToClipboardUtil(jsonString);
 
+    if (success) {
       // Show temporary feedback
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
       }, 2000);
-    } catch (error) {
-      console.error("Failed to copy to clipboard:", error);
-      // Fallback for older browsers
-      const textArea = document.createElement("textarea");
-      textArea.value = JSON.stringify(dataToCopy, null, 2);
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-
-      // Show temporary feedback
-      setCopied(true);
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
+    } else {
+      console.error("Failed to copy to clipboard");
     }
   };
 
