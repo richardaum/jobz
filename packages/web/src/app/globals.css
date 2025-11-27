@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
+@import "mac-scrollbar/dist/mac-scrollbar.css";
 
 @theme inline {
   --color-background: hsl(var(--background));
