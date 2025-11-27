@@ -16,29 +16,29 @@ interface JobMatchButtonProps {
 
 function getMatchColorClasses(percentage: number): string {
   if (percentage >= 80) {
-    // Excelente match - Verde
-    return "border-green-500 text-green-700 hover:bg-green-100 hover:border-green-600 hover:text-green-800";
+    // Excellent match - Green (light for dark background)
+    return "border-green-500 text-green-400 font-semibold hover:bg-green-950/20 hover:border-green-400";
   } else if (percentage >= 60) {
-    // Bom match - Amarelo/Âmbar
-    return "border-amber-500 text-amber-700 hover:bg-amber-100 hover:border-amber-600 hover:text-amber-800";
+    // Good match - Amber/Yellow (light for dark background)
+    return "border-amber-500 text-amber-400 font-semibold hover:bg-amber-950/20 hover:border-amber-400";
   } else if (percentage >= 40) {
-    // Match médio - Laranja
-    return "border-orange-500 text-orange-700 hover:bg-orange-100 hover:border-orange-600 hover:text-orange-800";
+    // Medium match - Orange (light for dark background)
+    return "border-orange-500 text-orange-400 font-semibold hover:bg-orange-950/20 hover:border-orange-400";
   } else {
-    // Match baixo - Vermelho
-    return "border-red-500 text-red-700 hover:bg-red-100 hover:border-red-600 hover:text-red-800";
+    // Low match - Red (light for dark background)
+    return "border-red-500 text-red-400 font-semibold hover:bg-red-950/20 hover:border-red-400";
   }
 }
 
 function getIconColorClasses(percentage: number): string {
   if (percentage >= 80) {
-    return "text-green-600 group-hover:text-green-800";
+    return "text-green-400";
   } else if (percentage >= 60) {
-    return "text-amber-600 group-hover:text-amber-800";
+    return "text-amber-400";
   } else if (percentage >= 40) {
-    return "text-orange-600 group-hover:text-orange-800";
+    return "text-orange-400";
   } else {
-    return "text-red-600 group-hover:text-red-800";
+    return "text-red-400";
   }
 }
 

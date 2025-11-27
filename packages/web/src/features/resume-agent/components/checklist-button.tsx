@@ -43,7 +43,7 @@ export function ChecklistButton({ checklist }: ChecklistButtonProps) {
                   {/* Gaps Section */}
                   {gaps.length > 0 && (
                     <div className="space-y-2">
-                      <div className="font-medium text-sm text-red-600 dark:text-red-400">Gaps ({gaps.length})</div>
+                      <div className="font-medium text-sm text-red-800 dark:text-red-300">Gaps ({gaps.length})</div>
                       {gaps.map((item, index) => (
                         <div key={`gap-${index}`} className="flex items-start gap-2 text-sm">
                           <div className="mt-0.5 shrink-0 text-gray-400">○</div>
@@ -60,12 +60,12 @@ export function ChecklistButton({ checklist }: ChecklistButtonProps) {
                   {successes.length > 0 && (
                     <div className="space-y-2">
                       {gaps.length > 0 && <div className="border-t border-border pt-2" />}
-                      <div className="font-medium text-sm text-green-600 dark:text-green-400">
+                      <div className="font-medium text-sm text-green-800 dark:text-green-300">
                         Success ({successes.length})
                       </div>
                       {successes.map((item, index) => (
                         <div key={`success-${index}`} className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 shrink-0 text-green-600">✓</div>
+                          <div className="mt-0.5 shrink-0 text-green-800 dark:text-green-300">✓</div>
                           <div className="flex-1">
                             <div className="font-medium">{item.category}</div>
                             <div className="text-muted-foreground text-xs mt-0.5">{item.description}</div>

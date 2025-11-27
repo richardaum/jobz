@@ -125,7 +125,7 @@ export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: To
               size="sm"
               type="button"
               onClick={() => setIsClearMenuOpen(!isClearMenuOpen)}
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="text-red-700 hover:text-red-900 hover:bg-red-50"
             >
               <IconTrash className="h-4 w-4 mr-2" />
               Clear
@@ -144,7 +144,7 @@ export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: To
             </MenuItem>
             <MenuItem
               onClick={handleClearAll}
-              className="flex flex-col items-start px-3 py-2.5 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
+              className="flex flex-col items-start px-3 py-2.5 cursor-pointer text-red-700 focus:text-red-900 focus:bg-red-50"
             >
               <div className="font-medium text-sm">Clear All</div>
               <div className="text-xs text-muted-foreground mt-0.5">
