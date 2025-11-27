@@ -10,7 +10,7 @@
  */
 
 export { devtools } from "./devtools";
-export { type MessageListener,runtime } from "./runtime";
+export { type MessageListener, runtime } from "./runtime";
 export { scripting } from "./scripting";
 export { storage, syncStorage } from "./storage";
-export { type ActiveTab,tabs } from "./tabs";
+export { type ActiveTab, tabs } from "./tabs";

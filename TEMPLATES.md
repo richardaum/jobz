@@ -3,11 +3,13 @@
 ## Next.js Web Package with FSD Architecture
 
 **Prompt:**
+
 ```
 create a new web package, it should have a next (latest) app. create a blank one following FSD using @eslint-plugin-fsd. use typescript config files whenever possible. set up the app router properly. use eslint 9.
 ```
 
 **Key Requirements:**
+
 - Next.js 15 with App Router
 - React 19
 - TypeScript config files (`.ts` or `.mts`)
@@ -16,6 +18,7 @@ create a new web package, it should have a next (latest) app. create a blank one
 - Path aliases: `@/*` → `./src/*`
 
 **Structure:**
+
 ```
 packages/web/
 ├── package.json
@@ -32,5 +35,6 @@ packages/web/
 ```
 
 **Pattern:**
+
 - `src/app/*/page.tsx` imports from `src/pages/*` (FSD layer)
 - App Router handles routing, FSD handles business logic
