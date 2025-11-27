@@ -2,7 +2,7 @@ import { IconPercentage } from "@tabler/icons-react";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
 
-import type { MatchResult } from "../hooks/use-resume-outputs";
+import type { MatchResult } from "../stores/resume-store";
 
 interface JobMatchTooltipProps {
   matchResult: MatchResult | null;

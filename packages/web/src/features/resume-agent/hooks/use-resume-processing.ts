@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 
 import { useResumeAgent } from "./resume-agent";
-import type { MatchResult } from "./use-resume-outputs";
+import type { MatchResult } from "../stores/resume-store";
 
 interface ProcessedData {
   adaptedResume: string;

@@ -7,32 +7,50 @@ import { Button } from "@/shared/ui";
 import { JobDescriptionCard } from "./components/job-description-card";
 import { OutputCard } from "./components/output-card";
 import { ResumeInputCard } from "./components/resume-input-card";
-import { useResumeInputs } from "./hooks/use-resume-inputs";
-import { useResumeOutputs } from "./hooks/use-resume-outputs";
+import { Toolbar } from "./components/toolbar";
 import { useResumeProcessing } from "./hooks/use-resume-processing";
+import { useResumeHistoryStore, useResumeStore } from "./stores/resume-store";
 import { downloadResumeAsPDF } from "./utils/download-pdf";
 
 export function ResumeAgent() {
-  const inputs = useResumeInputs();
-  const outputs = useResumeOutputs();
+  const resume = useResumeStore((state) => state.resume);
+  const jobDescription = useResumeStore((state) => state.jobDescription);
+  const setResume = useResumeStore((state) => state.setResume);
+  const setJobDescription = useResumeStore((state) => state.setJobDescription);
+  const adaptedResume = useResumeStore((state) => state.adaptedResume);
+  const gaps = useResumeStore((state) => state.gaps);
+  const matchResult = useResumeStore((state) => state.matchResult);
+  const updateOutputs = useResumeStore((state) => state.updateOutputs);
+  const addToHistory = useResumeHistoryStore((state) => state.addToHistory);
+
   const processing = useResumeProcessing({
-    onSuccess: outputs.updateOutputs,
+    onSuccess: (data) => {
+      updateOutputs(data);
+      // Save to history (separate storage)
+      addToHistory({
+        resume,
+        jobDescription,
+        adaptedResume: data.adaptedResume,
+        gaps: data.gaps,
+        matchResult: data.matchResult,
+      });
+    },
   });
 
   const handleProcess = () => {
-    processing.process(inputs.resume, inputs.jobDescription);
+    processing.process(resume, jobDescription);
   };
 
-  // Prioritize stored matchResult from localStorage, then current processing result
-  const matchResult = outputs.matchResult ?? processing.currentMatchResult;
+  // Prioritize stored matchResult from store, then current processing result
+  const currentMatchResult = matchResult ?? processing.currentMatchResult;
 
   const handleDownloadPDF = () => {
-    downloadResumeAsPDF(outputs.adaptedResume, "resume-adapted.pdf");
+    downloadResumeAsPDF(adaptedResume, "resume-adapted.pdf");
   };
 
   const handleCopyGaps = async () => {
     try {
-      await navigator.clipboard.writeText(outputs.gaps);
+      await navigator.clipboard.writeText(gaps);
       toast.success("Gaps analysis copied to clipboard!");
     } catch (error) {
       toast.error("Failed to copy to clipboard");
@@ -42,16 +60,17 @@ export function ResumeAgent() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      <Toolbar />
       <div className="grid grid-cols-2 gap-6">
         {/* First Column */}
         <div className="space-y-6">
-          <ResumeInputCard value={inputs.resume} onChange={inputs.setResume} />
+          <ResumeInputCard value={resume} onChange={setResume} />
           <JobDescriptionCard
-            value={inputs.jobDescription}
-            onChange={inputs.setJobDescription}
-            matchResult={matchResult}
+            value={jobDescription}
+            onChange={setJobDescription}
+            matchResult={currentMatchResult}
             isMatching={processing.isMatching}
-            hasResume={!!inputs.resume.trim()}
+            hasResume={!!resume.trim()}
           />
         </div>
 
@@ -60,7 +79,7 @@ export function ResumeAgent() {
           <OutputCard
             title="Resume Adapted"
             description="Your resume tailored for this job"
-            value={outputs.adaptedResume}
+            value={adaptedResume}
             placeholder="The adapted resume will appear here..."
             id="adapted-resume"
             onDownload={handleDownloadPDF}
@@ -69,7 +88,7 @@ export function ResumeAgent() {
           <OutputCard
             title="Gaps Analysis"
             description="Understanding gaps from your perspective"
-            value={outputs.gaps}
+            value={gaps}
             placeholder="Gap analysis will appear here..."
             id="gaps"
             onCopy={handleCopyGaps}

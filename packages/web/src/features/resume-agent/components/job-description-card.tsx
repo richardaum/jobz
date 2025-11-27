@@ -4,7 +4,7 @@ import { Textarea } from "@/shared/ui";
 
 import { ChecklistTooltip } from "./checklist-tooltip";
 import { JobMatchTooltip } from "./job-match-tooltip";
-import type { MatchResult } from "../hooks/use-resume-outputs";
+import type { MatchResult } from "../stores/resume-store";
 
 interface JobDescriptionCardProps {
   value: string;

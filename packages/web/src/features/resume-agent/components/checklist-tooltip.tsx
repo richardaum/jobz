@@ -2,7 +2,7 @@ import { IconChecklist } from "@tabler/icons-react";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
 
-import type { ChecklistItem } from "../hooks/use-resume-outputs";
+import type { ChecklistItem } from "../stores/resume-store";
 
 interface ChecklistTooltipProps {
   checklist: ChecklistItem[];
