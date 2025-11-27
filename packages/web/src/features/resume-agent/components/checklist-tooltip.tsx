@@ -16,6 +16,10 @@ export function ChecklistTooltip({ checklist }: ChecklistTooltipProps) {
   const checkedCount = checklist.filter((item) => item.checked).length;
   const totalCount = checklist.length;
 
+  // Separate into gaps (unchecked) and successes (checked)
+  const gaps = checklist.filter((item) => !item.checked);
+  const successes = checklist.filter((item) => item.checked);
+
   return (
     <TooltipProvider>
       <Tooltip defaultOpen={false}>
@@ -32,18 +36,41 @@ export function ChecklistTooltip({ checklist }: ChecklistTooltipProps) {
             <div className="font-semibold text-sm">
               Checklist: {checkedCount}/{totalCount} items
             </div>
-            <div className="space-y-2 max-h-96 overflow-y-auto">
-              {checklist.map((item, index) => (
-                <div key={index} className="flex items-start gap-2 text-sm">
-                  <div className={`mt-0.5 flex-shrink-0 ${item.checked ? "text-green-600" : "text-gray-400"}`}>
-                    {item.checked ? "✓" : "○"}
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium">{item.category}</div>
-                    <div className="text-muted-foreground text-xs mt-0.5">{item.description}</div>
-                  </div>
+            <div className="space-y-4 max-h-96 overflow-y-auto">
+              {/* Gaps Section */}
+              {gaps.length > 0 && (
+                <div className="space-y-2">
+                  <div className="font-medium text-sm text-red-600 dark:text-red-400">Gaps ({gaps.length})</div>
+                  {gaps.map((item, index) => (
+                    <div key={`gap-${index}`} className="flex items-start gap-2 text-sm">
+                      <div className="mt-0.5 shrink-0 text-gray-400">○</div>
+                      <div className="flex-1">
+                        <div className="font-medium">{item.category}</div>
+                        <div className="text-muted-foreground text-xs mt-0.5">{item.description}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
+
+              {/* Successes Section */}
+              {successes.length > 0 && (
+                <div className="space-y-2">
+                  {gaps.length > 0 && <div className="border-t border-border pt-2" />}
+                  <div className="font-medium text-sm text-green-600 dark:text-green-400">
+                    Success ({successes.length})
+                  </div>
+                  {successes.map((item, index) => (
+                    <div key={`success-${index}`} className="flex items-start gap-2 text-sm">
+                      <div className="mt-0.5 shrink-0 text-green-600">✓</div>
+                      <div className="flex-1">
+                        <div className="font-medium">{item.category}</div>
+                        <div className="text-muted-foreground text-xs mt-0.5">{item.description}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </TooltipContent>
@@ -51,4 +78,3 @@ export function ChecklistTooltip({ checklist }: ChecklistTooltipProps) {
     </TooltipProvider>
   );
 }
-
