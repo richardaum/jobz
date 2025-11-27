@@ -36,7 +36,12 @@ interface ResumeStore {
   gaps: string;
   matchResult: MatchResult | null;
   changes: { section: string; description: string }[];
-  updateOutputs: (data: { adaptedResume: string; gaps: string; matchResult: MatchResult; changes: { section: string; description: string }[] }) => void;
+  updateOutputs: (data: {
+    adaptedResume: string;
+    gaps: string;
+    matchResult: MatchResult;
+    changes: { section: string; description: string }[];
+  }) => void;
 
   // Computed
   hasValidInputs: () => boolean;
@@ -85,7 +90,12 @@ export const useResumeStore = create<ResumeStore>()(
         setJobDescription: (jobDescription: string) => set({ jobDescription }),
 
         // Outputs
-        updateOutputs: (data: { adaptedResume: string; gaps: string; matchResult: MatchResult; changes: { section: string; description: string }[] }) =>
+        updateOutputs: (data: {
+          adaptedResume: string;
+          gaps: string;
+          matchResult: MatchResult;
+          changes: { section: string; description: string }[];
+        }) =>
           set({
             adaptedResume: data.adaptedResume,
             gaps: data.gaps,
