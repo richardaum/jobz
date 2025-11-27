@@ -40,7 +40,8 @@ Instructions:
 
 3. **Skills Section**: 
    - Prioritize skills that match the job requirements
-   - Add relevant skills from the job description if the candidate has experience with them
+   - Only include skills that are explicitly mentioned in the original resume
+   - Do not add new skills, even if they appear in the job description
    - Group skills logically (technical, soft skills, tools, etc.)
 
 4. **Professional Summary/Objective**: 
@@ -49,12 +50,22 @@ Instructions:
 
 5. **Tone and Style**: ${toneInstructions[tone]}
 
-6. **Maintain Authenticity**: 
-   - Only include information that can be reasonably inferred from the original resume
-   - Do not fabricate experiences, skills, or achievements
-   - Keep all dates, company names, and factual information accurate
+6. **Preserve Original Writing Style**: 
+   - Maintain the candidate's original writing style, voice, and phrasing patterns
+   - When rephrasing, keep the same level of detail and specificity as the original
+   - Preserve the candidate's natural way of describing their experiences
+   - Only adjust wording to incorporate keywords, not to change the fundamental style
 
-7. **Format**: 
+7. **Maintain Authenticity - Strict Rules**: 
+   - ONLY use information that is explicitly stated in the original resume
+   - Do NOT add, infer, or fabricate any experiences, skills, achievements, or qualifications
+   - Do NOT add skills from the job description that aren't in the original resume
+   - Do NOT add responsibilities or achievements that weren't explicitly mentioned
+   - Do NOT expand on experiences beyond what was originally written
+   - Keep all dates, company names, and factual information exactly as they appear
+   - Your role is to reorganize, rephrase, and emphasize existing content, NOT to add new content
+
+8. **Format**: 
    - Maintain a clean, professional format
    - Use consistent formatting throughout
    - Ensure the resume is ATS-friendly (Applicant Tracking System compatible)

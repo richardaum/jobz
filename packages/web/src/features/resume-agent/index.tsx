@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from "sonner";
+
 import { Button } from "@/shared/ui";
 
 import { JobDescriptionCard } from "./components/job-description-card";
@@ -8,6 +10,7 @@ import { ResumeInputCard } from "./components/resume-input-card";
 import { useResumeInputs } from "./hooks/use-resume-inputs";
 import { useResumeOutputs } from "./hooks/use-resume-outputs";
 import { useResumeProcessing } from "./hooks/use-resume-processing";
+import { downloadResumeAsPDF } from "./utils/download-pdf";
 
 export function ResumeAgent() {
   const inputs = useResumeInputs();
@@ -22,6 +25,20 @@ export function ResumeAgent() {
 
   // Prioritize stored matchResult from localStorage, then current processing result
   const matchResult = outputs.matchResult ?? processing.currentMatchResult;
+
+  const handleDownloadPDF = () => {
+    downloadResumeAsPDF(outputs.adaptedResume, "resume-adapted.pdf");
+  };
+
+  const handleCopyGaps = async () => {
+    try {
+      await navigator.clipboard.writeText(outputs.gaps);
+      toast.success("Gaps analysis copied to clipboard!");
+    } catch (error) {
+      toast.error("Failed to copy to clipboard");
+      console.error("Failed to copy:", error);
+    }
+  };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -46,6 +63,8 @@ export function ResumeAgent() {
             value={outputs.adaptedResume}
             placeholder="The adapted resume will appear here..."
             id="adapted-resume"
+            onDownload={handleDownloadPDF}
+            showDownload={true}
           />
           <OutputCard
             title="Gaps Analysis"
@@ -53,6 +72,8 @@ export function ResumeAgent() {
             value={outputs.gaps}
             placeholder="Gap analysis will appear here..."
             id="gaps"
+            onCopy={handleCopyGaps}
+            showCopy={true}
           />
         </div>
       </div>
