@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 
-export function downloadResumeAsPDF(content: string, filename: string = "resume-adapted.pdf") {
+export function downloadResumeAsPDF(content: string, filename: string = "adapted-resume.pdf") {
   if (!content.trim()) {
     return;
   }

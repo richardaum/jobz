@@ -45,7 +45,7 @@ export function ResumeAgent() {
   const currentMatchResult = matchResult ?? processing.currentMatchResult;
 
   const handleDownloadPDF = () => {
-    downloadResumeAsPDF(adaptedResume, "resume-adapted.pdf");
+    downloadResumeAsPDF(adaptedResume, "adapted-resume.pdf");
   };
 
   const handleCopyGaps = async () => {
@@ -77,11 +77,12 @@ export function ResumeAgent() {
         {/* Second Column */}
         <div className="space-y-6">
           <OutputCard
-            title="Resume Adapted"
+            title="Adapted Resume"
             description="Your resume tailored for this job"
             value={adaptedResume}
             placeholder="The adapted resume will appear here..."
             id="adapted-resume"
+            isLoading={processing.isLoading}
             onDownload={handleDownloadPDF}
             showDownload={true}
           />
@@ -91,6 +92,7 @@ export function ResumeAgent() {
             value={gaps}
             placeholder="Gap analysis will appear here..."
             id="gaps"
+            isLoading={processing.isLoading}
             onCopy={handleCopyGaps}
             showCopy={true}
           />
