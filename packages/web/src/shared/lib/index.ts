@@ -1,1 +1,1 @@
-// Shared utilities will be exported here
+export { cn } from "./utils";

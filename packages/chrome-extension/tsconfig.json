@@ -19,12 +19,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@jobz/ai": ["../ai/src"]
-    },
-    "composite": true
+    }
   },
-  "include": ["src"],
-  "references": [
-    { "path": "./tsconfig.node.json" },
-    { "path": "../ai" }
-  ]
+  "include": ["src"]
 }

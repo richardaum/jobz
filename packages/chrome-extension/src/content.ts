@@ -19,6 +19,11 @@ let elementPicker: ElementPicker | null = null;
 
 // Listen for messages from devtools
 runtime.onMessage(async (request, _sender, sendResponse) => {
+  // Type guard for request
+  if (!request || typeof request !== "object" || !("action" in request)) {
+    return;
+  }
+
   if (request.action === "ping") {
     sendResponse({ success: true });
     return;

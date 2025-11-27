@@ -1,6 +1,7 @@
+import { type ChecklistItem, OpenAIClient } from "@jobz/ai";
+
 import type { JobDescription } from "@/entities/job";
 import type { Resume } from "@/entities/resume";
-import { type ChecklistItem, OpenAIClient } from "@jobz/ai";
 
 import { getCachedMatch, saveMatchToCache } from "./match-cache";
 

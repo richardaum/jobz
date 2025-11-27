@@ -25,7 +25,7 @@ export function getTsConfigPaths(tsConfigPath?: string, startDir?: string): stri
   try {
     const config = readTsConfig(configPath);
     const paths = config.compilerOptions?.paths || {};
-    const baseUrl = config.compilerOptions?.baseUrl
+    const _baseUrl = config.compilerOptions?.baseUrl
       ? resolve(dirname(configPath), config.compilerOptions.baseUrl)
       : dirname(configPath);
 

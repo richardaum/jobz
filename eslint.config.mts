@@ -9,10 +9,24 @@ import fsdPlugin from "./packages/eslint-plugin-fsd";
 // See: https://github.com/typescript-eslint/typescript-eslint/issues/10396
 const config = [
   {
-    ignores: ["**/dist/**", "**/node_modules/**", "**/*.config.js", "**/*.config.ts"],
+    ignores: [
+      "**/dist/**",
+      "**/.next/**",
+      "**/node_modules/**",
+      "**/*.config.js",
+      "**/*.config.ts",
+      "**/next-env.d.ts",
+    ],
   },
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
-  { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
+  {
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {

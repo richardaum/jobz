@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "./packages/chrome-extension" }, { "path": "./packages/eslint-plugin-fsd" }]
+  "references": [{ "path": "./packages/eslint-plugin-fsd" }]
 }

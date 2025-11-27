@@ -5,6 +5,7 @@ AI communication package for Jobz monorepo. This package provides a framework-ag
 ## Purpose
 
 This package contains:
+
 - AI client implementations (OpenAI)
 - Type definitions for AI requests/responses
 - Configuration constants
@@ -26,6 +27,7 @@ const result = await client.matchJob({
 ## API Key Management
 
 API key management is handled by consuming packages, as it may depend on platform-specific storage:
+
 - Chrome extensions: Chrome storage API
 - Web apps: Environment variables or secure storage
 - Node.js: Environment variables
@@ -38,4 +40,3 @@ API key management is handled by consuming packages, as it may depend on platfor
 - `ChecklistItem` - Type for checklist items in responses
 - `OPENAI_API_BASE_URL` - OpenAI API base URL constant
 - `DEFAULT_OPENAI_MODEL` - Default model name constant
-

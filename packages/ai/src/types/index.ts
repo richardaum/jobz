@@ -15,3 +15,27 @@ export interface MatchJobResponse {
   checklist: ChecklistItem[];
 }
 
+export interface AdaptResumeRequest {
+  jobDescription: string;
+  resume: string;
+  tone?: "professional" | "confident" | "concise";
+  focus?: string; // Optional focus area or specific instructions
+}
+
+export interface AdaptResumeResponse {
+  adaptedResume: string;
+  changes: {
+    section: string;
+    description: string;
+  }[];
+  keywords: string[]; // Keywords from job description that were incorporated
+}
+
+export interface AnalyzeGapsRequest {
+  resume: string;
+  jobDescription: string;
+}
+
+export interface AnalyzeGapsResponse {
+  gaps: string;
+}

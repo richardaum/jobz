@@ -55,9 +55,16 @@ export function LearningMode() {
     });
 
     // Listen for element selection
-    const listener = (message: ElementSelectedMessage) => {
-      if (message.action === "elementSelected") {
-        handleElementSelected(message.selector, message.text);
+    const listener: Parameters<typeof runtime.onMessage>[0] = (message) => {
+      if (
+        message &&
+        typeof message === "object" &&
+        "action" in message &&
+        message.action === "elementSelected" &&
+        "selector" in message &&
+        "text" in message
+      ) {
+        handleElementSelected((message as ElementSelectedMessage).selector, (message as ElementSelectedMessage).text);
       }
     };
     const removeListener = runtime.onMessage(listener);

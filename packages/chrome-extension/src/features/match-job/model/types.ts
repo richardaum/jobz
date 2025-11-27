@@ -1,5 +1,6 @@
-import type { Resume } from "@/entities/resume";
 import type { ChecklistItem } from "@jobz/ai";
+
+import type { Resume } from "@/entities/resume";
 
 export interface DebugInfo {
   resume?: Resume;

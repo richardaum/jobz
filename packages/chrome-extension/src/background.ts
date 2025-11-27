@@ -8,9 +8,14 @@ runtime.onInstalled(() => {
 
 // Handle messages from devtools and content scripts
 runtime.onMessage((request, _sender, sendResponse) => {
+  // Type guard for request
+  if (!request || typeof request !== "object") {
+    return false;
+  }
+
   // Handle log messages from content scripts, forward to devtools
-  if (request.action === "log") {
-    const { level, args } = request;
+  if ("action" in request && request.action === "log" && "level" in request && "args" in request) {
+    const { level, args } = request as { action: "log"; level: string; args: unknown[]; timestamp?: number };
 
     // Log to background console
     const logMethods: Record<string, typeof console.log> = {
@@ -31,7 +36,7 @@ runtime.onMessage((request, _sender, sendResponse) => {
           action: "logToStore",
           level,
           args,
-          timestamp: request.timestamp || Date.now(),
+          timestamp: ("timestamp" in request ? request.timestamp : undefined) || Date.now(),
         })
         .catch(() => {
           // Devtools not available, ignore
@@ -44,11 +49,11 @@ runtime.onMessage((request, _sender, sendResponse) => {
   }
 
   // Handle executeScript requests from devtools
-  if (request.action === "executeScript") {
+  if ("action" in request && request.action === "executeScript" && "options" in request) {
     // @ts-expect-error - chrome.scripting is available in the background script
     if (chrome.scripting && chrome.scripting.executeScript) {
       scripting
-        .executeScript?.(request.options)
+        .executeScript?.(request.options as Parameters<typeof scripting.executeScript>[0])
         .then((result) => {
           sendResponse({ result });
         })

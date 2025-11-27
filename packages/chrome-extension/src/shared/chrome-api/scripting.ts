@@ -35,14 +35,17 @@ export class ChromeScripting {
     // If in devtools context, delegate to background script
     if (isDevtoolsContext()) {
       const { runtime } = await import("./runtime");
-      const response = await runtime.sendMessage({
+      const response = await runtime.sendMessage<{ error?: string; result?: chrome.scripting.InjectionResult[] }>({
         action: "executeScript",
         options,
       });
-      if (response?.error) {
+      if (response && typeof response === "object" && "error" in response && response.error) {
         throw new Error(response.error);
       }
-      return response?.result || [];
+      if (response && typeof response === "object" && "result" in response && response.result) {
+        return response.result;
+      }
+      return [];
     }
 
     // In background or other contexts, use chrome.scripting directly
