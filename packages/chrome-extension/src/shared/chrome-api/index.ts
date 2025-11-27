@@ -9,8 +9,8 @@
  * - Consistency
  */
 
-export { storage, syncStorage } from "./storage";
-export { tabs, type ActiveTab } from "./tabs";
-export { runtime, type MessageListener } from "./runtime";
 export { devtools } from "./devtools";
+export { type MessageListener,runtime } from "./runtime";
 export { scripting } from "./scripting";
+export { storage, syncStorage } from "./storage";
+export { type ActiveTab,tabs } from "./tabs";

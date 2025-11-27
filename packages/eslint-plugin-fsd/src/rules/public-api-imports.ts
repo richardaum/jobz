@@ -1,8 +1,16 @@
 import { ESLintUtils } from "@typescript-eslint/utils";
+import { dirname } from "path";
+
+import { getTsConfigPaths, normalizePath } from "../utils/tsconfig";
 
 const createRule = ESLintUtils.RuleCreator((name) => `https://github.com/jobz/eslint-plugin-fsd#${name}`);
 
-type Options = [];
+type Options = [
+  {
+    aliases?: string[];
+    tsconfigPath?: string;
+  },
+];
 type MessageIds = "publicApiViolation";
 
 const LAYERS = ["app", "pages", "widgets", "features", "entities", "shared"] as const;
@@ -17,10 +25,40 @@ export const publicApiImports = createRule<Options, MessageIds>({
     messages: {
       publicApiViolation: "Import from '{{ slice }}' must use the public API. Import from '{{ publicApi }}' instead.",
     },
-    schema: [],
+    schema: [
+      {
+        type: "object",
+        properties: {
+          aliases: {
+            type: "array",
+            items: { type: "string" },
+            description:
+              "Path aliases to recognize (e.g., ['@/']). If not provided, will try to read from tsconfig.json",
+          },
+          tsconfigPath: {
+            type: "string",
+            description: "Path to tsconfig.json file. If not provided, will search for it automatically.",
+          },
+        },
+      },
+    ],
   },
-  defaultOptions: [],
+  defaultOptions: [{}],
   create(context) {
+    const options = context.options[0] || {};
+    let aliases = options.aliases;
+
+    // If aliases not provided, try to read from tsconfig
+    if (!aliases || aliases.length === 0) {
+      // Try to find tsconfig starting from the file's directory
+      const fileDir = context.filename ? dirname(context.filename) : undefined;
+      aliases = getTsConfigPaths(options.tsconfigPath, fileDir);
+      // Fallback to default @/ if nothing found
+      if (aliases.length === 0) {
+        aliases = ["@/"];
+      }
+    }
+
     return {
       ImportDeclaration(node) {
         const importPath = node.source.value;
@@ -31,18 +69,18 @@ export const publicApiImports = createRule<Options, MessageIds>({
         const filePath = context.filename;
 
         // Get current file's slice
-        const currentSlice = getSliceInfo(filePath);
+        const currentSlice = getSliceInfo(filePath, aliases);
         if (!currentSlice) return;
 
         // Get import's slice
-        const importSlice = getSliceInfo(importPath);
+        const importSlice = getSliceInfo(importPath, aliases);
         if (!importSlice) return;
 
         // Skip if same slice
         if (currentSlice.fullPath === importSlice.fullPath) return;
 
         // Check if importing from internal path of another slice
-        const isInternalImport = checkInternalImport(importPath, importSlice);
+        const isInternalImport = checkInternalImport(importPath, importSlice, aliases);
 
         if (isInternalImport) {
           const publicApiPath = importSlice.fullPath;
@@ -67,9 +105,9 @@ interface SliceInfo {
   fullPath: string;
 }
 
-function getSliceInfo(filePath: string): SliceInfo | null {
-  // Strip @/ alias prefix
-  const normalizedPath = filePath.replace(/\\/g, "/").replace(/^@\//, "");
+function getSliceInfo(filePath: string, aliases: string[]): SliceInfo | null {
+  // Normalize path by removing aliases
+  const normalizedPath = normalizePath(filePath, aliases);
 
   for (const layer of LAYERS) {
     const layerPattern = new RegExp(`^(${layer})/([^/]+)`);
@@ -87,9 +125,12 @@ function getSliceInfo(filePath: string): SliceInfo | null {
   return null;
 }
 
-function checkInternalImport(importPath: string, sliceInfo: SliceInfo): boolean {
+function checkInternalImport(importPath: string, sliceInfo: SliceInfo, aliases: string[]): boolean {
+  // Normalize the import path (strip alias prefixes) before checking
+  const normalizedImportPath = normalizePath(importPath, aliases);
+
   // Remove the slice path from import to see what's after
-  const afterSlice = importPath.replace(sliceInfo.fullPath, "");
+  const afterSlice = normalizedImportPath.replace(sliceInfo.fullPath, "");
 
   // If there's a path after the slice (not just the slice itself or slice/index)
   if (afterSlice && !afterSlice.match(/^\/(index)?$/)) {

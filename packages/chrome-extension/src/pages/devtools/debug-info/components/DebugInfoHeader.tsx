@@ -1,8 +1,8 @@
 import { IconCopy, IconTrash } from "@tabler/icons-react";
 
+import type { DebugInfo } from "@/features/match-job/model/types";
 import { Button } from "@/shared/ui";
 
-import type { DebugInfo } from "@/features/match-job/model/types";
 import { LogFilters } from "./LogFilters";
 
 type LogLevel = "log" | "warn" | "error" | "info" | "debug";
@@ -39,12 +39,7 @@ export function DebugInfoHeader({
           <IconCopy className="w-4 h-4" />
           {copied ? "Copied!" : "Copy"}
         </Button>
-        <Button
-          variant="secondary"
-          onClick={onClear}
-          className="flex items-center gap-2"
-          title="Clear action history"
-        >
+        <Button variant="secondary" onClick={onClear} className="flex items-center gap-2" title="Clear action history">
           <IconTrash className="w-4 h-4" />
           Clear
         </Button>
@@ -58,5 +53,3 @@ export function DebugInfoHeader({
     </div>
   );
 }
-
-

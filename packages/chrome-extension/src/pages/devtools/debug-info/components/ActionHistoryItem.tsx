@@ -216,9 +216,7 @@ export function ActionHistoryItem({ item, isExpanded, onToggle }: ActionHistoryI
           <div className="pt-3 space-y-2 text-sm border-t border-gray-200 max-h-[60vh] overflow-y-auto">
             {logs.map((log, index) => (
               <div key={index} className="flex items-start gap-2 py-1 border-b border-gray-100 last:border-0">
-                <span
-                  className={`px-2 py-0.5 rounded text-xs font-mono flex-shrink-0 ${levelColors[log.level]}`}
-                >
+                <span className={`px-2 py-0.5 rounded text-xs font-mono flex-shrink-0 ${levelColors[log.level]}`}>
                   {log.level.toUpperCase()}
                 </span>
                 <div className="flex-1 min-w-0">

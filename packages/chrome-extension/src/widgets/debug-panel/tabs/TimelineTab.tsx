@@ -6,7 +6,7 @@ interface TimelineTabProps {
 
 export function TimelineTab({ debugInfo }: TimelineTabProps) {
   const logs = debugInfo.logs || [];
-  
+
   if (logs.length === 0) {
     return <div className="text-gray-500 text-xs">No logs recorded yet</div>;
   }

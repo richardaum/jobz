@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-import type { DebugInfo } from "@/features/match-job/model/types";
 import type { JobDescription } from "@/entities/job";
+import type { DebugInfo } from "@/features/match-job/model/types";
+
 import type { ActionItem } from "./useActionItems";
 
 export function useCopyToClipboard(
@@ -64,5 +65,3 @@ export function useCopyToClipboard(
 
   return { copyToClipboard, copied };
 }
-
-

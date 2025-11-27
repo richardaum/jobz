@@ -46,5 +46,3 @@ export function LogFilters({ logs, logFilters, onToggleFilter }: LogFiltersProps
     </div>
   );
 }
-
-

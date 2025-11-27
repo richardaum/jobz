@@ -3,12 +3,12 @@ import { useShallow } from "zustand/react/shallow";
 
 import { useMatchingStore } from "@/features/match-job";
 
-import { ActionHistoryList } from "./ActionHistoryList";
-import { DebugInfoHeader } from "./DebugInfoHeader";
-import { EmptyState } from "./EmptyState";
 import { useActionItems } from "../hooks/useActionItems";
 import { useClearActionHistory } from "../hooks/useClearActionHistory";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
+import { ActionHistoryList } from "./ActionHistoryList";
+import { DebugInfoHeader } from "./DebugInfoHeader";
+import { EmptyState } from "./EmptyState";
 
 type LogLevel = "log" | "warn" | "error" | "info" | "debug";
 

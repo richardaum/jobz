@@ -1,5 +1,5 @@
-import { storage } from "@/shared/chrome-api";
 import type { Resume } from "@/entities/resume";
+import { storage } from "@/shared/chrome-api";
 
 export async function loadResumeFromFile(file: File): Promise<Resume> {
   return new Promise((resolve, reject) => {

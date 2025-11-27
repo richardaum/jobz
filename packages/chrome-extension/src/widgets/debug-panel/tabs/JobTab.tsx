@@ -30,7 +30,7 @@ export function JobTab({ debugInfo: _debugInfo, onJobExtracted }: JobTabProps) {
       const { tabs } = await import("@/shared/chrome-api");
       const { checkContentScriptReady, injectContentScript } = await import("@/shared/utils/scripting");
       const { sendTabMessage } = await import("@/shared/utils/messaging");
-      
+
       // Get current tab
       const tab = await tabs.getActiveTab();
 

@@ -25,9 +25,10 @@ export class LinkedInExtractor extends BaseJobExtractor {
       failedSelectors = result.failedSelectors || [];
     } catch (error) {
       // If any unexpected error occurs, ensure we still return a job with error info
-      const errorMessage = error instanceof Error 
-        ? `${error.name}: ${error.message}${error.stack ? `\n${error.stack}` : ''}`
-        : String(error);
+      const errorMessage =
+        error instanceof Error
+          ? `${error.name}: ${error.message}${error.stack ? `\n${error.stack}` : ""}`
+          : String(error);
       failedSelectors.push(`Extraction error: ${errorMessage}`);
     }
 
@@ -221,9 +222,10 @@ export class LinkedInExtractor extends BaseJobExtractor {
 
     // If not valid or empty, include all tried selectors in failedSelectors for debugging
     // This ensures we always have selector information for manual debugging
-    const allFailed = failedSelectors.length > 0 
-      ? [...new Set([...failedSelectors, ...allTriedSelectors])] // Remove duplicates
-      : allTriedSelectors;
+    const allFailed =
+      failedSelectors.length > 0
+        ? [...new Set([...failedSelectors, ...allTriedSelectors])] // Remove duplicates
+        : allTriedSelectors;
 
     return { description: combinedDescription || "", usedSelector: usedSelector || "none", failedSelectors: allFailed };
   }

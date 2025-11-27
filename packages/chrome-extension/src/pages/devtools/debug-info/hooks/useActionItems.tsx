@@ -1,7 +1,7 @@
 import { IconFileDescription, IconFileText, IconRobot, IconTarget, IconTerminal } from "@tabler/icons-react";
 
-import type { DebugInfo } from "@/features/match-job/model/types";
 import type { JobDescription } from "@/entities/job";
+import type { DebugInfo } from "@/features/match-job/model/types";
 
 type LogLevel = "log" | "warn" | "error" | "info" | "debug";
 
@@ -104,5 +104,3 @@ export function useActionItems(
 
   return actionItems;
 }
-
-

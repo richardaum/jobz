@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { type MatchResult,useMatchingStore } from "@/features/match-job";
+import { type MatchResult, useMatchingStore } from "@/features/match-job";
 import { Alert } from "@/shared/ui";
 import { MatchResultWidget } from "@/widgets/match-result";
 

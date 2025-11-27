@@ -22,12 +22,12 @@ function isDevtoolsContext(): boolean {
 /**
  * Add log directly to store (only works in devtools context)
  */
-function addToStoreDirectly(level: LogLevel, args: unknown[]): void {
+async function addToStoreDirectly(level: LogLevel, args: unknown[]): Promise<void> {
   if (!isDevtoolsContext()) return;
 
   try {
     // Dynamic import to avoid circular dependencies
-    const { useMatchingStore } = require("@/features/match-job");
+    const { useMatchingStore } = await import("@/features/match-job");
     const store = useMatchingStore.getState();
     if (!store?.setDebugInfo) return;
 
@@ -69,7 +69,7 @@ function sendLogToExtension(level: LogLevel, ...args: unknown[]): void {
 
   // If in devtools, add directly to store
   if (isDevtoolsContext()) {
-    addToStoreDirectly(level, args);
+    void addToStoreDirectly(level, args);
   }
 
   // Always send to background (for content script logs, background forwards to devtools)

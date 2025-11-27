@@ -14,7 +14,7 @@ export class ChromeDevTools {
   /**
    * Evaluate JavaScript in the inspected window
    */
-  async eval<T = any>(expression: string): Promise<T> {
+  async eval<T = unknown>(expression: string): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       chrome.devtools.inspectedWindow.eval(expression, (result: T, exceptionInfo) => {
         if (exceptionInfo) {
@@ -41,11 +41,7 @@ export class ChromeDevTools {
    * Check if a URL is restricted (chrome://, chrome-extension://, about:)
    */
   isRestrictedUrl(url: string): boolean {
-    return (
-      url.startsWith("chrome://") ||
-      url.startsWith("chrome-extension://") ||
-      url.startsWith("about:")
-    );
+    return url.startsWith("chrome://") || url.startsWith("chrome-extension://") || url.startsWith("about:");
   }
 
   /**
@@ -63,4 +59,3 @@ export class ChromeDevTools {
 
 // Export singleton instance for convenience
 export const devtools = new ChromeDevTools();
-

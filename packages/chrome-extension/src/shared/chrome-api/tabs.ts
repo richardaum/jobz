@@ -23,8 +23,7 @@ export class ChromeTabs {
     // If still no tab, try to get any tab
     if (!tab?.id || !tab?.url) {
       const allTabs = await chrome.tabs.query({});
-      tab =
-        allTabs.find((t) => t.url && !this.isRestrictedUrl(t.url)) || allTabs[0];
+      tab = allTabs.find((t) => t.url && !this.isRestrictedUrl(t.url)) || allTabs[0];
     }
 
     if (!tab?.id || !tab?.url) {
@@ -44,7 +43,7 @@ export class ChromeTabs {
   /**
    * Send a message to a tab
    */
-  async sendMessage<T = any>(tabId: number, message: any): Promise<T> {
+  async sendMessage<T = unknown>(tabId: number, message: unknown): Promise<T> {
     return chrome.tabs.sendMessage(tabId, message);
   }
 
@@ -52,14 +51,9 @@ export class ChromeTabs {
    * Check if a URL is restricted (chrome://, chrome-extension://, about:)
    */
   isRestrictedUrl(url: string): boolean {
-    return (
-      url.startsWith("chrome://") ||
-      url.startsWith("chrome-extension://") ||
-      url.startsWith("about:")
-    );
+    return url.startsWith("chrome://") || url.startsWith("chrome-extension://") || url.startsWith("about:");
   }
 }
 
 // Export singleton instance for convenience
 export const tabs = new ChromeTabs();
-

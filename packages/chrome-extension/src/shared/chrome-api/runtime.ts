@@ -4,16 +4,16 @@
  */
 
 export type MessageListener = (
-  message: any,
+  message: unknown,
   sender: chrome.runtime.MessageSender,
-  sendResponse: (response?: any) => void
-) => boolean | void | Promise<any>;
+  sendResponse: (response?: unknown) => void
+) => boolean | void | Promise<unknown>;
 
 export class ChromeRuntime {
   /**
    * Send a message to the extension's background script or other contexts
    */
-  async sendMessage<T = any>(message: any): Promise<T> {
+  async sendMessage<T = unknown>(message: unknown): Promise<T> {
     return chrome.runtime.sendMessage(message);
   }
 

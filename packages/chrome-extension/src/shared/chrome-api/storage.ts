@@ -15,7 +15,7 @@ export class ChromeStorage {
   /**
    * Get one or more items from storage
    */
-  async get<T = any>(keys?: string | string[] | { [key: string]: any } | null): Promise<{ [key: string]: T }> {
+  async get<T = unknown>(keys?: string | string[] | { [key: string]: unknown } | null): Promise<{ [key: string]: T }> {
     return new Promise<{ [key: string]: T }>((resolve, reject) => {
       this.storage.get(keys ?? null, (result) => {
         if (chrome.runtime.lastError) {
@@ -30,7 +30,7 @@ export class ChromeStorage {
   /**
    * Get a single item from storage
    */
-  async getItem<T = any>(key: string): Promise<T | undefined> {
+  async getItem<T = unknown>(key: string): Promise<T | undefined> {
     const result = await this.get<T>(key);
     return result[key];
   }
@@ -38,7 +38,7 @@ export class ChromeStorage {
   /**
    * Set one or more items in storage
    */
-  async set(items: { [key: string]: any }): Promise<void> {
+  async set(items: { [key: string]: unknown }): Promise<void> {
     return new Promise((resolve, reject) => {
       this.storage.set(items, () => {
         if (chrome.runtime.lastError) {
@@ -53,7 +53,7 @@ export class ChromeStorage {
   /**
    * Set a single item in storage
    */
-  async setItem<T = any>(key: string, value: T): Promise<void> {
+  async setItem<T = unknown>(key: string, value: T): Promise<void> {
     return this.set({ [key]: value });
   }
 

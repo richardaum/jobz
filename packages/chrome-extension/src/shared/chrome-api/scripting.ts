@@ -77,7 +77,6 @@ export class ChromeScripting {
     // Small delay to ensure script is loaded
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
-
 }
 
 // Export singleton instance for convenience

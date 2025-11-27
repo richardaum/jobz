@@ -261,7 +261,7 @@ async function migrateCache(oldCache: MatchCache): Promise<MatchCache> {
 async function loadCache(): Promise<MatchCache> {
   const { storage } = await import("@/shared/chrome-api");
   const cache = await storage.getItem<MatchCache>(CACHE_STORAGE_KEY);
-  
+
   if (cache) {
     // Migrate old cache format if needed
     const migratedCache = await migrateCache(cache);
@@ -282,7 +282,7 @@ async function loadCache(): Promise<MatchCache> {
 
     return cleanedCache;
   }
-  
+
   return {};
 }
 

@@ -1,5 +1,5 @@
-export { tabs } from "../chrome-api";
 export type { ActiveTab } from "../chrome-api";
+export { tabs } from "../chrome-api";
 
 /**
  * @deprecated Use tabs.getActiveTab() instead

@@ -18,7 +18,7 @@ export class GenericExtractor extends BaseJobExtractor {
     const failedSelectors: string[] = [];
 
     try {
-    // Try to extract from common job posting patterns
+      // Try to extract from common job posting patterns
       const titleSelectors = [
         "h1",
         "[data-testid='job-title']",
@@ -59,82 +59,82 @@ export class GenericExtractor extends BaseJobExtractor {
         }
       }
 
-    // Try to extract description from main content with specific selectors first
-    const descriptionSelectors = [
-      "[data-testid='job-description']",
-      "[id='job-description']",
-      "[class*='job-description']",
-      "[id*='job-description']",
-      ".description[class*='job']",
-      "main article",
-      "main [role='article']",
-      "main .content",
-      "#job-description",
-    ];
+      // Try to extract description from main content with specific selectors first
+      const descriptionSelectors = [
+        "[data-testid='job-description']",
+        "[id='job-description']",
+        "[class*='job-description']",
+        "[id*='job-description']",
+        ".description[class*='job']",
+        "main article",
+        "main [role='article']",
+        "main .content",
+        "#job-description",
+      ];
 
-    for (const selector of descriptionSelectors) {
+      for (const selector of descriptionSelectors) {
         try {
-      const element = document.querySelector(selector);
-      if (element) {
-        const cleanText = this.extractCleanText(element);
-        if (cleanText && this.isValidJobDescription(cleanText)) {
-          description = cleanText;
-          usedSelector = selector;
-          break;
-        } else {
-          failedSelectors.push(selector);
-        }
-      } else {
-        failedSelectors.push(selector);
+          const element = document.querySelector(selector);
+          if (element) {
+            const cleanText = this.extractCleanText(element);
+            if (cleanText && this.isValidJobDescription(cleanText)) {
+              description = cleanText;
+              usedSelector = selector;
+              break;
+            } else {
+              failedSelectors.push(selector);
+            }
+          } else {
+            failedSelectors.push(selector);
           }
         } catch (error) {
           failedSelectors.push(`${selector} (error: ${error})`);
+        }
       }
-    }
 
-    // Fallback: look for the largest valid text block in main
+      // Fallback: look for the largest valid text block in main
       if (!description || description === "No description available") {
         try {
-      const main = document.querySelector("main");
-      if (main) {
-        // Find all potential description containers
-        const candidates = main.querySelectorAll("div, section, article, [role='article']");
-        let bestCandidate: { element: Element; text: string; length: number; selector: string } | null = null;
+          const main = document.querySelector("main");
+          if (main) {
+            // Find all potential description containers
+            const candidates = main.querySelectorAll("div, section, article, [role='article']");
+            let bestCandidate: { element: Element; text: string; length: number; selector: string } | null = null;
 
-        for (const candidate of Array.from(candidates)) {
+            for (const candidate of Array.from(candidates)) {
               try {
-          if (this.shouldExcludeElement(candidate)) continue;
+                if (this.shouldExcludeElement(candidate)) continue;
 
-          const cleanText = this.extractCleanText(candidate);
-          if (cleanText && this.isValidJobDescription(cleanText)) {
-            const candidateSelector = this.getElementSelector(candidate);
-            if (!bestCandidate || cleanText.length > bestCandidate.length) {
-              bestCandidate = {
-                element: candidate,
-                text: cleanText,
-                length: cleanText.length,
-                selector: candidateSelector,
-              };
-            }
+                const cleanText = this.extractCleanText(candidate);
+                if (cleanText && this.isValidJobDescription(cleanText)) {
+                  const candidateSelector = this.getElementSelector(candidate);
+                  if (!bestCandidate || cleanText.length > bestCandidate.length) {
+                    bestCandidate = {
+                      element: candidate,
+                      text: cleanText,
+                      length: cleanText.length,
+                      selector: candidateSelector,
+                    };
+                  }
                 }
               } catch {
                 // Continue to next candidate
-          }
-        }
+              }
+            }
 
-        if (bestCandidate) {
-          description = bestCandidate.text;
-          usedSelector = bestCandidate.selector || "main > candidate";
-        } else {
-          // Last resort: try main itself, but be very careful
+            if (bestCandidate) {
+              description = bestCandidate.text;
+              usedSelector = bestCandidate.selector || "main > candidate";
+            } else {
+              // Last resort: try main itself, but be very careful
               try {
-          const cleanText = this.extractCleanText(main);
-          if (cleanText && this.isValidJobDescription(cleanText)) {
-            description = cleanText;
-            usedSelector = "main";
-          } else {
-            failedSelectors.push("main");
-          }
+                const cleanText = this.extractCleanText(main);
+                if (cleanText && this.isValidJobDescription(cleanText)) {
+                  description = cleanText;
+                  usedSelector = "main";
+                } else {
+                  failedSelectors.push("main");
+                }
               } catch {
                 failedSelectors.push("main (error)");
               }
@@ -157,9 +157,10 @@ export class GenericExtractor extends BaseJobExtractor {
       }
     } catch (error) {
       // If any unexpected error occurs, ensure we still return a job with error info
-      const errorMessage = error instanceof Error 
-        ? `${error.name}: ${error.message}${error.stack ? `\n${error.stack}` : ''}`
-        : String(error);
+      const errorMessage =
+        error instanceof Error
+          ? `${error.name}: ${error.message}${error.stack ? `\n${error.stack}` : ""}`
+          : String(error);
       failedSelectors.push(`Extraction error: ${errorMessage}`);
     }
 

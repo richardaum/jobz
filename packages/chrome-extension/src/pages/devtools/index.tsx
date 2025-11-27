@@ -7,7 +7,7 @@ import { LearningMode } from "./learning-mode";
 
 export function DevToolsPage() {
   const [activeTab, setActiveTab] = useState<"job-match" | "learning" | "debug">("job-match");
-  
+
   // Integrate logger with store
   useLoggerIntegration();
 

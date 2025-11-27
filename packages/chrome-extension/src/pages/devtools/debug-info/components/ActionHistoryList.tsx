@@ -1,5 +1,5 @@
-import { ActionHistoryItem } from "./ActionHistoryItem";
 import type { ActionItem } from "../hooks/useActionItems";
+import { ActionHistoryItem } from "./ActionHistoryItem";
 
 interface ActionHistoryListProps {
   actionItems: ActionItem[];
@@ -21,5 +21,3 @@ export function ActionHistoryList({ actionItems, expandedItems, onToggleItem }: 
     </div>
   );
 }
-
-

@@ -43,11 +43,11 @@ export class LinkedInCollectionExtractor extends BaseJobExtractor {
     let failedSelectors: string[] = [];
 
     try {
-    // Wait a bit for iframe to load if it exists
-    await this.waitForIframe();
+      // Wait a bit for iframe to load if it exists
+      await this.waitForIframe();
 
-    // Try to get the iframe document first
-    this.iframeDocument = this.getIframeDocument();
+      // Try to get the iframe document first
+      this.iframeDocument = this.getIframeDocument();
 
       title = this.extractTitle();
       company = this.extractCompany();
@@ -57,9 +57,10 @@ export class LinkedInCollectionExtractor extends BaseJobExtractor {
       failedSelectors = result.failedSelectors || [];
     } catch (error) {
       // If any unexpected error occurs, ensure we still return a job with error info
-      const errorMessage = error instanceof Error 
-        ? `${error.name}: ${error.message}${error.stack ? `\n${error.stack}` : ''}`
-        : String(error);
+      const errorMessage =
+        error instanceof Error
+          ? `${error.name}: ${error.message}${error.stack ? `\n${error.stack}` : ""}`
+          : String(error);
       failedSelectors.push(`Extraction error: ${errorMessage}`);
     }
 
