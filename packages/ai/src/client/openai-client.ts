@@ -3,7 +3,7 @@ import axios, { AxiosInstance } from "axios";
 import { adaptResume as adaptResumeFunction } from "../functions/adapt-resume";
 import { analyzeGaps as analyzeGapsFunction } from "../functions/analyze-gaps";
 import { matchJob as matchJobFunction } from "../functions/match-job";
-import { processResume as processResumeFunction } from "../functions/process-resume";
+import { processResume as processResumeFunction } from "../functions/resume-agent";
 import type {
   AdaptResumeRequest,
   AdaptResumeResponse,

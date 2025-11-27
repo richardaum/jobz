@@ -2,7 +2,7 @@ import { IconPercentage } from "@tabler/icons-react";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
 
-import type { MatchResult } from "../hooks/use-job-match";
+import type { MatchResult } from "../hooks/use-resume-outputs";
 
 interface JobMatchTooltipProps {
   matchResult: MatchResult | null;
@@ -12,12 +12,6 @@ interface JobMatchTooltipProps {
 }
 
 export function JobMatchTooltip({ matchResult, isMatching, hasResume, hasJobDescription }: JobMatchTooltipProps) {
-  const shouldShow = isMatching || matchResult || !hasResume || !hasJobDescription;
-
-  if (!shouldShow) {
-    return null;
-  }
-
   return (
     <TooltipProvider>
       <Tooltip defaultOpen={false}>
@@ -43,6 +37,8 @@ export function JobMatchTooltip({ matchResult, isMatching, hasResume, hasJobDesc
               <div className="font-semibold text-sm">Match: {matchResult.matchPercentage}%</div>
               <div className="text-sm text-muted-foreground leading-relaxed">{matchResult.analysis}</div>
             </div>
+          ) : hasResume && hasJobDescription ? (
+            <p className="text-sm">Click "Process Resume" to see match analysis</p>
           ) : (
             <p className="text-sm">Fill in both resume and job description to see match</p>
           )}

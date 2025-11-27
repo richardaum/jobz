@@ -3,7 +3,13 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
 import { cn } from "@/shared/lib";
 
-const TooltipProvider = TooltipPrimitive.Provider;
+const TooltipProvider = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Provider>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>
+>(({ delayDuration = 100, ...props }, ref) => (
+  <TooltipPrimitive.Provider delayDuration={delayDuration} {...props} ref={ref} />
+));
+TooltipProvider.displayName = TooltipPrimitive.Provider.displayName;
 
 const Tooltip = TooltipPrimitive.Root;
 
