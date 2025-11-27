@@ -19,17 +19,42 @@ export interface ExtractJobResponse {
   error?: string;
 }
 
-export type ExtensionMessage = PingMessage | ExtractJobMessage;
+export interface StartLearningMessage {
+  action: "startLearning";
+}
+
+export interface StopLearningMessage {
+  action: "stopLearning";
+}
+
+export interface ElementSelectedMessage {
+  action: "elementSelected";
+  selector: string;
+  text: string;
+}
+
+export type ExtensionMessage =
+  | PingMessage
+  | ExtractJobMessage
+  | StartLearningMessage
+  | StopLearningMessage
+  | ElementSelectedMessage;
 
 export type ExtensionResponse<T extends ExtensionMessage> = T extends PingMessage
   ? PingResponse
   : T extends ExtractJobMessage
     ? ExtractJobResponse
-    : never;
+    : T extends StartLearningMessage
+      ? { success: boolean }
+      : T extends StopLearningMessage
+        ? { success: boolean }
+        : void;
+
+import { tabs } from "../chrome-api";
 
 export async function sendTabMessage<T extends ExtensionMessage>(
   tabId: number,
   message: T
 ): Promise<ExtensionResponse<T>> {
-  return chrome.tabs.sendMessage(tabId, message);
+  return await tabs.sendMessage<ExtensionResponse<T>>(tabId, message);
 }

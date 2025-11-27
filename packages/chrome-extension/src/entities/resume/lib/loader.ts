@@ -1,3 +1,4 @@
+import { storage } from "@/shared/chrome-api";
 import type { Resume } from "@/entities/resume";
 
 export async function loadResumeFromFile(file: File): Promise<Resume> {
@@ -29,30 +30,18 @@ export async function loadResumeFromUrl(url: string): Promise<Resume> {
 }
 
 export async function loadResumeFromStorage(): Promise<Resume | null> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get(["resume"], (result) => {
-      if (result.resume) {
-        resolve({
-          content: result.resume,
-          source: "manual",
-        });
-      } else {
-        resolve(null);
-      }
-    });
-  });
+  const resumeContent = await storage.getItem<string>("resume");
+  if (resumeContent) {
+    return {
+      content: resumeContent,
+      source: "manual",
+    };
+  }
+  return null;
 }
 
 export async function saveResumeToStorage(resume: Resume): Promise<void> {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set({ resume: resume.content }, () => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve();
-      }
-    });
-  });
+  await storage.setItem("resume", resume.content);
 }
 
 import resumeContent from "@/shared/assets/RICHARD_RESUME.md?raw";

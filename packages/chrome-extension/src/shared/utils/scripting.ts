@@ -1,3 +1,4 @@
+import { scripting } from "../chrome-api";
 import { sendTabMessage } from "./messaging";
 
 export async function checkContentScriptReady(tabId: number): Promise<boolean> {
@@ -10,9 +11,29 @@ export async function checkContentScriptReady(tabId: number): Promise<boolean> {
 }
 
 export async function injectContentScript(tabId: number, files: string[] = ["src/content.js"]): Promise<void> {
-  await chrome.scripting.executeScript({
-    target: { tabId },
-    files,
-  });
-  await new Promise((resolve) => setTimeout(resolve, 200));
+  await scripting.injectScript(tabId, files);
+}
+
+/**
+ * Ensures content script is ready, injecting it if necessary.
+ * Returns an error message if injection fails, null on success.
+ */
+export async function ensureContentScriptReady(tabId: number): Promise<string | null> {
+  let contentScriptReady = false;
+  try {
+    contentScriptReady = await checkContentScriptReady(tabId);
+  } catch (error) {
+    contentScriptReady = false;
+  }
+
+  if (!contentScriptReady) {
+    try {
+      await injectContentScript(tabId);
+    } catch (injectError) {
+      const errorMsg = injectError instanceof Error ? injectError.message : "Unknown error";
+      return `Failed to inject content script: ${errorMsg}`;
+    }
+  }
+
+  return null;
 }

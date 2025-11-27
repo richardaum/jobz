@@ -1,3 +1,4 @@
+import { useMatchingStore } from "@/features/match-job";
 import { Alert } from "@/shared/ui";
 
 import type { DebugInfo } from "../DebugPanel";
@@ -8,6 +9,8 @@ interface OverviewTabProps {
 }
 
 export function OverviewTab({ debugInfo, duration }: OverviewTabProps) {
+  const job = useMatchingStore((state) => state.job);
+
   return (
     <div className="space-y-2 text-xs">
       <div className="grid grid-cols-2 gap-2">
@@ -27,9 +30,9 @@ export function OverviewTab({ debugInfo, duration }: OverviewTabProps) {
           </div>
         )}
       </div>
-      {debugInfo.job && (
+      {job && (
         <div>
-          <span className="font-semibold">Job Source:</span> {debugInfo.job.source}
+          <span className="font-semibold">Job Source:</span> {job.source}
         </div>
       )}
       {debugInfo.resume && (

@@ -1,4 +1,4 @@
-export type JobSource = "linkedin" | "indeed" | "glassdoor" | "generic";
+export type JobSource = "linkedin" | "indeed" | "glassdoor" | "generic" | "dynamic";
 
 export interface JobDescription {
   title: string;

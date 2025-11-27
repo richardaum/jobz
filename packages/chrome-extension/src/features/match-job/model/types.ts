@@ -1,9 +1,7 @@
-import type { JobDescription } from "@/entities/job";
 import type { Resume } from "@/entities/resume";
 import type { ChecklistItem } from "@/shared/api";
 
 export interface DebugInfo {
-  job?: JobDescription;
   resume?: Resume;
   startTime?: number;
   endTime?: number;
@@ -24,11 +22,10 @@ export interface DebugInfo {
     stack?: string;
     details?: unknown;
   };
-  steps: Array<{
-    step: string;
+  logs: Array<{
+    level: "log" | "warn" | "error" | "info" | "debug";
+    message: string;
     timestamp: number;
-    duration?: number;
-    status: "success" | "error" | "info";
-    details?: string;
+    args?: unknown[];
   }>;
 }

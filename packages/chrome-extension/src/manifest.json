@@ -1,19 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Jobz Extension",
-  "version": "0.0.389",
+  "version": "0.0.390",
   "description": "Match job descriptions with your resume using AI",
-  "permissions": [
-    "storage",
-    "activeTab",
-    "scripting",
-    "windows"
-  ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
+  "permissions": ["storage", "activeTab", "scripting", "windows"],
+  "host_permissions": ["<all_urls>"],
   "action": {
-    "default_popup": "src/popup.html",
     "default_icon": {
       "16": "icons/icon-16.png",
       "32": "icons/icon-32.png",
@@ -26,14 +18,11 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "src/content.ts"
-      ]
+      "matches": ["<all_urls>"],
+      "js": ["src/content.ts"]
     }
   ],
+  "devtools_page": "src/pages/devtools/devtools.html",
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",

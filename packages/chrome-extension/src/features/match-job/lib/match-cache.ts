@@ -259,48 +259,39 @@ async function migrateCache(oldCache: MatchCache): Promise<MatchCache> {
  * Load cache from storage
  */
 async function loadCache(): Promise<MatchCache> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get([CACHE_STORAGE_KEY], async (result) => {
-      const cache = result[CACHE_STORAGE_KEY] as MatchCache | undefined;
-      if (cache) {
-        // Migrate old cache format if needed
-        const migratedCache = await migrateCache(cache);
+  const { storage } = await import("@/shared/chrome-api");
+  const cache = await storage.getItem<MatchCache>(CACHE_STORAGE_KEY);
+  
+  if (cache) {
+    // Migrate old cache format if needed
+    const migratedCache = await migrateCache(cache);
 
-        // Clean up old cache entries (older than 30 days)
-        const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
-        const cleanedCache: MatchCache = {};
-        for (const [key, value] of Object.entries(migratedCache)) {
-          if (value.cachedAt > thirtyDaysAgo && value.version === CACHE_VERSION) {
-            cleanedCache[key] = value;
-          }
-        }
-
-        // Save cleaned cache if entries were removed
-        if (Object.keys(cleanedCache).length !== Object.keys(migratedCache).length) {
-          await saveCache(cleanedCache);
-        }
-
-        resolve(cleanedCache);
-      } else {
-        resolve({});
+    // Clean up old cache entries (older than 30 days)
+    const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+    const cleanedCache: MatchCache = {};
+    for (const [key, value] of Object.entries(migratedCache)) {
+      if (value.cachedAt > thirtyDaysAgo && value.version === CACHE_VERSION) {
+        cleanedCache[key] = value;
       }
-    });
-  });
+    }
+
+    // Save cleaned cache if entries were removed
+    if (Object.keys(cleanedCache).length !== Object.keys(migratedCache).length) {
+      await saveCache(cleanedCache);
+    }
+
+    return cleanedCache;
+  }
+  
+  return {};
 }
 
 /**
  * Save cache to storage
  */
 async function saveCache(cache: MatchCache): Promise<void> {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set({ [CACHE_STORAGE_KEY]: cache }, () => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve();
-      }
-    });
-  });
+  const { storage } = await import("@/shared/chrome-api");
+  await storage.setItem(CACHE_STORAGE_KEY, cache);
 }
 
 /**
@@ -346,13 +337,6 @@ export async function clearCachedMatch(job: JobDescription): Promise<void> {
  * Clear all cached matches
  */
 export async function clearAllCachedMatches(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.remove([CACHE_STORAGE_KEY], () => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve();
-      }
-    });
-  });
+  const { storage } = await import("@/shared/chrome-api");
+  await storage.remove(CACHE_STORAGE_KEY);
 }

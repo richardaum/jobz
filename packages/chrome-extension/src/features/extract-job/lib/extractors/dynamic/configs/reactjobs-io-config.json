@@ -1,0 +1,9 @@
+{
+  "name": "reactjobs.io",
+  "urlPattern": "reactjobs.io/react-jobs",
+  "selectors": {
+    "title": ".text-3xl.font-bold.tracking-tight.text-slate-900.sm\\:text-4xl",
+    "company": "main > div > div:nth-of-type(2) > aside > div > section > div > div > dl > div > dd",
+    "description": ".gap-x-16.mt-3.mb-20.lg\\:grid.lg\\:grid-cols-12"
+  }
+}

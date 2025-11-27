@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import { loadResumeFromAssets, loadResumeFromStorage } from "@/entities/resume";
 import { JobExtractorFactory } from "@/features/extract-job";
-import { matchJobWithResume } from "@/features/match-job";
-import { getCachedMatch } from "@/features/match-job";
+import { getCachedMatch, matchJobWithResume } from "@/features/match-job";
+import { syncStorage } from "@/shared/chrome-api";
 import { LinkedInButton, LinkedInTooltip } from "@/shared/ui";
 
 interface MatchState {
@@ -26,13 +26,12 @@ export function JobzMatchButton() {
 
     try {
       // Get API key from storage
-      const storage = await chrome.storage.sync.get("openaiApiKey");
-      const apiKey = storage.openaiApiKey;
+      const apiKey = await syncStorage.getItem<string>("openaiApiKey");
 
       if (!apiKey) {
         setMatchState({
           status: "error",
-          error: "API key not configured. Please set it in the extension popup.",
+          error: "API key not configured. Please set it in the extension devtools.",
         });
         return;
       }
@@ -50,7 +49,7 @@ export function JobzMatchButton() {
         } catch {
           setMatchState({
             status: "error",
-            error: "Resume not found. Please add your resume in the extension popup.",
+            error: "Resume not found. Please add your resume in the extension devtools.",
           });
           return;
         }
