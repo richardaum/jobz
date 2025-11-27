@@ -1,4 +1,4 @@
-import { OpenAIClient } from "@jobz/ai";
+import { OpenAIClient, getOpenAIApiKey } from "@jobz/ai";
 import { useQuery } from "@tanstack/react-query";
 
 import { useLocalStorage } from "@/shared/hooks/use-local-storage";
@@ -17,7 +17,7 @@ interface UseJobMatchParams {
 const STORAGE_KEY = "resumeAgent:jobMatchAnalysis";
 
 async function fetchJobMatch(resume: string, jobDescription: string): Promise<MatchResult> {
-  const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
+  const apiKey = getOpenAIApiKey();
   if (!apiKey) {
     throw new Error("OpenAI API key not configured");
   }

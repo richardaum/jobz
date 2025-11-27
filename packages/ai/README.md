@@ -15,9 +15,18 @@ This package contains:
 ## Usage
 
 ```typescript
-import { OpenAIClient } from "@jobz/ai";
+import { OpenAIClient, getOpenAIApiKey } from "@jobz/ai";
 
+// Option 1: Get API key from environment variables automatically
+const apiKey = getOpenAIApiKey();
+if (!apiKey) {
+  throw new Error("OpenAI API key not configured");
+}
 const client = new OpenAIClient(apiKey);
+
+// Option 2: Pass API key directly
+const client = new OpenAIClient("your-api-key-here");
+
 const result = await client.matchJob({
   jobDescription: "...",
   resume: "...",
@@ -26,17 +35,26 @@ const result = await client.matchJob({
 
 ## API Key Management
 
-API key management is handled by consuming packages, as it may depend on platform-specific storage:
+The package provides a `getOpenAIApiKey()` function that automatically reads from environment variables:
 
-- Chrome extensions: Chrome storage API
-- Web apps: Environment variables or secure storage
-- Node.js: Environment variables
+- `NEXT_PUBLIC_OPENAI_API_KEY` (Next.js)
+- `VITE_OPENAI_API_KEY` (Vite)
+- `OPENAI_API_KEY` (Node.js/server)
+
+For platform-specific storage (e.g., Chrome storage), consuming packages can implement their own key retrieval and pass it directly to `OpenAIClient`.
 
 ## Exports
 
 - `OpenAIClient` - Main client class for OpenAI API
-- `MatchJobRequest` - Request type for job matching
-- `MatchJobResponse` - Response type for job matching
-- `ChecklistItem` - Type for checklist items in responses
+- `getOpenAIApiKey()` - Function to get API key from environment variables
 - `OPENAI_API_BASE_URL` - OpenAI API base URL constant
 - `DEFAULT_OPENAI_MODEL` - Default model name constant
+- `MatchJobRequest` - Request type for job matching
+- `MatchJobResponse` - Response type for job matching
+- `AdaptResumeRequest` - Request type for resume adaptation
+- `AdaptResumeResponse` - Response type for resume adaptation
+- `AnalyzeGapsRequest` - Request type for gap analysis
+- `AnalyzeGapsResponse` - Response type for gap analysis
+- `ProcessResumeRequest` - Request type for processing resume
+- `ProcessResumeResponse` - Response type for processing resume
+- `ChecklistItem` - Type for checklist items in responses

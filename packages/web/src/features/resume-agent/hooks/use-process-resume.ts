@@ -1,4 +1,4 @@
-import { OpenAIClient } from "@jobz/ai";
+import { OpenAIClient, getOpenAIApiKey } from "@jobz/ai";
 import { useMutation } from "@tanstack/react-query";
 
 interface ProcessResumeParams {
@@ -12,7 +12,7 @@ interface ProcessResumeResult {
 }
 
 async function processResume({ resume, jobDescription }: ProcessResumeParams): Promise<ProcessResumeResult> {
-  const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
+  const apiKey = getOpenAIApiKey();
   if (!apiKey) {
     throw new Error("OpenAI API key not configured");
   }
@@ -43,4 +43,3 @@ export function useProcessResume() {
     retry: 1,
   });
 }
-
