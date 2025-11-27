@@ -8,4 +8,6 @@ export type {
   ChecklistItem,
   MatchJobRequest,
   MatchJobResponse,
+  ProcessResumeRequest,
+  ProcessResumeResponse,
 } from "./types";

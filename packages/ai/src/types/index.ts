@@ -39,3 +39,16 @@ export interface AnalyzeGapsRequest {
 export interface AnalyzeGapsResponse {
   gaps: string;
 }
+
+export interface ProcessResumeRequest {
+  jobDescription: string;
+  resume: string;
+  tone?: "professional" | "confident" | "concise";
+  focus?: string;
+}
+
+export interface ProcessResumeResponse {
+  matchJob: MatchJobResponse;
+  adaptResume: AdaptResumeResponse;
+  analyzeGaps: AnalyzeGapsResponse;
+}

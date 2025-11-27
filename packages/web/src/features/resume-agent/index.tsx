@@ -1,13 +1,14 @@
 "use client";
 
-import { OpenAIClient } from "@jobz/ai";
-import { useState } from "react";
-
 import { useLocalStorage } from "@/shared/hooks/use-local-storage";
 import { Button } from "@/shared/ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui";
 import { Label } from "@/shared/ui";
 import { Textarea } from "@/shared/ui";
+
+import { JobMatchTooltip } from "./components/job-match-tooltip";
+import { useJobMatch } from "./hooks/use-job-match";
+import { useProcessResume } from "./hooks/use-process-resume";
 
 const STORAGE_KEYS = {
   resume: "resume-agent:resume",
@@ -21,48 +22,35 @@ export function ResumeAgent() {
   const [jobDescription, setJobDescription] = useLocalStorage(STORAGE_KEYS.jobDescription, "");
   const [adaptedResume, setAdaptedResume] = useLocalStorage(STORAGE_KEYS.adaptedResume, "");
   const [gaps, setGaps] = useLocalStorage(STORAGE_KEYS.gaps, "");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const { matchResult, isMatching } = useJobMatch({
+    resume,
+    jobDescription,
+  });
+
+  const processResumeMutation = useProcessResume();
 
   const handleProcess = async () => {
     if (!resume.trim() || !jobDescription.trim()) {
-      setError("Please fill in both resume and job description");
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
-
     try {
-      // Get API key from environment or user input
-      const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
-      if (!apiKey) {
-        throw new Error("OpenAI API key not configured");
-      }
+      const result = await processResumeMutation.mutateAsync({
+        resume,
+        jobDescription,
+      });
 
-      const client = new OpenAIClient(apiKey);
-
-      // Process both in parallel
-      const [adaptResult, gapsResult] = await Promise.all([
-        client.adaptResume({
-          resume,
-          jobDescription,
-        }),
-        client.analyzeGaps({
-          resume,
-          jobDescription,
-        }),
-      ]);
-
-      setAdaptedResume(adaptResult.adaptedResume);
-      setGaps(gapsResult.gaps);
+      setAdaptedResume(result.adaptedResume);
+      setGaps(result.gaps);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      // Error is handled by TanStack Query and displayed below
       console.error("Error processing resume:", err);
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  const isLoading = processResumeMutation.isPending;
+  const error = processResumeMutation.error;
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -92,7 +80,15 @@ export function ResumeAgent() {
           {/* Job Description Input */}
           <Card>
             <CardHeader>
-              <CardTitle>Job Description</CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle>Job Description</CardTitle>
+                <JobMatchTooltip
+                  matchResult={matchResult}
+                  isMatching={isMatching}
+                  hasResume={!!resume.trim()}
+                  hasJobDescription={!!jobDescription.trim()}
+                />
+              </div>
               <CardDescription>Paste the job description here</CardDescription>
             </CardHeader>
             <CardContent>
@@ -162,7 +158,11 @@ export function ResumeAgent() {
       </div>
 
       {/* Error Message */}
-      {error && <div className="bg-destructive/10 text-destructive p-4 rounded-md">{error}</div>}
+      {error && (
+        <div className="bg-destructive/10 text-destructive p-4 rounded-md">
+          {error instanceof Error ? error.message : "An error occurred"}
+        </div>
+      )}
     </div>
   );
 }
