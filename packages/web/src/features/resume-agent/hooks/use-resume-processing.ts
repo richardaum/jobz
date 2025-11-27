@@ -8,6 +8,7 @@ interface ProcessedData {
   adaptedResume: string;
   gaps: string;
   matchResult: MatchResult;
+  changes: { section: string; description: string }[];
 }
 
 interface UseResumeProcessingParams {
@@ -20,9 +21,7 @@ export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
   useEffect(() => {
     if (mutation.error) {
       const errorMessage =
-        mutation.error instanceof Error
-          ? mutation.error.message
-          : "An error occurred while processing your resume";
+        mutation.error instanceof Error ? mutation.error.message : "An error occurred while processing your resume";
       toast.error(errorMessage);
     }
   }, [mutation.error]);
@@ -49,6 +48,7 @@ export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
         adaptedResume: result.adaptResume.adaptedResume,
         gaps: result.analyzeGaps.gaps,
         matchResult,
+        changes: result.adaptResume.changes || [],
       });
 
       toast.success("Resume processed successfully!");
@@ -71,4 +71,3 @@ export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
       : null,
   };
 }
-

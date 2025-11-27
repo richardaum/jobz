@@ -53,8 +53,8 @@ export function HistoryTab({ history, onLoadItem, onDeleteItem, onClearHistory }
           const matchPercentage = item.matchResult?.matchPercentage ?? 0;
 
           return (
-            <Card 
-              key={item.id} 
+            <Card
+              key={item.id}
               className="hover:shadow-md hover:bg-accent/50 hover:border-primary/20 transition-all cursor-pointer group active:scale-[0.98]"
               onClick={() => onLoadItem(item)}
             >
@@ -64,9 +64,7 @@ export function HistoryTab({ history, onLoadItem, onDeleteItem, onClearHistory }
                     <CardTitle className="text-sm font-semibold group-hover:text-primary transition-colors">
                       {format(date, "dd/MM/yyyy 'às' HH:mm")}
                     </CardTitle>
-                    <CardDescription className="text-xs mt-0.5">
-                      Match: {matchPercentage}%
-                    </CardDescription>
+                    <CardDescription className="text-xs mt-0.5">Match: {matchPercentage}%</CardDescription>
                   </div>
                   <Button
                     variant="ghost"
@@ -83,9 +81,7 @@ export function HistoryTab({ history, onLoadItem, onDeleteItem, onClearHistory }
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
-                <p className="text-xs text-muted-foreground line-clamp-2">
-                  {item.jobDescription.substring(0, 150)}...
-                </p>
+                <p className="text-xs text-muted-foreground line-clamp-2">{item.jobDescription.substring(0, 150)}...</p>
               </CardContent>
             </Card>
           );
@@ -94,4 +90,3 @@ export function HistoryTab({ history, onLoadItem, onDeleteItem, onClearHistory }
     </div>
   );
 }
-

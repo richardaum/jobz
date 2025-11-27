@@ -20,6 +20,7 @@ export function ResumeAgent() {
   const adaptedResume = useResumeStore((state) => state.adaptedResume);
   const gaps = useResumeStore((state) => state.gaps);
   const matchResult = useResumeStore((state) => state.matchResult);
+  const changes = useResumeStore((state) => state.changes);
   const updateOutputs = useResumeStore((state) => state.updateOutputs);
   const addToHistory = useResumeHistoryStore((state) => state.addToHistory);
 
@@ -85,6 +86,7 @@ export function ResumeAgent() {
             isLoading={processing.isLoading}
             onDownload={handleDownloadPDF}
             showDownload={true}
+            changes={changes}
           />
           <OutputCard
             title="Gaps Analysis"

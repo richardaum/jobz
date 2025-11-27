@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 import { Label } from "@/shared/ui";
 import { Textarea } from "@/shared/ui";
 
+import { ResumeChangesTooltip } from "./resume-changes-tooltip";
+
 interface OutputCardProps {
   title: string;
   description: string;
@@ -16,6 +18,7 @@ interface OutputCardProps {
   showDownload?: boolean;
   onCopy?: () => void;
   showCopy?: boolean;
+  changes?: { section: string; description: string }[];
 }
 
 export function OutputCard({
@@ -29,6 +32,7 @@ export function OutputCard({
   showDownload = false,
   onCopy,
   showCopy = false,
+  changes = [],
 }: OutputCardProps) {
   const hasActions = (showDownload && onDownload && value.trim()) || (showCopy && onCopy && value.trim());
 
@@ -37,7 +41,10 @@ export function OutputCard({
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <CardTitle>{title}</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle>{title}</CardTitle>
+              <ResumeChangesTooltip changes={changes} hasValue={!!value.trim()} />
+            </div>
             <CardDescription>{description}</CardDescription>
           </div>
           {isLoading ? (
@@ -49,23 +56,13 @@ export function OutputCard({
             hasActions && (
               <div className="ml-4 flex gap-2 shrink-0">
                 {showCopy && onCopy && value.trim() && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={onCopy}
-                    type="button"
-                  >
+                  <Button variant="outline" size="sm" onClick={onCopy} type="button">
                     <IconCopy className="h-4 w-4 mr-2" />
                     Copy
                   </Button>
                 )}
                 {showDownload && onDownload && value.trim() && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={onDownload}
-                    type="button"
-                  >
+                  <Button variant="outline" size="sm" onClick={onDownload} type="button">
                     <IconDownload className="h-4 w-4 mr-2" />
                     Download PDF
                   </Button>
@@ -81,7 +78,10 @@ export function OutputCard({
           {isLoading ? (
             <div className="flex items-center justify-center min-h-[300px] border border-input rounded-md bg-muted/50">
               <div className="flex flex-col items-center gap-2">
-                <IconLoader2 className="h-8 w-8 animate-spin text-muted-foreground" style={{ animationDuration: "1s" }} />
+                <IconLoader2
+                  className="h-8 w-8 animate-spin text-muted-foreground"
+                  style={{ animationDuration: "1s" }}
+                />
                 <p className="text-sm text-muted-foreground">Processing...</p>
               </div>
             </div>
@@ -93,4 +93,3 @@ export function OutputCard({
     </Card>
   );
 }
-
