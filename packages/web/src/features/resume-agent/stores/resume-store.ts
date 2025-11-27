@@ -21,6 +21,7 @@ export interface ResumeHistoryItem {
   adaptedResume: string;
   gaps: string;
   matchResult: MatchResult;
+  changes: { section: string; description: string }[];
 }
 
 interface ResumeStore {
@@ -49,6 +50,7 @@ interface ResumeHistoryStore {
     adaptedResume: string;
     gaps: string;
     matchResult: MatchResult;
+    changes: { section: string; description: string }[];
   }) => void;
   removeFromHistory: (id: string) => void;
   clearHistory: () => void;
@@ -60,6 +62,7 @@ interface ResumeHistoryStore {
       adaptedResume: string;
       gaps: string;
       matchResult: MatchResult;
+      changes: { section: string; description: string }[];
     }) => void
   ) => void;
 }
@@ -144,6 +147,7 @@ export const useResumeHistoryStore = create<ResumeHistoryStore>()(
           adaptedResume: item.adaptedResume,
           gaps: item.gaps,
           matchResult: item.matchResult,
+          changes: item.changes || [],
         });
       },
     }),

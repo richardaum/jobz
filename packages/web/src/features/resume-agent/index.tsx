@@ -34,6 +34,7 @@ export function ResumeAgent() {
         adaptedResume: data.adaptedResume,
         gaps: data.gaps,
         matchResult: data.matchResult,
+        changes: data.changes,
       });
     },
   });
