@@ -1,6 +1,7 @@
 import { OpenAIClient } from "@jobz/ai";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+
+import { useLocalStorage } from "@/shared/hooks/use-local-storage";
 
 export interface MatchResult {
   matchPercentage: number;
@@ -11,8 +12,9 @@ interface UseJobMatchParams {
   resume: string;
   jobDescription: string;
   enabled?: boolean;
-  debounceMs?: number;
 }
+
+const STORAGE_KEY = "resumeAgent:jobMatchAnalysis";
 
 async function fetchJobMatch(resume: string, jobDescription: string): Promise<MatchResult> {
   const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
@@ -21,10 +23,7 @@ async function fetchJobMatch(resume: string, jobDescription: string): Promise<Ma
   }
 
   const client = new OpenAIClient(apiKey);
-  const result = await client.matchJob({
-    resume,
-    jobDescription,
-  });
+  const result = await client.matchJob({ resume, jobDescription });
 
   return {
     matchPercentage: result.matchPercentage,
@@ -32,33 +31,24 @@ async function fetchJobMatch(resume: string, jobDescription: string): Promise<Ma
   };
 }
 
-export function useJobMatch({
-  resume,
-  jobDescription,
-  enabled = true,
-  debounceMs = 1000,
-}: UseJobMatchParams) {
-  const [debouncedResume, setDebouncedResume] = useState(resume);
-  const [debouncedJobDescription, setDebouncedJobDescription] = useState(jobDescription);
+export function useJobMatch({ resume, jobDescription, enabled = true }: UseJobMatchParams) {
+  const trimmedResume = resume.trim();
+  const trimmedJobDescription = jobDescription.trim();
+  const hasValidInputs = trimmedResume.length > 0 && trimmedJobDescription.length > 0;
 
-  // Debounce inputs
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedResume(resume);
-      setDebouncedJobDescription(jobDescription);
-    }, debounceMs);
-
-    return () => clearTimeout(timer);
-  }, [resume, jobDescription, debounceMs]);
-
-  const hasValidInputs = debouncedResume.trim().length > 0 && debouncedJobDescription.trim().length > 0;
+  const [storedMatch, setStoredMatch] = useLocalStorage<MatchResult | null>(STORAGE_KEY, null);
 
   const query = useQuery({
-    queryKey: ["jobMatch", debouncedResume, debouncedJobDescription],
-    queryFn: () => fetchJobMatch(debouncedResume, debouncedJobDescription),
+    queryKey: ["jobMatch", trimmedResume, trimmedJobDescription],
+    queryFn: async () => {
+      const result = await fetchJobMatch(trimmedResume, trimmedJobDescription);
+      setStoredMatch(result);
+      return result;
+    },
     enabled: enabled && hasValidInputs,
-    staleTime: 30 * 1000, // 30 seconds
-    gcTime: 5 * 60 * 1000, // 5 minutes (formerly cacheTime)
+    initialData: storedMatch,
+    staleTime: 30 * 1000,
+    gcTime: 5 * 60 * 1000,
     retry: 1,
   });
 

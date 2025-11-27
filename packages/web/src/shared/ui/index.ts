@@ -3,3 +3,4 @@ export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 export { Label } from "./label";
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 export { Textarea } from "./textarea";
+export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";

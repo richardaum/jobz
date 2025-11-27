@@ -11,10 +11,10 @@ import { useJobMatch } from "./hooks/use-job-match";
 import { useProcessResume } from "./hooks/use-process-resume";
 
 const STORAGE_KEYS = {
-  resume: "resume-agent:resume",
-  jobDescription: "resume-agent:job-description",
-  adaptedResume: "resume-agent:adapted-resume",
-  gaps: "resume-agent:gaps",
+  resume: "resumeAgent:resume",
+  jobDescription: "resumeAgent:jobDescription",
+  adaptedResume: "resumeAgent:adaptedResume",
+  gaps: "resumeAgent:gapsAnalysis",
 } as const;
 
 export function ResumeAgent() {
