@@ -1,13 +1,14 @@
 "use client";
 
 import { IconSettings } from "@tabler/icons-react";
-import { useState } from "react";
 
 import { Button } from "@/shared/ui";
 import { SettingsModal } from "@/shared/components/settings-modal";
+import { useSettingsStore } from "@/shared/stores/settings-store";
 
 export function GlobalToolbar() {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const isSettingsOpen = useSettingsStore((state) => state.isSettingsOpen);
+  const setIsSettingsOpen = useSettingsStore((state) => state.setIsSettingsOpen);
 
   return (
     <>

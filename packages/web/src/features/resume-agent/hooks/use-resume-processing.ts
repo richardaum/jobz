@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
 
+import { useSettingsStore } from "@/shared/stores/settings-store";
+
 import { useResumeAgent } from "./resume-agent";
 import type { MatchResult } from "../stores/resume-store";
 
@@ -29,14 +31,29 @@ function createMatchResult(data: {
 
 export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
   const mutation = useResumeAgent();
+  const setIsSettingsOpen = useSettingsStore((state) => state.setIsSettingsOpen);
 
   useEffect(() => {
     if (mutation.error) {
       const errorMessage =
         mutation.error instanceof Error ? mutation.error.message : "An error occurred while processing your resume";
-      toast.error(errorMessage);
+
+      // Check if it's an API key error
+      const isApiKeyError =
+        mutation.error instanceof Error && mutation.error.message.includes("OpenAI API key not configured");
+
+      if (isApiKeyError) {
+        toast.error(errorMessage, {
+          action: {
+            label: "Open Settings",
+            onClick: () => setIsSettingsOpen(true),
+          },
+        });
+      } else {
+        toast.error(errorMessage);
+      }
     }
-  }, [mutation.error]);
+  }, [mutation.error, setIsSettingsOpen]);
 
   const process = async (resume: string, jobDescription: string) => {
     if (!resume.trim() || !jobDescription.trim()) {

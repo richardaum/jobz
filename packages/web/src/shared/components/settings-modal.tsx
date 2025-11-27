@@ -66,6 +66,11 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 className="font-mono text-sm bg-background"
+                autoComplete="off"
+                data-bwignore="true"
+                data-1p-ignore
+                data-lpignore="true"
+                data-form-type="other"
               />
             </div>
 

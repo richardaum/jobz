@@ -8,23 +8,15 @@ Next.js web application following Feature-Sliced Design (FSD) architecture.
 # Install dependencies
 bun install
 
-# Set up environment variables
-# Create a .env.local file in the root of this package with:
-# NEXT_PUBLIC_OPENAI_API_KEY=your-api-key-here
-
 # Run development server
 bun run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Environment Variables
+## Configuration
 
-The application requires the following environment variable:
-
-- `NEXT_PUBLIC_OPENAI_API_KEY` - Your OpenAI API key for AI features
-
-Create a `.env.local` file in the root of this package to set these variables. The API key can also be set via localStorage in the browser (using the `setOpenAIApiKey` function from `@/shared/config`).
+The OpenAI API key can be configured via the Settings modal in the application. The API key is stored in your browser's local storage and is never shared with any server except OpenAI's API.
 
 ## Architecture
 
