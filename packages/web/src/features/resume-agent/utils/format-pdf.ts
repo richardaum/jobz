@@ -1,8 +1,8 @@
 /**
  * Formats text content for better PDF presentation
+ * Simplified version since the AI prompt now handles character simplification
  * - Normalizes section headers
  * - Improves spacing
- * - Handles bullet points (replaces with simple dash for better PDF compatibility)
  */
 export function formatForPDF(content: string): string {
   return (
@@ -17,13 +17,9 @@ export function formatForPDF(content: string): string {
       })
       // Normalize spacing around colons
       .replace(/:\s*/g, ": ")
-      // Normalize spacing around dashes used as separators (but preserve bullet dashes)
-      // Only fix dashes that are between words, not at the start of lines (bullets)
-      .replace(/([^\s-])\s*-\s*([^\s-])/g, "$1 - $2")
       // Remove excessive spaces (but preserve single spaces)
       .replace(/[ \t]{2,}/g, " ")
       // Clean up multiple blank lines
       .replace(/\n{3,}/g, "\n\n")
   );
 }
-

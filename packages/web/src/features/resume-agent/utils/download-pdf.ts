@@ -36,15 +36,17 @@ export function downloadResumeAsPDF(content: string, filename: string = "adapted
       return;
     }
 
-    // Final safety check - ensure bullets are replaced (should already be done, but double-check)
-    // This prevents %Ï encoding corruption
-    const safeLine = line.replace(/[•\u2022\u25E6\u2043\u2219\u2023\u2043\u25AA\u25AB]/g, "- ");
+    // Safety check - replace any remaining special characters (should be minimal now)
+    // Since the AI prompt instructs to use only simple ASCII, this is just a safety net
+    const safeLine = line
+      .replace(/[•\u2022\u25E6\u2043\u2219]/g, "- ") // Replace any remaining bullets
+      .replace(/[\u201C\u201D]/g, '"') // Replace any remaining smart quotes
+      .replace(/[\u2018\u2019]/g, "'") // Replace any remaining smart apostrophes
+      .replace(/[\u2013\u2014]/g, "-"); // Replace any remaining em/en dashes
 
     // Split long lines that exceed page width
-    // Use options to ensure proper text handling
-    const splitLines = doc.splitTextToSize(safeLine, maxWidth, {
-      align: "left",
-    });
+    // splitTextToSize handles word wrapping automatically and respects word boundaries
+    const splitLines = doc.splitTextToSize(safeLine, maxWidth);
 
     splitLines.forEach((splitLine: string) => {
       if (yPosition > pageHeight - margin) {

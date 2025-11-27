@@ -70,6 +70,15 @@ Instructions:
    - Use consistent formatting throughout
    - Ensure the resume is ATS-friendly (Applicant Tracking System compatible)
 
+9. **Character Usage - IMPORTANT**: 
+   - Use ONLY simple ASCII characters and standard punctuation
+   - For bullet points, use a simple dash followed by a space: "- " (NOT special bullet characters like •, ●, etc.)
+   - Use regular quotes (") and apostrophes (') instead of smart quotes (" " ' ')
+   - Use regular dashes (-) instead of em dashes (—) or en dashes (–)
+   - Use three dots (...) instead of ellipsis character (…)
+   - Avoid any special Unicode characters, symbols, or decorative elements
+   - This ensures maximum compatibility with PDF generation and ATS systems
+
 ${focusSection}
 
 Return a JSON object with the following structure:
