@@ -20,7 +20,7 @@ export function JobMatchTooltip({ matchResult, isMatching, hasResume, hasJobDesc
 
   return (
     <TooltipProvider>
-      <Tooltip>
+      <Tooltip defaultOpen={false}>
         <TooltipTrigger asChild>
           <button
             type="button"
