@@ -10,6 +10,7 @@ export {
   DialogTitle,
   DialogTrigger,
 } from "./dialog";
+export { Input } from "./input";
 export { Label } from "./label";
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 export { Textarea } from "./textarea";
