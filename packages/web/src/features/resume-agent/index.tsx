@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { toast } from "sonner";
+
 import { useLocalStorage } from "@/shared/hooks/use-local-storage";
 import { Button } from "@/shared/ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui";
@@ -23,15 +26,36 @@ export function ResumeAgent() {
   const [adaptedResume, setAdaptedResume] = useLocalStorage(STORAGE_KEYS.adaptedResume, "");
   const [gaps, setGaps] = useLocalStorage(STORAGE_KEYS.gaps, "");
 
-  const { matchResult, isMatching } = useJobMatch({
+  const { matchResult, isMatching, error: jobMatchError } = useJobMatch({
     resume,
     jobDescription,
   });
 
   const processResumeMutation = useProcessResume();
 
+  // Show toast for process resume errors
+  useEffect(() => {
+    if (processResumeMutation.error) {
+      const errorMessage =
+        processResumeMutation.error instanceof Error
+          ? processResumeMutation.error.message
+          : "An error occurred while processing your resume";
+      toast.error(errorMessage);
+    }
+  }, [processResumeMutation.error]);
+
+  // Show toast for job match errors
+  useEffect(() => {
+    if (jobMatchError) {
+      const errorMessage =
+        jobMatchError instanceof Error ? jobMatchError.message : "An error occurred while matching your resume";
+      toast.error(errorMessage);
+    }
+  }, [jobMatchError]);
+
   const handleProcess = async () => {
     if (!resume.trim() || !jobDescription.trim()) {
+      toast.error("Please fill in both resume and job description");
       return;
     }
 
@@ -43,14 +67,14 @@ export function ResumeAgent() {
 
       setAdaptedResume(result.adaptedResume);
       setGaps(result.gaps);
+      toast.success("Resume processed successfully!");
     } catch (err) {
-      // Error is handled by TanStack Query and displayed below
+      // Error is handled by useEffect above
       console.error("Error processing resume:", err);
     }
   };
 
   const isLoading = processResumeMutation.isPending;
-  const error = processResumeMutation.error;
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -156,13 +180,6 @@ export function ResumeAgent() {
           {isLoading ? "Processing..." : "Process Resume"}
         </Button>
       </div>
-
-      {/* Error Message */}
-      {error && (
-        <div className="bg-destructive/10 text-destructive p-4 rounded-md">
-          {error instanceof Error ? error.message : "An error occurred"}
-        </div>
-      )}
     </div>
   );
 }
