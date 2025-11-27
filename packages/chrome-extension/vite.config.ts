@@ -188,6 +188,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": resolve(__dirname, "./src"),
+        "@jobz/ai": resolve(__dirname, "../ai/src"),
       },
     },
     build: {

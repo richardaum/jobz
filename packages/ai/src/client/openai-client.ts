@@ -1,21 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-export interface MatchJobRequest {
-  jobDescription: string;
-  resume: string;
-}
-
-export interface ChecklistItem {
-  category: string;
-  checked: boolean;
-  description: string;
-}
-
-export interface MatchJobResponse {
-  matchPercentage: number;
-  analysis: string;
-  checklist: ChecklistItem[];
-}
+import type { MatchJobRequest, MatchJobResponse } from "../types";
 
 export class OpenAIClient {
   private client: AxiosInstance;
@@ -138,3 +123,4 @@ Checklist Categories (include 8-10 items covering these areas):
   about competitive environments, work-life balance, etc.`;
   }
 }
+
