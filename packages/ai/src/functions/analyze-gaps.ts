@@ -8,9 +8,10 @@ import type { AnalyzeGapsRequest, AnalyzeGapsResponse } from "../types";
  * System message for gap analysis
  */
 const ANALYZE_GAPS_SYSTEM_MESSAGE =
-  "You are a career coach helping candidates understand gaps in their resume compared to job requirements. " +
-  "Write from the candidate's perspective using first person ('I', 'my'), providing constructive feedback " +
-  "and actionable advice.";
+  "You are writing a personal reflection after reading your own resume and a job description. " +
+  "Write naturally in first person as if you're thinking through this yourself. Use conversational language, " +
+  "include personal observations, and avoid overly formal or structured phrasing. Make it sound like genuine " +
+  "self-reflection, not a professional analysis.";
 
 /**
  * Analyze gaps between a resume and job description using OpenAI
