@@ -45,6 +45,9 @@ interface ResumeStore {
 
   // Computed
   hasValidInputs: () => boolean;
+
+  // Clear all data
+  clearAll: () => void;
 }
 
 interface ResumeHistoryStore {
@@ -108,6 +111,17 @@ export const useResumeStore = create<ResumeStore>()(
           const state = get();
           return state.resume.trim().length > 0 && state.jobDescription.trim().length > 0;
         },
+
+        // Clear all data
+        clearAll: () =>
+          set({
+            resume: "",
+            jobDescription: "",
+            adaptedResume: "",
+            gaps: "",
+            matchResult: null,
+            changes: [],
+          }),
       };
     },
     {

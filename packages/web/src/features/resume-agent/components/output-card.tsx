@@ -1,4 +1,4 @@
-import { IconCopy, IconDownload, IconLoader2 } from "@tabler/icons-react";
+import { IconCopy, IconDownload, IconLoader2, IconX } from "@tabler/icons-react";
 
 import { Button } from "@/shared/ui";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui";
@@ -19,6 +19,7 @@ interface OutputCardProps {
   onCopy?: () => void;
   showCopy?: boolean;
   changes?: { section: string; description: string }[];
+  onHide?: () => void;
 }
 
 export function OutputCard({
@@ -33,6 +34,7 @@ export function OutputCard({
   onCopy,
   showCopy = false,
   changes = [],
+  onHide,
 }: OutputCardProps) {
   const hasActions = (showDownload && onDownload && value.trim()) || (showCopy && onCopy && value.trim());
 
@@ -47,36 +49,45 @@ export function OutputCard({
             </div>
             <CardDescription>{description}</CardDescription>
           </div>
-          {isLoading ? (
-            <div className="ml-4 flex items-center gap-2 shrink-0">
-              <IconLoader2 className="h-4 w-4 animate-spin text-muted-foreground" style={{ animationDuration: "1s" }} />
-              <span className="text-sm text-muted-foreground">Processing...</span>
-            </div>
-          ) : (
-            hasActions && (
-              <div className="ml-4 flex gap-2 shrink-0">
-                {showCopy && onCopy && value.trim() && (
-                  <Button variant="outline" size="sm" onClick={onCopy} type="button">
-                    <IconCopy className="h-4 w-4 mr-2" />
-                    Copy
+          <div className="ml-4 flex items-center gap-2 shrink-0">
+            {isLoading ? (
+              <>
+                <IconLoader2 className="h-4 w-4 animate-spin text-muted-foreground" style={{ animationDuration: "1s" }} />
+                <span className="text-sm text-muted-foreground">Processing...</span>
+              </>
+            ) : (
+              <>
+                {hasActions && (
+                  <>
+                    {showCopy && onCopy && value.trim() && (
+                      <Button variant="outline" size="sm" onClick={onCopy} type="button">
+                        <IconCopy className="h-4 w-4 mr-2" />
+                        Copy
+                      </Button>
+                    )}
+                    {showDownload && onDownload && value.trim() && (
+                      <Button variant="outline" size="sm" onClick={onDownload} type="button">
+                        <IconDownload className="h-4 w-4 mr-2" />
+                        Download PDF
+                      </Button>
+                    )}
+                  </>
+                )}
+                {onHide && (
+                  <Button variant="ghost" size="sm" onClick={onHide} type="button" title="Hide card">
+                    <IconX className="h-4 w-4" />
                   </Button>
                 )}
-                {showDownload && onDownload && value.trim() && (
-                  <Button variant="outline" size="sm" onClick={onDownload} type="button">
-                    <IconDownload className="h-4 w-4 mr-2" />
-                    Download PDF
-                  </Button>
-                )}
-              </div>
-            )
-          )}
+              </>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
+        <div className="space-y-2 flex-1 flex flex-col min-h-0">
           <Label htmlFor={id}>{title}</Label>
           {isLoading ? (
-            <div className="flex items-center justify-center min-h-[300px] border border-input rounded-md bg-muted/50">
+            <div className="flex-1 flex items-center justify-center min-h-0 border border-input rounded-md bg-muted/50">
               <div className="flex flex-col items-center gap-2">
                 <IconLoader2
                   className="h-8 w-8 animate-spin text-muted-foreground"
@@ -86,7 +97,7 @@ export function OutputCard({
               </div>
             </div>
           ) : (
-            <Textarea id={id} readOnly value={value} placeholder={placeholder} className="min-h-[300px]" />
+            <Textarea id={id} readOnly value={value} placeholder={placeholder} className="flex-1 min-h-0" />
           )}
         </div>
       </CardContent>

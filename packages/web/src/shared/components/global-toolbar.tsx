@@ -12,7 +12,7 @@ export function GlobalToolbar() {
 
   return (
     <>
-      <div className="flex items-center justify-end gap-2 mb-6">
+      <div className="flex items-center justify-end gap-2">
         <Button variant="outline" size="sm" onClick={() => setIsSettingsOpen(true)} type="button">
           <IconSettings className="h-4 w-4 mr-2" />
           Settings

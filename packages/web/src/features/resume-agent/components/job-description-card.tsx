@@ -31,14 +31,14 @@ export function JobDescriptionCard({ value, onChange, matchResult, isMatching, h
         <CardDescription>Paste the job description here</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
+        <div className="space-y-2 flex-1 flex flex-col min-h-0">
           <Label htmlFor="job-description">Job Description</Label>
           <Textarea
             id="job-description"
             placeholder="Paste the job description here..."
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="min-h-[300px]"
+            className="flex-1 min-h-0"
           />
         </div>
       </CardContent>

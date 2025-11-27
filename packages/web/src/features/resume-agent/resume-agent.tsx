@@ -2,21 +2,19 @@
 
 import { toast } from "sonner";
 
-import { Button } from "@/shared/ui";
+import { Grid, GridItem } from "@/shared/ui";
 
-import { JobDescriptionCard } from "./components/job-description-card";
+import { EmptyState } from "./components/empty-state";
 import { OutputCard } from "./components/output-card";
-import { ResumeInputCard } from "./components/resume-input-card";
 import { Toolbar } from "./components/toolbar";
 import { useResumeProcessing } from "./hooks/use-resume-processing";
 import { useResumeHistoryStore, useResumeStore } from "./stores/resume-store";
+import { useCardsVisibilityStore } from "./stores/cards-visibility-store";
 import { downloadResumeAsPDF } from "./utils/download-pdf";
 
 export function ResumeAgent() {
   const resume = useResumeStore((state) => state.resume);
   const jobDescription = useResumeStore((state) => state.jobDescription);
-  const setResume = useResumeStore((state) => state.setResume);
-  const setJobDescription = useResumeStore((state) => state.setJobDescription);
   const adaptedResume = useResumeStore((state) => state.adaptedResume);
   const gaps = useResumeStore((state) => state.gaps);
   const matchResult = useResumeStore((state) => state.matchResult);
@@ -60,54 +58,75 @@ export function ResumeAgent() {
     }
   };
 
+  const hasResume = !!resume.trim();
+  const hasJobDescription = !!jobDescription.trim();
+  const hasInputs = hasResume && hasJobDescription;
+  const hasOutputs = !!adaptedResume.trim() || !!gaps.trim();
+  const showEmptyState = !hasInputs || !hasOutputs;
+
+  const visibleCards = useCardsVisibilityStore((state) => state.visibleCards);
+  const hideCard = useCardsVisibilityStore((state) => state.hideCard);
+
+  const isAdaptedResumeVisible = visibleCards.has("adapted-resume");
+  const isGapsAnalysisVisible = visibleCards.has("gaps-analysis");
+
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <Toolbar />
-      <div className="grid grid-cols-2 gap-6">
-        {/* First Column */}
-        <div className="space-y-6">
-          <ResumeInputCard value={resume} onChange={setResume} />
-          <JobDescriptionCard
-            value={jobDescription}
-            onChange={setJobDescription}
-            matchResult={currentMatchResult}
-            isMatching={processing.isMatching}
-            hasResume={!!resume.trim()}
-          />
-        </div>
-
-        {/* Second Column */}
-        <div className="space-y-6">
-          <OutputCard
-            title="Adapted Resume"
-            description="Your resume tailored for this job"
-            value={adaptedResume}
-            placeholder="The adapted resume will appear here..."
-            id="adapted-resume"
-            isLoading={processing.isLoading}
-            onDownload={handleDownloadPDF}
-            showDownload={true}
-            changes={changes}
-          />
-          <OutputCard
-            title="Gaps Analysis"
-            description="Understanding gaps from your perspective"
-            value={gaps}
-            placeholder="Gap analysis will appear here..."
-            id="gaps"
-            isLoading={processing.isLoading}
-            onCopy={handleCopyGaps}
-            showCopy={true}
-          />
-        </div>
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="shrink-0 mb-4">
+        <Toolbar
+          onProcess={handleProcess}
+          isProcessing={processing.isLoading}
+          matchResult={currentMatchResult}
+          isMatching={processing.isMatching}
+        />
       </div>
+      {showEmptyState ? (
+        <EmptyState hasResume={hasResume} hasJobDescription={hasJobDescription} />
+      ) : (
+        <div className="flex-1 overflow-hidden pb-4 min-h-0">
+          <Grid
+            cols={isAdaptedResumeVisible && isGapsAnalysisVisible ? 2 : 1}
+            gap="md"
+            className="h-full"
+            style={{ gridTemplateRows: "1fr" }}
+          >
+            {/* Adapted Resume Card */}
+            {isAdaptedResumeVisible && (
+              <GridItem rowSpan={1}>
+                <OutputCard
+                  title="Adapted Resume"
+                  description="Your resume tailored for this job"
+                  value={adaptedResume}
+                  placeholder="The adapted resume will appear here..."
+                  id="adapted-resume"
+                  isLoading={processing.isLoading}
+                  onDownload={handleDownloadPDF}
+                  showDownload={true}
+                  changes={changes}
+                  onHide={() => hideCard("adapted-resume")}
+                />
+              </GridItem>
+            )}
 
-      {/* Action Button */}
-      <div className="flex justify-center">
-        <Button onClick={handleProcess} disabled={processing.isLoading} className="px-8 py-6 text-lg">
-          {processing.isLoading ? "Processing..." : "Process Resume"}
-        </Button>
-      </div>
+            {/* Gaps Analysis Card */}
+            {isGapsAnalysisVisible && (
+              <GridItem rowSpan={1}>
+                <OutputCard
+                  title="Gaps Analysis"
+                  description="Understanding gaps from your perspective"
+                  value={gaps}
+                  placeholder="Gap analysis will appear here..."
+                  id="gaps"
+                  isLoading={processing.isLoading}
+                  onCopy={handleCopyGaps}
+                  showCopy={true}
+                  onHide={() => hideCard("gaps-analysis")}
+                />
+              </GridItem>
+            )}
+          </Grid>
+        </div>
+      )}
     </div>
   );
 }

@@ -10,8 +10,11 @@ export {
   DialogTitle,
   DialogTrigger,
 } from "./dialog";
+export { Divider } from "./divider";
+export { Grid, GridItem } from "./grid";
 export { Input } from "./input";
 export { Label } from "./label";
+export { Popover, PopoverContent, PopoverTrigger } from "./popover";
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 export { Textarea } from "./textarea";
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
