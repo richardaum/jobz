@@ -4,8 +4,8 @@ A monorepo for the Jobz project.
 
 ## Coverage
 
-[![codecov](https://codecov.io/gh/YOUR_USERNAME/YOUR_REPO/branch/main/graph/badge.svg?flag=web)](https://codecov.io/gh/YOUR_USERNAME/YOUR_REPO?flag=web)
-[![codecov](https://codecov.io/gh/YOUR_USERNAME/YOUR_REPO/branch/main/graph/badge.svg?flag=eslint-plugin-fsd)](https://codecov.io/gh/YOUR_USERNAME/YOUR_REPO?flag=eslint-plugin-fsd)
+[![codecov](https://codecov.io/gh/richardaum/jobz/branch/main/graph/badge.svg?flag=web)](https://codecov.io/gh/richardaum/jobz?flag=web)
+[![codecov](https://codecov.io/gh/richardaum/jobz/branch/main/graph/badge.svg?flag=eslint-plugin-fsd)](https://codecov.io/gh/richardaum/jobz?flag=eslint-plugin-fsd)
 
 ## Structure
 
