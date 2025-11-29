@@ -21,14 +21,22 @@ const compat = new FlatCompat({
 // See: https://github.com/typescript-eslint/typescript-eslint/issues/10396
 const eslintConfig = [
   {
-    ignores: ["**/.next/**", "**/node_modules/**", "**/out/**", "**/*.config.js", "**/*.config.ts"],
+    ignores: [
+      "**/.next/**",
+      "**/node_modules/**",
+      "**/out/**",
+      "**/*.config.js",
+      "**/*.config.ts",
+      "**/next-env.d.ts",
+    ],
   },
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   // Next.js configs via FlatCompat (for now, until Next.js fully supports flat config)
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  // Only extend core-web-vitals to avoid plugin redefinition
+  ...compat.extends("next/core-web-vitals"),
   {
     plugins: {
       fsd: fsdPlugin,

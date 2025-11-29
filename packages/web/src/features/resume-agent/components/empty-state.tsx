@@ -43,7 +43,7 @@ export function EmptyState({ hasResume, hasJobDescription }: EmptyStateProps) {
               completedTitle="Ready to Process"
               description={
                 <>
-                  Once you've added both your resume and job description, click the{" "}
+                  Once you&apos;ve added both your resume and job description, click the{" "}
                   <span className="font-semibold text-foreground">Start 🚀</span> button in the toolbar to process your
                   resume.
                 </>

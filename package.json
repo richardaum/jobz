@@ -37,7 +37,11 @@
     "check": "bun run format:check && bun run lint && bun run type-check",
     "check:fix": "bun run format && bun run lint:fix",
     "// Test": "-------------------------",
-    "test": "echo \"No tests specified\" && exit 0",
+    "test": "bun run test:coverage:all",
+    "test:coverage:all": "bun run test:coverage:fsd",
+    "test:coverage:fsd": "bun run --filter 'eslint-plugin-fsd' test:coverage",
+    "test:fsd": "bun run --filter 'eslint-plugin-fsd' test:run",
+    "test:fsd:ui": "bun run --filter 'eslint-plugin-fsd' test:ui",
     "prepare": "husky"
   },
   "lint-staged": {

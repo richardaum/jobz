@@ -38,7 +38,7 @@ export function JobMatchTooltip({ matchResult, isMatching, hasResume, hasJobDesc
               <div className="text-sm text-muted-foreground leading-relaxed">{matchResult.analysis}</div>
             </div>
           ) : hasResume && hasJobDescription ? (
-            <p className="text-sm">Click "Process Resume" to see match analysis</p>
+            <p className="text-sm">Click &quot;Process Resume&quot; to see match analysis</p>
           ) : (
             <p className="text-sm">Fill in both resume and job description to see match</p>
           )}

@@ -139,16 +139,17 @@ export const useResumeStore = create<ResumeStore>()(
         changes: state.changes || [],
       }),
       // Ensure we always have string defaults on rehydration
-      merge: (persistedState: any, currentState) => {
+      merge: (persistedState: unknown, currentState) => {
+        const persisted = persistedState as Partial<ResumeStore> | undefined;
         return {
           ...currentState,
-          resume: persistedState?.resume ?? "",
-          jobDescription: persistedState?.jobDescription ?? "",
-          personalPreferences: persistedState?.personalPreferences ?? "",
-          adaptedResume: persistedState?.adaptedResume ?? "",
-          gaps: persistedState?.gaps ?? "",
-          matchResult: persistedState?.matchResult ?? null,
-          changes: persistedState?.changes ?? [],
+          resume: persisted?.resume ?? "",
+          jobDescription: persisted?.jobDescription ?? "",
+          personalPreferences: persisted?.personalPreferences ?? "",
+          adaptedResume: persisted?.adaptedResume ?? "",
+          gaps: persisted?.gaps ?? "",
+          matchResult: persisted?.matchResult ?? null,
+          changes: persisted?.changes ?? [],
         };
       },
     }

@@ -2,6 +2,8 @@
 
 Next.js web application following Feature-Sliced Design (FSD) architecture.
 
+[![codecov](https://codecov.io/gh/YOUR_USERNAME/YOUR_REPO/branch/main/graph/badge.svg?flag=web)](https://codecov.io/gh/YOUR_USERNAME/YOUR_REPO?flag=web)
+
 ## Getting Started
 
 ```bash

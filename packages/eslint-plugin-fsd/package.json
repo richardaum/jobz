@@ -4,13 +4,24 @@
   "description": "ESLint plugin for Feature-Sliced Design",
   "main": "src/index.ts",
   "types": "src/index.ts",
-  "scripts": {},
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:watch": "vitest --coverage",
+    "test:run": "vitest run"
+  },
   "dependencies": {
     "@typescript-eslint/utils": "^8.0.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
-    "eslint": "^9.0.0"
+    "eslint": "^9.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@typescript-eslint/rule-tester": "^8.0.0",
+    "vitest": "^2.1.8",
+    "@vitest/ui": "^2.1.8",
+    "@vitest/coverage-v8": "^2.1.8"
   },
   "peerDependencies": {
     "eslint": ">=9.0.0"

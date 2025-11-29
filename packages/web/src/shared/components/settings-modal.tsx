@@ -75,8 +75,8 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
             <div className="flex items-start gap-3 rounded-lg bg-muted/30 p-3.5 border border-border/40">
               <IconInfoCircle className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Your API key is stored only in your browser's local storage and is never shared with anyone or sent to
-                any server except OpenAI's API.
+                Your API key is stored only in your browser&apos;s local storage and is never shared with anyone or sent
+                to any server except OpenAI&apos;s API.
               </p>
             </div>
           </div>
