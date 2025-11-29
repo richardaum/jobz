@@ -44,8 +44,9 @@ export function ResumeAgent() {
     processing.process(resume, jobDescription, personalPreferences);
   };
 
-  // Prioritize stored matchResult from store, then current processing result
-  const currentMatchResult = matchResult ?? processing.currentMatchResult;
+  // Prioritize store's matchResult (source of truth), but show processing result while actively matching
+  // This ensures that when clearing, matchResult is null and not overridden by stale processing data
+  const currentMatchResult = matchResult ?? (processing.isMatching ? processing.currentMatchResult : null);
 
   const handleDownloadPDF = () => {
     downloadResumeAsPDF(adaptedResume, "adapted-resume.pdf");
