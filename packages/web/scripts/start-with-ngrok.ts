@@ -3,7 +3,7 @@
 import ngrok from "@ngrok/ngrok";
 import { spawn } from "child_process";
 import { createServer } from "net";
-import { dirname,resolve } from "path";
+import { dirname, resolve } from "path";
 import { setTimeout as sleep } from "timers/promises";
 import { fileURLToPath } from "url";
 

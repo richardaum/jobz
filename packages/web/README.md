@@ -19,19 +19,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 To expose your local development server with HTTPS for free:
 
 1. **Configure ngrok (choose one method):**
-   
+
    **Option A: Global configuration (recommended)**
+
    ```bash
    bunx ngrok config add-authtoken your_token_here
    ```
+
    Get your free auth token from [dashboard.ngrok.com/get-started/your-authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)
 
    **Option B: Environment variable**
+
    ```bash
    export NGROK_AUTH_TOKEN=your_token_here
    ```
 
 2. **Start the development server:**
+
    ```bash
    # From the web package
    bun run dev
@@ -41,6 +45,7 @@ To expose your local development server with HTTPS for free:
    ```
 
 3. **In a separate terminal, start ngrok tunnel:**
+
    ```bash
    # From the web package
    bun run dev:ngrok

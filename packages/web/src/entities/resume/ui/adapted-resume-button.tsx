@@ -2,9 +2,9 @@
 
 import { IconInfoCircle, IconLoader2 } from "@tabler/icons-react";
 
-import type { ResumeChange } from "../types";
-
 import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
+
+import type { ResumeChange } from "../types";
 
 interface AdaptedResumeButtonProps {
   changes: ResumeChange[];
@@ -57,4 +57,3 @@ export function AdaptedResumeButton({ changes, hasValue, isLoading = false }: Ad
     </TooltipProvider>
   );
 }
-

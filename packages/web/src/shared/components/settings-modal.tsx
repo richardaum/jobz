@@ -1,6 +1,6 @@
 "use client";
 
-import { IconInfoCircle,IconSettings } from "@tabler/icons-react";
+import { IconInfoCircle, IconSettings } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 import { useSettingsStore } from "@/shared/stores";

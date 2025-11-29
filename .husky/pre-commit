@@ -1,0 +1,2 @@
+# Run format check, lint, and type check before commit
+bun run format:check && bun run lint && bun run type-check

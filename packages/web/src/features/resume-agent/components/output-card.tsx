@@ -1,8 +1,6 @@
 import { IconCopy, IconDownload, IconLoader2, IconX } from "@tabler/icons-react";
 
-import type { ResumeChange } from "@/entities/resume";
-import { AdaptedResumeButton } from "@/entities/resume";
-
+import { AdaptedResumeButton, type ResumeChange } from "@/entities/resume";
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Textarea } from "@/shared/ui";
 
 interface OutputCardProps {

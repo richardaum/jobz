@@ -19,4 +19,3 @@ export function useResumeInputs() {
     hasValidInputs: resume.trim().length > 0 && jobDescription.trim().length > 0,
   };
 }
-

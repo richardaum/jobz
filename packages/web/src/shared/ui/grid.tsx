@@ -34,13 +34,7 @@ const Grid = React.forwardRef<HTMLDivElement, GridProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          "grid",
-          colsClass[cols],
-          gapClass[gap],
-          autoRows && autoRowsClass[autoRows],
-          className
-        )}
+        className={cn("grid", colsClass[cols], gapClass[gap], autoRows && autoRowsClass[autoRows], className)}
         style={{ gridAutoRows: autoRows === "min" ? "min-content" : autoRows === "max" ? "max-content" : "1fr" }}
         {...props}
       />
@@ -54,40 +48,31 @@ interface GridItemProps extends React.HTMLAttributes<HTMLDivElement> {
   rowSpan?: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
-const GridItem = React.forwardRef<HTMLDivElement, GridItemProps>(
-  ({ className, colSpan, rowSpan, ...props }, ref) => {
-    const colSpanClass = colSpan
-      ? {
-          1: "col-span-1",
-          2: "col-span-1 lg:col-span-2",
-          3: "col-span-1 lg:col-span-3",
-          4: "col-span-1 lg:col-span-4",
-          6: "col-span-1 lg:col-span-6",
-          12: "col-span-1 lg:col-span-12",
-        }[colSpan]
-      : undefined;
+const GridItem = React.forwardRef<HTMLDivElement, GridItemProps>(({ className, colSpan, rowSpan, ...props }, ref) => {
+  const colSpanClass = colSpan
+    ? {
+        1: "col-span-1",
+        2: "col-span-1 lg:col-span-2",
+        3: "col-span-1 lg:col-span-3",
+        4: "col-span-1 lg:col-span-4",
+        6: "col-span-1 lg:col-span-6",
+        12: "col-span-1 lg:col-span-12",
+      }[colSpan]
+    : undefined;
 
-    const rowSpanClass = rowSpan
-      ? {
-          1: "row-span-1",
-          2: "row-span-2",
-          3: "row-span-3",
-          4: "row-span-4",
-          5: "row-span-5",
-          6: "row-span-6",
-        }[rowSpan]
-      : undefined;
+  const rowSpanClass = rowSpan
+    ? {
+        1: "row-span-1",
+        2: "row-span-2",
+        3: "row-span-3",
+        4: "row-span-4",
+        5: "row-span-5",
+        6: "row-span-6",
+      }[rowSpan]
+    : undefined;
 
-    return (
-      <div
-        ref={ref}
-        className={cn("h-full", colSpanClass, rowSpanClass, className)}
-        {...props}
-      />
-    );
-  }
-);
+  return <div ref={ref} className={cn("h-full", colSpanClass, rowSpanClass, className)} {...props} />;
+});
 GridItem.displayName = "GridItem";
 
 export { Grid, GridItem };
-

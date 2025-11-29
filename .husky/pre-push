@@ -1,0 +1,3 @@
+# Run full check before push
+bun run check
+

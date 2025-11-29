@@ -24,4 +24,3 @@ export interface ResumeHistoryItem {
   /** Changes made to the resume */
   changes: ResumeChange[];
 }
-

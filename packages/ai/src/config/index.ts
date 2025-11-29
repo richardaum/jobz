@@ -11,7 +11,7 @@ export const DEFAULT_OPENAI_MODEL = "gpt-4o-mini";
  * - NEXT_PUBLIC_OPENAI_API_KEY (Next.js)
  * - VITE_OPENAI_API_KEY (Vite)
  * - OPENAI_API_KEY (Node.js/server)
- * 
+ *
  * @returns API key string or null if not found
  */
 export function getOpenAIApiKey(): string | null {
@@ -19,19 +19,11 @@ export function getOpenAIApiKey(): string | null {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_OPENAI_API_KEY) {
     return process.env.NEXT_PUBLIC_OPENAI_API_KEY;
   }
-  
-  // Try Vite env variable
-  if (typeof import.meta !== "undefined") {
-    const viteEnv = (import.meta as any).env;
-    if (viteEnv?.VITE_OPENAI_API_KEY) {
-      return viteEnv.VITE_OPENAI_API_KEY;
-    }
-  }
-  
+
   // Try Node.js/server env variable
   if (typeof process !== "undefined" && process.env?.OPENAI_API_KEY) {
     return process.env.OPENAI_API_KEY;
   }
-  
+
   return null;
 }

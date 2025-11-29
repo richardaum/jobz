@@ -11,11 +11,7 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          "bg-border",
-          orientation === "vertical" ? "w-px h-4" : "h-px w-full",
-          className
-        )}
+        className={cn("bg-border", orientation === "vertical" ? "w-px h-4" : "h-px w-full", className)}
         {...props}
       />
     );
@@ -24,4 +20,3 @@ const Divider = React.forwardRef<HTMLDivElement, DividerProps>(
 Divider.displayName = "Divider";
 
 export { Divider };
-

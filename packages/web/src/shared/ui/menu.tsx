@@ -106,13 +106,7 @@ const MenuCheckboxItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <MenuPrimitive.ItemIndicator>
-        <svg
-          className="h-4 w-4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-        >
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       </MenuPrimitive.ItemIndicator>
@@ -162,11 +156,7 @@ const MenuSeparator = React.forwardRef<
   React.ElementRef<typeof MenuPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof MenuPrimitive.Separator>
 >(({ className, ...props }, ref) => (
-  <MenuPrimitive.Separator
-    ref={ref}
-    className={cn("-mx-1 my-1 h-px bg-muted", className)}
-    {...props}
-  />
+  <MenuPrimitive.Separator ref={ref} className={cn("-mx-1 my-1 h-px bg-muted", className)} {...props} />
 ));
 MenuSeparator.displayName = MenuPrimitive.Separator.displayName;
 
@@ -192,4 +182,3 @@ export {
   MenuSubContent,
   MenuSubTrigger,
 };
-

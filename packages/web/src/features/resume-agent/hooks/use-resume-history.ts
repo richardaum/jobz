@@ -1,5 +1,7 @@
 "use client";
 
+import type { MatchResult } from "@/entities/match-result";
+import type { ResumeChange } from "@/entities/resume";
 import type { ResumeHistoryItem } from "@/entities/resume-history";
 import { useLocalStorage } from "@/shared/hooks/use-local-storage";
 
@@ -17,6 +19,7 @@ export function useResumeHistory() {
     adaptedResume: string;
     gaps: string;
     matchResult: MatchResult;
+    changes: ResumeChange[];
   }) => {
     const newItem: ResumeHistoryItem = {
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -47,4 +50,3 @@ export function useResumeHistory() {
     getHistoryItem,
   };
 }
-

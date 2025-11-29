@@ -1,8 +1,7 @@
 "use client";
 
-import { Label, Popover, PopoverContent, PopoverTrigger, Textarea } from "@/shared/ui";
-
 import type { MatchResult } from "@/entities/match-result";
+import { Label, Popover, PopoverContent, PopoverTrigger, Textarea } from "@/shared/ui";
 
 interface JobDescriptionPopoverProps {
   value: string;
@@ -24,7 +23,11 @@ export function JobDescriptionPopover({
   return (
     <Popover>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-[600px] max-w-[90vw] max-h-[80vh] flex flex-col overflow-hidden" align="start" side="bottom">
+      <PopoverContent
+        className="w-[600px] max-w-[90vw] max-h-[80vh] flex flex-col overflow-hidden"
+        align="start"
+        side="bottom"
+      >
         <div className="space-y-4 flex-1 flex flex-col min-h-0">
           <div>
             <h3 className="font-semibold text-lg mb-1">Job Description</h3>
@@ -45,4 +48,3 @@ export function JobDescriptionPopover({
     </Popover>
   );
 }
-

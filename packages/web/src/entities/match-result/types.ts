@@ -20,4 +20,3 @@ export interface MatchResult {
   /** Checklist of requirements and their status */
   checklist: ChecklistItem[];
 }
-

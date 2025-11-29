@@ -21,4 +21,3 @@ export interface ResumeChange {
   /** Description of the change */
   description: string;
 }
-

@@ -1,7 +1,6 @@
 "use client";
 
 import { HistoryTab } from "@/entities/resume-history";
-
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/shared/ui";
 
 import { type ResumeHistoryItem, useResumeHistoryStore, useResumeStore } from "../stores/resume-store";

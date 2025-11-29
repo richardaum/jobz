@@ -1,9 +1,7 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Textarea } from "@/shared/ui";
-
 import type { MatchResult } from "@/entities/match-result";
-
 import { ChecklistTooltip } from "@/entities/match-result/ui/checklist-tooltip";
 import { JobMatchTooltip } from "@/entities/match-result/ui/job-match-tooltip";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Textarea } from "@/shared/ui";
 
 interface JobDescriptionCardProps {
   value: string;
@@ -44,4 +42,3 @@ export function JobDescriptionCard({ value, onChange, matchResult, isMatching, h
     </Card>
   );
 }
-

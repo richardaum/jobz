@@ -35,8 +35,6 @@ export const useCardsVisibilityStore = create<CardsVisibilityState>((set) => ({
       newSet.delete(cardId);
       return { visibleCards: newSet };
     }),
-  showAllCards: () =>
-    set({ visibleCards: new Set<CardId>(["adapted-resume", "gaps-analysis"]) }),
+  showAllCards: () => set({ visibleCards: new Set<CardId>(["adapted-resume", "gaps-analysis"]) }),
   hideAllCards: () => set({ visibleCards: new Set<CardId>() }),
 }));
-

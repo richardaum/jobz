@@ -131,17 +131,21 @@ bun run clean:all
 The web application supports running with an HTTPS tunnel using ngrok for free:
 
 1. **Configure ngrok:**
+
    ```bash
    bunx ngrok config add-authtoken your_token_here
    ```
+
    Get your free auth token from [dashboard.ngrok.com/get-started/your-authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)
 
 2. **Start the dev server:**
+
    ```bash
    bun run dev:web
    ```
 
 3. **In a separate terminal, start ngrok:**
+
    ```bash
    bun run dev:web:ngrok
    ```

@@ -3,7 +3,7 @@
 import { buildProcessResumePrompt } from "@jobz/ai";
 import { IconCode, IconCopy } from "@tabler/icons-react";
 import { MacScrollbar } from "mac-scrollbar";
-import { useCallback,useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { toast } from "sonner";
 
 import { copyToClipboard } from "@/shared/lib";

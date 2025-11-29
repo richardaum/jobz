@@ -8,10 +8,10 @@ export { PromptModal } from "./components/prompt-modal";
 export { Toolbar } from "./components/toolbar";
 
 // Re-export entity components for backward compatibility
-export { ChecklistTooltip, ChecklistButton, JobMatchTooltip, JobMatchButton } from "@/entities/match-result";
-export { HistoryTab } from "@/entities/resume-history";
 export { JobDescriptionCard, JobDescriptionPopover } from "@/entities/job";
-export { ResumeChangesTooltip, ResumeInputCard, ResumePopover, AdaptedResumeButton } from "@/entities/resume";
+export { ChecklistButton, ChecklistTooltip, JobMatchButton, JobMatchTooltip } from "@/entities/match-result";
+export { AdaptedResumeButton, ResumeChangesTooltip, ResumeInputCard, ResumePopover } from "@/entities/resume";
+export { HistoryTab } from "@/entities/resume-history";
 
 // Hooks
 export { useResumeAgent } from "./hooks/resume-agent";

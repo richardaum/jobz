@@ -3,9 +3,9 @@
 import { IconClock, IconTrash, IconX } from "@tabler/icons-react";
 import { format } from "date-fns";
 
-import type { ResumeHistoryItem } from "../types";
-
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui";
+
+import type { ResumeHistoryItem } from "../types";
 
 interface HistoryTabProps {
   history: ResumeHistoryItem[];
@@ -89,4 +89,3 @@ export function HistoryTab({ history, onLoadItem, onDeleteItem, onClearHistory }
     </div>
   );
 }
-

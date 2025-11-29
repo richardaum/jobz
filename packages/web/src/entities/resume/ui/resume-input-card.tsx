@@ -27,4 +27,3 @@ export function ResumeInputCard({ value, onChange }: ResumeInputCardProps) {
     </Card>
   );
 }
-

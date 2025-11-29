@@ -1,15 +1,20 @@
 "use client";
 
-import { IconBriefcase, IconChevronDown,IconCode, IconEye, IconFileText, IconHistory, IconTrash } from "@tabler/icons-react";
+import {
+  IconBriefcase,
+  IconChevronDown,
+  IconCode,
+  IconEye,
+  IconFileText,
+  IconHistory,
+  IconTrash,
+} from "@tabler/icons-react";
 import { useState } from "react";
 
-import { Button, Divider, Menu, MenuAnchor, MenuContent, MenuItem } from "@/shared/ui";
-
-import type { MatchResult } from "@/entities/match-result";
-import { ChecklistButton } from "@/entities/match-result";
 import { JobDescriptionPopover } from "@/entities/job";
-import { JobMatchButton } from "@/entities/match-result";
+import { ChecklistButton, JobMatchButton, type MatchResult } from "@/entities/match-result";
 import { ResumePopover } from "@/entities/resume";
+import { Button, Divider, Menu, MenuAnchor, MenuContent, MenuItem } from "@/shared/ui";
 
 import { useCardsVisibilityStore } from "../stores/cards-visibility-store";
 import { useResumeStore } from "../stores/resume-store";
@@ -41,14 +46,22 @@ export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: To
   const isGapsAnalysisHidden = !visibleCards.has("gaps-analysis");
 
   const handleClearResults = () => {
-    if (confirm("Are you sure you want to clear all results? This will remove the adapted resume, gaps analysis, and match results, but keep your resume and job description.")) {
+    if (
+      confirm(
+        "Are you sure you want to clear all results? This will remove the adapted resume, gaps analysis, and match results, but keep your resume and job description."
+      )
+    ) {
       clearResults();
       setIsClearMenuOpen(false);
     }
   };
 
   const handleClearAll = () => {
-    if (confirm("Are you sure you want to clear all content? This will remove everything including your resume and job description. This action cannot be undone.")) {
+    if (
+      confirm(
+        "Are you sure you want to clear all content? This will remove everything including your resume and job description. This action cannot be undone."
+      )
+    ) {
       clearAll();
       useCardsVisibilityStore.getState().showAllCards();
       setIsClearMenuOpen(false);
@@ -135,10 +148,7 @@ export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: To
             </Button>
           </MenuAnchor>
           <MenuContent align="end" className="w-64">
-            <MenuItem
-              onClick={handleClearResults}
-              className="flex flex-col items-start px-3 py-2.5 cursor-pointer"
-            >
+            <MenuItem onClick={handleClearResults} className="flex flex-col items-start px-3 py-2.5 cursor-pointer">
               <div className="font-medium text-sm">Clear Results</div>
               <div className="text-xs text-muted-foreground mt-0.5">
                 Remove adapted resume, gaps analysis, and match results

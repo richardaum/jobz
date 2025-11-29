@@ -3,11 +3,11 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-import { useSettingsStore } from "@/shared/stores";
-
 import type { MatchResult } from "@/entities/match-result";
 import type { ResumeChange } from "@/entities/resume";
-import { ApiKeyError,useResumeAgent } from "./resume-agent";
+import { useSettingsStore } from "@/shared/stores";
+
+import { ApiKeyError, useResumeAgent } from "./resume-agent";
 
 interface ProcessedData {
   adaptedResume: string;

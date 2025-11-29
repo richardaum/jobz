@@ -3,9 +3,9 @@
 import { IconChecklist } from "@tabler/icons-react";
 import { MacScrollbar } from "mac-scrollbar";
 
-import type { ChecklistItem } from "../types";
-
 import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
+
+import type { ChecklistItem } from "../types";
 
 interface ChecklistButtonProps {
   checklist: ChecklistItem[] | null | undefined;
@@ -98,4 +98,3 @@ export function ChecklistButton({ checklist }: ChecklistButtonProps) {
     </TooltipProvider>
   );
 }
-

@@ -12,7 +12,11 @@ export function ResumePopover({ value, onChange, children }: ResumePopoverProps)
   return (
     <Popover>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-[600px] max-w-[90vw] max-h-[80vh] flex flex-col overflow-hidden" align="start" side="bottom">
+      <PopoverContent
+        className="w-[600px] max-w-[90vw] max-h-[80vh] flex flex-col overflow-hidden"
+        align="start"
+        side="bottom"
+      >
         <div className="space-y-4 flex-1 flex flex-col min-h-0">
           <div>
             <h3 className="font-semibold text-lg mb-1">Resume</h3>
@@ -33,4 +37,3 @@ export function ResumePopover({ value, onChange, children }: ResumePopoverProps)
     </Popover>
   );
 }
-

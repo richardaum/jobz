@@ -1,8 +1,8 @@
 import { IconPercentage } from "@tabler/icons-react";
 
-import type { MatchResult } from "../types";
-
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
+
+import type { MatchResult } from "../types";
 
 interface JobMatchTooltipProps {
   matchResult: MatchResult | null;
@@ -47,4 +47,3 @@ export function JobMatchTooltip({ matchResult, isMatching, hasResume, hasJobDesc
     </TooltipProvider>
   );
 }
-

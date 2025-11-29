@@ -1,8 +1,8 @@
 import { IconInfoCircle, IconLoader2 } from "@tabler/icons-react";
 
-import type { ResumeChange } from "../types";
-
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
+
+import type { ResumeChange } from "../types";
 
 interface ResumeChangesTooltipProps {
   changes: ResumeChange[];
@@ -58,4 +58,3 @@ export function ResumeChangesTooltip({ changes, hasValue, isLoading = false }: R
     </TooltipProvider>
   );
 }
-
