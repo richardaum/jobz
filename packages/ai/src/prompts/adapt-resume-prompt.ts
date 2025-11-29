@@ -69,6 +69,7 @@ Instructions:
    - Maintain a clean, professional format
    - Use consistent formatting throughout
    - Ensure the resume is ATS-friendly (Applicant Tracking System compatible)
+   - Fix line breaks if needed to ensure proper formatting and readability
 
 9. **Character Usage - IMPORTANT**: 
    - Use ONLY simple ASCII characters and standard punctuation
