@@ -13,6 +13,7 @@ const config = [
       "**/dist/**",
       "**/.next/**",
       "**/node_modules/**",
+      "**/coverage/**",
       "**/*.config.js",
       "**/*.config.ts",
       "**/next-env.d.ts",
