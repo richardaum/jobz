@@ -50,4 +50,5 @@ jobs:
             eslint-plugin-fsd
           fail_ci_if_error: false
           verbose: true
+          slug: richardaum/jobz
 
