@@ -2,31 +2,31 @@
 export { ResumeAgent } from "./resume-agent";
 
 // Components
-export { Toolbar } from "./components/toolbar";
-export { PromptModal } from "./components/prompt-modal";
 export { HistoryModal } from "./components/history-modal";
 export { OutputCard } from "./components/output-card";
-export { HistoryTab } from "./components/history-tab";
-export { ResumeChangesTooltip } from "./components/resume-changes-tooltip";
-export { JobDescriptionCard } from "./components/job-description-card";
-export { ChecklistTooltip } from "./components/checklist-tooltip";
-export { JobMatchTooltip } from "./components/job-match-tooltip";
-export { ResumeInputCard } from "./components/resume-input-card";
+export { PromptModal } from "./components/prompt-modal";
+export { Toolbar } from "./components/toolbar";
+
+// Re-export entity components for backward compatibility
+export { ChecklistTooltip, ChecklistButton, JobMatchTooltip, JobMatchButton } from "@/entities/match-result";
+export { HistoryTab } from "@/entities/resume-history";
+export { JobDescriptionCard, JobDescriptionPopover } from "@/entities/job";
+export { ResumeChangesTooltip, ResumeInputCard, ResumePopover, AdaptedResumeButton } from "@/entities/resume";
 
 // Hooks
 export { useResumeAgent } from "./hooks/resume-agent";
-export { useResumeProcessing } from "./hooks/use-resume-processing";
 export { useResumeHistory } from "./hooks/use-resume-history";
-export { useResumeOutputs } from "./hooks/use-resume-outputs";
 export { useResumeInputs } from "./hooks/use-resume-inputs";
+export { useResumeOutputs } from "./hooks/use-resume-outputs";
+export { useResumeProcessing } from "./hooks/use-resume-processing";
 
 // Stores
-export { useResumeStore, useResumeHistoryStore } from "./stores/resume-store";
+export { useResumeHistoryStore, useResumeStore } from "./stores/resume-store";
 
 // Utils
 export { downloadResumeAsPDF } from "./utils/download-pdf";
 export { formatForPDF } from "./utils/format-pdf";
 export { sanitizeForPDF } from "./utils/sanitize-pdf";
 
-// Types
-export type { ChecklistItem, MatchResult, ResumeHistoryItem } from "./stores/resume-store";
+// Types (re-exported from entities via store for backward compatibility)
+export type { ChecklistItem, MatchResult, ResumeChange, ResumeHistoryItem } from "./stores/resume-store";

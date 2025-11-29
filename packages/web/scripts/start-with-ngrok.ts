@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 
-import { spawn } from "child_process";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
 import ngrok from "@ngrok/ngrok";
-import { setTimeout as sleep } from "timers/promises";
+import { spawn } from "child_process";
 import { createServer } from "net";
+import { dirname,resolve } from "path";
+import { setTimeout as sleep } from "timers/promises";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,7 +39,7 @@ async function openBrowser(url: string) {
   }
 }
 
-async function isPortAvailable(port: number): Promise<boolean> {
+async function _isPortAvailable(port: number): Promise<boolean> {
   return new Promise((resolve) => {
     const server = createServer();
     server.listen(port, () => {

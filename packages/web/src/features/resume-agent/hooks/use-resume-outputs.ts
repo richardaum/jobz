@@ -1,5 +1,6 @@
 "use client";
 
+import type { MatchResult } from "@/entities/match-result";
 import { useLocalStorage } from "@/shared/hooks/use-local-storage";
 
 const STORAGE_KEYS = {
@@ -8,17 +9,8 @@ const STORAGE_KEYS = {
   matchResult: "resumeAgent:matchResult",
 } as const;
 
-export interface ChecklistItem {
-  category: string;
-  checked: boolean;
-  description: string;
-}
-
-export interface MatchResult {
-  matchPercentage: number;
-  analysis: string;
-  checklist: ChecklistItem[];
-}
+// Re-export entity types for backward compatibility
+export type { ChecklistItem, MatchResult } from "@/entities/match-result";
 
 export function useResumeOutputs() {
   const [adaptedResume, setAdaptedResume] = useLocalStorage(STORAGE_KEYS.adaptedResume, "");

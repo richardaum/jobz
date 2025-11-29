@@ -1,10 +1,9 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui";
-import { Label } from "@/shared/ui";
-import { Textarea } from "@/shared/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Textarea } from "@/shared/ui";
 
-import { ChecklistTooltip } from "./checklist-tooltip";
-import { JobMatchTooltip } from "./job-match-tooltip";
-import type { MatchResult } from "../stores/resume-store";
+import type { MatchResult } from "@/entities/match-result";
+
+import { ChecklistTooltip } from "@/entities/match-result/ui/checklist-tooltip";
+import { JobMatchTooltip } from "@/entities/match-result/ui/job-match-tooltip";
 
 interface JobDescriptionCardProps {
   value: string;
@@ -45,3 +44,4 @@ export function JobDescriptionCard({ value, onChange, matchResult, isMatching, h
     </Card>
   );
 }
+

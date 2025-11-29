@@ -1,23 +1,25 @@
 "use client";
 
-import { IconHistory, IconCode, IconFileText, IconBriefcase, IconEye, IconTrash, IconChevronDown } from "@tabler/icons-react";
+import { IconBriefcase, IconChevronDown,IconCode, IconEye, IconFileText, IconHistory, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 
 import { Button, Divider, Menu, MenuAnchor, MenuContent, MenuItem } from "@/shared/ui";
-import { useResumeStore } from "../stores/resume-store";
-import { useCardsVisibilityStore } from "../stores/cards-visibility-store";
 
+import type { MatchResult } from "@/entities/match-result";
+import { ChecklistButton } from "@/entities/match-result";
+import { JobDescriptionPopover } from "@/entities/job";
+import { JobMatchButton } from "@/entities/match-result";
+import { ResumePopover } from "@/entities/resume";
+
+import { useCardsVisibilityStore } from "../stores/cards-visibility-store";
+import { useResumeStore } from "../stores/resume-store";
 import { HistoryModal } from "./history-modal";
 import { PromptModal } from "./prompt-modal";
-import { ResumePopover } from "./resume-popover";
-import { JobDescriptionPopover } from "./job-description-popover";
-import { JobMatchButton } from "./job-match-button";
-import { ChecklistButton } from "./checklist-button";
 
 interface ToolbarProps {
   onProcess: () => void;
   isProcessing: boolean;
-  matchResult: any;
+  matchResult: MatchResult | null;
   isMatching: boolean;
 }
 

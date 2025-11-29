@@ -1,11 +1,9 @@
 import { IconCopy, IconDownload, IconLoader2, IconX } from "@tabler/icons-react";
 
-import { Button } from "@/shared/ui";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui";
-import { Label } from "@/shared/ui";
-import { Textarea } from "@/shared/ui";
+import type { ResumeChange } from "@/entities/resume";
+import { AdaptedResumeButton } from "@/entities/resume";
 
-import { AdaptedResumeButton } from "./adapted-resume-button";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Textarea } from "@/shared/ui";
 
 interface OutputCardProps {
   title: string;
@@ -18,7 +16,7 @@ interface OutputCardProps {
   showDownload?: boolean;
   onCopy?: () => void;
   showCopy?: boolean;
-  changes?: { section: string; description: string }[];
+  changes?: ResumeChange[];
   onHide?: () => void;
 }
 
@@ -51,7 +49,10 @@ export function OutputCard({
           <div className="ml-4 flex items-center gap-2 shrink-0">
             {isLoading ? (
               <>
-                <IconLoader2 className="h-4 w-4 animate-spin text-muted-foreground" style={{ animationDuration: "1s" }} />
+                <IconLoader2
+                  className="h-4 w-4 animate-spin text-muted-foreground"
+                  style={{ animationDuration: "1s" }}
+                />
                 <span className="text-sm text-muted-foreground">Processing...</span>
               </>
             ) : (

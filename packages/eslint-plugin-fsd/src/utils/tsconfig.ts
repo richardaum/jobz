@@ -1,5 +1,4 @@
-import { readFileSync } from "fs";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { dirname, join, resolve } from "path";
 
 interface TsConfig {

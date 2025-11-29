@@ -1,5 +1,5 @@
 import { ResumeAgent } from "@/features/resume-agent";
-import { AppBar } from "@/shared/components/app-bar";
+import { AppBar } from "@/shared/components";
 
 export default function Page() {
   return (

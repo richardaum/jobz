@@ -1,9 +1,6 @@
 "use client";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui";
-import { Label } from "@/shared/ui";
-import { Textarea } from "@/shared/ui";
-import { Button } from "@/shared/ui";
+import { Label, Popover, PopoverContent, PopoverTrigger, Textarea } from "@/shared/ui";
 
 interface ResumePopoverProps {
   value: string;

@@ -44,6 +44,7 @@ const config = [
         },
       ],
       "@typescript-eslint/no-explicit-any": "warn",
+      "no-duplicate-imports": "error",
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
       "fsd/layer-imports": "error",

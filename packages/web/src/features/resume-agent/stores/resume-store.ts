@@ -1,28 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export interface ChecklistItem {
-  category: string;
-  checked: boolean;
-  description: string;
-}
+import type { MatchResult } from "@/entities/match-result";
+import type { ResumeChange } from "@/entities/resume";
+import type { ResumeHistoryItem } from "@/entities/resume-history";
 
-export interface MatchResult {
-  matchPercentage: number;
-  analysis: string;
-  checklist: ChecklistItem[];
-}
-
-export interface ResumeHistoryItem {
-  id: string;
-  timestamp: number;
-  resume: string;
-  jobDescription: string;
-  adaptedResume: string;
-  gaps: string;
-  matchResult: MatchResult;
-  changes: { section: string; description: string }[];
-}
+// Re-export entity types for backward compatibility
+export type { ChecklistItem, MatchResult } from "@/entities/match-result";
+export type { ResumeChange } from "@/entities/resume";
+export type { ResumeHistoryItem } from "@/entities/resume-history";
 
 interface ResumeStore {
   // Inputs
@@ -35,12 +21,12 @@ interface ResumeStore {
   adaptedResume: string;
   gaps: string;
   matchResult: MatchResult | null;
-  changes: { section: string; description: string }[];
+  changes: ResumeChange[];
   updateOutputs: (data: {
     adaptedResume: string;
     gaps: string;
     matchResult: MatchResult;
-    changes: { section: string; description: string }[];
+    changes: ResumeChange[];
   }) => void;
 
   // Computed
@@ -59,7 +45,7 @@ interface ResumeHistoryStore {
     adaptedResume: string;
     gaps: string;
     matchResult: MatchResult;
-    changes: { section: string; description: string }[];
+    changes: ResumeChange[];
   }) => void;
   removeFromHistory: (id: string) => void;
   clearHistory: () => void;
@@ -71,7 +57,7 @@ interface ResumeHistoryStore {
       adaptedResume: string;
       gaps: string;
       matchResult: MatchResult;
-      changes: { section: string; description: string }[];
+      changes: ResumeChange[];
     }) => void
   ) => void;
 }
@@ -98,7 +84,7 @@ export const useResumeStore = create<ResumeStore>()(
           adaptedResume: string;
           gaps: string;
           matchResult: MatchResult;
-          changes: { section: string; description: string }[];
+          changes: ResumeChange[];
         }) =>
           set({
             adaptedResume: data.adaptedResume || "",
@@ -164,7 +150,7 @@ export const useResumeStore = create<ResumeStore>()(
 // Separate store for history
 export const useResumeHistoryStore = create<ResumeHistoryStore>()(
   persist(
-    (set, get) => ({
+    (set, _get) => ({
       history: [],
 
       addToHistory: (data) => {

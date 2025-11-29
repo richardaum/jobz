@@ -1,4 +1,4 @@
-import { useSettingsStore } from "@/shared/stores/settings-store";
+import { useSettingsStore } from "@/shared/stores";
 
 /**
  * Get OpenAI API key from Zustand settings store

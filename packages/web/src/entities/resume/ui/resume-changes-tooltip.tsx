@@ -1,17 +1,16 @@
-"use client";
-
 import { IconInfoCircle, IconLoader2 } from "@tabler/icons-react";
 
-import { Button } from "@/shared/ui";
+import type { ResumeChange } from "../types";
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
 
-interface AdaptedResumeButtonProps {
-  changes: { section: string; description: string }[];
+interface ResumeChangesTooltipProps {
+  changes: ResumeChange[];
   hasValue: boolean;
   isLoading?: boolean;
 }
 
-export function AdaptedResumeButton({ changes, hasValue, isLoading = false }: AdaptedResumeButtonProps) {
+export function ResumeChangesTooltip({ changes, hasValue, isLoading = false }: ResumeChangesTooltipProps) {
   const hasChanges = changes.length > 0 && hasValue;
   const shouldShow = hasChanges || isLoading;
 
@@ -21,18 +20,21 @@ export function AdaptedResumeButton({ changes, hasValue, isLoading = false }: Ad
 
   return (
     <TooltipProvider>
-      <Tooltip>
+      <Tooltip defaultOpen={false}>
         <TooltipTrigger asChild>
-          <Button variant="hoverable" size="sm" type="button" className="group gap-2">
+          <button
+            type="button"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="View changes made to resume"
+          >
             {isLoading ? (
-              <IconLoader2 className="h-4 w-4 animate-spin text-muted-foreground" style={{ animationDuration: "1s" }} />
+              <IconLoader2 className="h-4 w-4 animate-spin" style={{ animationDuration: "1s" }} />
             ) : (
-              <IconInfoCircle className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
+              <IconInfoCircle className="h-4 w-4" />
             )}
-            {isLoading ? "Processing..." : "Changes"}
-          </Button>
+          </button>
         </TooltipTrigger>
-        <TooltipContent side="bottom" className="max-w-sm">
+        <TooltipContent side="right" className="max-w-sm">
           {isLoading ? (
             <div className="flex items-center gap-2">
               <IconLoader2 className="h-4 w-4 animate-spin text-muted-foreground" style={{ animationDuration: "1s" }} />

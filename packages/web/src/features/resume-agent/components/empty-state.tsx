@@ -1,6 +1,7 @@
-import { IconFileText, IconBriefcase, IconRocket } from "@tabler/icons-react";
+import { IconBriefcase, IconFileText, IconRocket } from "@tabler/icons-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui";
+
 import { GetStartListItem } from "./get-start-list-item";
 
 interface EmptyStateProps {

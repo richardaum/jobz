@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import { Grid, GridItem } from "@/shared/ui";
 import { copyToClipboard } from "@/shared/lib";
+import { Grid, GridItem } from "@/shared/ui";
 
 import { EmptyState } from "./components/empty-state";
 import { OutputCard } from "./components/output-card";
 import { Toolbar } from "./components/toolbar";
 import { useResumeProcessing } from "./hooks/use-resume-processing";
-import { useResumeHistoryStore, useResumeStore } from "./stores/resume-store";
 import { useCardsVisibilityStore } from "./stores/cards-visibility-store";
+import { useResumeHistoryStore, useResumeStore } from "./stores/resume-store";
 import { downloadResumeAsPDF } from "./utils/download-pdf";
 
 export function ResumeAgent() {

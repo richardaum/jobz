@@ -1,14 +1,13 @@
 "use client";
 
-import { IconCode, IconCopy } from "@tabler/icons-react";
-import { useMemo, useCallback } from "react";
-import { toast } from "sonner";
-import { MacScrollbar } from "mac-scrollbar";
-
-import { Button } from "@/shared/ui";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/shared/ui";
-import { copyToClipboard } from "@/shared/lib";
 import { buildProcessResumePrompt } from "@jobz/ai";
+import { IconCode, IconCopy } from "@tabler/icons-react";
+import { MacScrollbar } from "mac-scrollbar";
+import { useCallback,useMemo } from "react";
+import { toast } from "sonner";
+
+import { copyToClipboard } from "@/shared/lib";
+import { Button, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/shared/ui";
 
 interface PromptModalProps {
   open: boolean;

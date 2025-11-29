@@ -1,13 +1,10 @@
 "use client";
 
-import { IconSettings, IconInfoCircle } from "@tabler/icons-react";
+import { IconInfoCircle,IconSettings } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
-import { Button } from "@/shared/ui";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/shared/ui";
-import { Input } from "@/shared/ui";
-import { Label } from "@/shared/ui";
-import { useSettingsStore } from "@/shared/stores/settings-store";
+import { useSettingsStore } from "@/shared/stores";
+import { Button, Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Input, Label } from "@/shared/ui";
 
 interface SettingsModalProps {
   open: boolean;

@@ -1,9 +1,8 @@
 "use client";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui";
-import { Label } from "@/shared/ui";
-import { Textarea } from "@/shared/ui";
-import type { MatchResult } from "../stores/resume-store";
+import { Label, Popover, PopoverContent, PopoverTrigger, Textarea } from "@/shared/ui";
+
+import type { MatchResult } from "@/entities/match-result";
 
 interface JobDescriptionPopoverProps {
   value: string;
@@ -17,9 +16,9 @@ interface JobDescriptionPopoverProps {
 export function JobDescriptionPopover({
   value,
   onChange,
-  matchResult,
-  isMatching,
-  hasResume,
+  matchResult: _matchResult,
+  isMatching: _isMatching,
+  hasResume: _hasResume,
   children,
 }: JobDescriptionPopoverProps) {
   return (

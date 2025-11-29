@@ -1,8 +1,8 @@
 import { IconChecklist } from "@tabler/icons-react";
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
+import type { ChecklistItem } from "../types";
 
-import type { ChecklistItem } from "../stores/resume-store";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
 
 interface ChecklistTooltipProps {
   checklist: ChecklistItem[];
@@ -78,3 +78,4 @@ export function ChecklistTooltip({ checklist }: ChecklistTooltipProps) {
     </TooltipProvider>
   );
 }
+

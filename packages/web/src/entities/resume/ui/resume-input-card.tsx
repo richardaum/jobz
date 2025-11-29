@@ -1,6 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui";
-import { Label } from "@/shared/ui";
-import { Textarea } from "@/shared/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Textarea } from "@/shared/ui";
 
 interface ResumeInputCardProps {
   value: string;

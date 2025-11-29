@@ -1,18 +1,10 @@
 "use client";
 
+import type { ResumeHistoryItem } from "@/entities/resume-history";
 import { useLocalStorage } from "@/shared/hooks/use-local-storage";
 
-import type { MatchResult } from "./use-resume-outputs";
-
-export interface ResumeHistoryItem {
-  id: string;
-  timestamp: number;
-  resume: string;
-  jobDescription: string;
-  adaptedResume: string;
-  gaps: string;
-  matchResult: MatchResult;
-}
+// Re-export entity type for backward compatibility
+export type { ResumeHistoryItem } from "@/entities/resume-history";
 
 const STORAGE_KEY = "resumeAgent:history";
 

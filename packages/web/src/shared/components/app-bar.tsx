@@ -2,9 +2,9 @@
 
 import { IconSettings } from "@tabler/icons-react";
 
+import { SettingsModal } from "@/shared/components";
+import { useSettingsStore } from "@/shared/stores";
 import { Button } from "@/shared/ui";
-import { SettingsModal } from "@/shared/components/settings-modal";
-import { useSettingsStore } from "@/shared/stores/settings-store";
 
 export function AppBar() {
   const isSettingsOpen = useSettingsStore((state) => state.isSettingsOpen);
