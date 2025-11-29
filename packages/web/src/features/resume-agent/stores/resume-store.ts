@@ -14,8 +14,10 @@ interface ResumeStore {
   // Inputs
   resume: string;
   jobDescription: string;
+  personalPreferences: string;
   setResume: (resume: string) => void;
   setJobDescription: (jobDescription: string) => void;
+  setPersonalPreferences: (personalPreferences: string) => void;
 
   // Outputs
   adaptedResume: string;
@@ -70,6 +72,7 @@ export const useResumeStore = create<ResumeStore>()(
         // Initial state - always strings, never undefined
         resume: "",
         jobDescription: "",
+        personalPreferences: "",
         adaptedResume: "",
         gaps: "",
         matchResult: null,
@@ -78,6 +81,8 @@ export const useResumeStore = create<ResumeStore>()(
         // Inputs
         setResume: (resume: string) => set({ resume: resume || "" }),
         setJobDescription: (jobDescription: string) => set({ jobDescription: jobDescription || "" }),
+        setPersonalPreferences: (personalPreferences: string) =>
+          set({ personalPreferences: personalPreferences || "" }),
 
         // Outputs
         updateOutputs: (data: {
@@ -113,6 +118,7 @@ export const useResumeStore = create<ResumeStore>()(
           set({
             resume: "",
             jobDescription: "",
+            personalPreferences: "",
             adaptedResume: "",
             gaps: "",
             matchResult: null,
@@ -126,6 +132,7 @@ export const useResumeStore = create<ResumeStore>()(
         // Only persist card data
         resume: state.resume || "",
         jobDescription: state.jobDescription || "",
+        personalPreferences: state.personalPreferences || "",
         adaptedResume: state.adaptedResume || "",
         gaps: state.gaps || "",
         matchResult: state.matchResult,
@@ -137,6 +144,7 @@ export const useResumeStore = create<ResumeStore>()(
           ...currentState,
           resume: persistedState?.resume ?? "",
           jobDescription: persistedState?.jobDescription ?? "",
+          personalPreferences: persistedState?.personalPreferences ?? "",
           adaptedResume: persistedState?.adaptedResume ?? "",
           gaps: persistedState?.gaps ?? "",
           matchResult: persistedState?.matchResult ?? null,

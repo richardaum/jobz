@@ -7,11 +7,12 @@ import {
   IconEye,
   IconFileText,
   IconHistory,
+  IconSettings,
   IconTrash,
 } from "@tabler/icons-react";
 import { useState } from "react";
 
-import { JobDescriptionPopover } from "@/entities/job";
+import { JobDescriptionPopover, PersonalPreferencesPopover } from "@/entities/job";
 import { ChecklistButton, JobMatchButton, type MatchResult } from "@/entities/match-result";
 import { ResumePopover } from "@/entities/resume";
 import { Button, Divider, Menu, MenuAnchor, MenuContent, MenuItem } from "@/shared/ui";
@@ -34,8 +35,10 @@ export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: To
   const [isClearMenuOpen, setIsClearMenuOpen] = useState(false);
   const resume = useResumeStore((state) => state.resume);
   const jobDescription = useResumeStore((state) => state.jobDescription);
+  const personalPreferences = useResumeStore((state) => state.personalPreferences);
   const setResume = useResumeStore((state) => state.setResume);
   const setJobDescription = useResumeStore((state) => state.setJobDescription);
+  const setPersonalPreferences = useResumeStore((state) => state.setPersonalPreferences);
   const clearResults = useResumeStore((state) => state.clearResults);
   const clearAll = useResumeStore((state) => state.clearAll);
 
@@ -90,6 +93,12 @@ export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: To
             {jobDescription.trim() ? "Edit Job Description" : "Add Job Description"}
           </Button>
         </JobDescriptionPopover>
+        <PersonalPreferencesPopover value={personalPreferences} onChange={setPersonalPreferences}>
+          <Button variant="outline" size="sm" type="button">
+            <IconSettings className="h-4 w-4 mr-2" />
+            Add Personal Preference
+          </Button>
+        </PersonalPreferencesPopover>
 
         <Divider className="mx-2" />
 

@@ -17,6 +17,7 @@ import { downloadResumeAsPDF } from "./utils/download-pdf";
 export function ResumeAgent() {
   const resume = useResumeStore((state) => state.resume);
   const jobDescription = useResumeStore((state) => state.jobDescription);
+  const personalPreferences = useResumeStore((state) => state.personalPreferences);
   const adaptedResume = useResumeStore((state) => state.adaptedResume);
   const gaps = useResumeStore((state) => state.gaps);
   const matchResult = useResumeStore((state) => state.matchResult);
@@ -40,7 +41,7 @@ export function ResumeAgent() {
   });
 
   const handleProcess = () => {
-    processing.process(resume, jobDescription);
+    processing.process(resume, jobDescription, personalPreferences);
   };
 
   // Prioritize stored matchResult from store, then current processing result

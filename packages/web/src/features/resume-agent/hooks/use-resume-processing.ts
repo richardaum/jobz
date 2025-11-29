@@ -55,7 +55,7 @@ export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
     }
   }, [mutation.error, setIsSettingsOpen]);
 
-  const process = async (resume: string, jobDescription: string) => {
+  const process = async (resume: string, jobDescription: string, personalPreferences?: string) => {
     if (!resume.trim() || !jobDescription.trim()) {
       toast.error("Please fill in both resume and job description");
       return;
@@ -65,6 +65,7 @@ export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
       const result = await mutation.mutateAsync({
         resume,
         jobDescription,
+        personalPreferences: personalPreferences?.trim() || undefined,
       });
 
       const matchResult = createMatchResult(result);

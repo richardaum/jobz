@@ -1,6 +1,7 @@
 export interface MatchJobRequest {
   jobDescription: string;
   resume: string;
+  personalPreferences?: string;
 }
 
 export interface ChecklistItem {
@@ -45,6 +46,7 @@ export interface ProcessResumeRequest {
   resume: string;
   tone?: "professional" | "confident" | "concise";
   focus?: string;
+  personalPreferences?: string;
 }
 
 export interface ProcessResumeResponse {

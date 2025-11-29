@@ -10,9 +10,10 @@ export function buildProcessResumePrompt(
   jobDescription: string,
   resume: string,
   tone: "professional" | "confident" | "concise" = "professional",
-  focus?: string
+  focus?: string,
+  personalPreferences?: string
 ): string {
-  const matchJobPrompt = buildMatchJobPrompt(jobDescription, resume);
+  const matchJobPrompt = buildMatchJobPrompt(jobDescription, resume, personalPreferences);
   const adaptResumePrompt = buildAdaptResumePrompt(jobDescription, resume, tone, focus);
   const analyzeGapsPrompt = buildAnalyzeGapsPrompt(resume, jobDescription);
 

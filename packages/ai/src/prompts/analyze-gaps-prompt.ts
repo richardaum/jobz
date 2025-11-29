@@ -10,6 +10,10 @@ ${resume}
 Job Description:
 ${jobDescription}
 
+IMPORTANT: Focus only on technical skills, experience, qualifications, and requirements mentioned in the job description. 
+Do NOT consider personal preferences such as location, remote work options, compensation, seniority level preferences, or any other personal job preferences. 
+Only analyze gaps between your actual qualifications and the job requirements.
+
 Write 2-3 paragraphs as if you're reflecting on what you read, using:
 - Natural, conversational language with occasional qualifiers ("seems like", "probably", "might need")
 - Personal observations and insights that show you actually read both documents

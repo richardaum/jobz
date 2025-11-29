@@ -18,7 +18,7 @@ const MATCH_JOB_SYSTEM_MESSAGE =
  * Match a job description with a resume using OpenAI
  */
 export async function matchJob(client: AxiosInstance, request: MatchJobRequest): Promise<MatchJobResponse> {
-  const prompt = buildMatchJobPrompt(request.jobDescription, request.resume);
+  const prompt = buildMatchJobPrompt(request.jobDescription, request.resume, request.personalPreferences);
 
   try {
     const response = await client.post("/chat/completions", {

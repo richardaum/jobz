@@ -28,7 +28,8 @@ export async function processResume(
     request.jobDescription,
     request.resume,
     request.tone || "professional",
-    request.focus
+    request.focus,
+    request.personalPreferences
   );
 
   try {
