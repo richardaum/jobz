@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 type CardId = "adapted-resume" | "gaps-analysis";
 
-interface CardsVisibilityState {
+export interface CardsVisibilityState {
   visibleCards: Set<CardId>;
   toggleCard: (cardId: CardId) => void;
   showCard: (cardId: CardId) => void;

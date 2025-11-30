@@ -14,8 +14,9 @@ const ruleTester = new RuleTester({
   },
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-ruleTester.run("public-api-imports", publicApiImports as any, {
+// @ts-expect-error - Type incompatibility between @typescript-eslint/utils versions
+// This is a known issue when using @typescript-eslint/rule-tester with different versions
+ruleTester.run("public-api-imports", publicApiImports, {
   valid: [
     // Relative imports are ignored
     {
@@ -213,14 +214,14 @@ describe("public-api-imports edge cases", () => {
       filename: undefined,
       options: [{}],
       report: () => {},
-    } as any;
+    } as unknown as Parameters<typeof rule.create>[0];
 
     const ruleContext = rule.create(context);
     // Use a relative import which should be skipped early, avoiding the getSliceInfo call
 
     const node = {
       source: { value: "./helper" },
-    } as any;
+    } as Parameters<NonNullable<ReturnType<typeof rule.create>["ImportDeclaration"]>>[0];
 
     // This should not throw - relative imports are skipped before getSliceInfo is called
     expect(() => {
@@ -235,14 +236,14 @@ describe("public-api-imports edge cases", () => {
       filename: null,
       options: [{}],
       report: () => {},
-    } as any;
+    } as unknown as Parameters<typeof rule.create>[0];
 
     const ruleContext = rule.create(context);
     // Use a relative import which should be skipped early
 
     const node = {
       source: { value: "./helper" },
-    } as any;
+    } as Parameters<NonNullable<ReturnType<typeof rule.create>["ImportDeclaration"]>>[0];
 
     expect(() => {
       ruleContext.ImportDeclaration?.(node);

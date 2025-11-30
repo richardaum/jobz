@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface SettingsStore {
+export interface SettingsStore {
   openaiApiKey: string;
   setOpenAIApiKey: (apiKey: string) => void;
   getOpenAIApiKey: () => string | null;

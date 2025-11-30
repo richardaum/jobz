@@ -10,7 +10,7 @@ export type { ChecklistItem, MatchResult } from "@/entities/match-result";
 export type { ResumeChange } from "@/entities/resume";
 export type { ResumeHistoryItem } from "@/entities/resume-history";
 
-interface ResumeStore {
+export interface ResumeStore {
   // Inputs
   resume: string;
   jobDescription: string;

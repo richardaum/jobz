@@ -13,8 +13,9 @@ const ruleTester = new RuleTester({
   },
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-ruleTester.run("layer-imports", layerImports as any, {
+// @ts-expect-error - Type incompatibility between @typescript-eslint/utils versions
+// This is a known issue when using @typescript-eslint/rule-tester with different versions
+ruleTester.run("layer-imports", layerImports, {
   valid: [
     // Shared can import from shared
     {

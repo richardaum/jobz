@@ -12,7 +12,7 @@ export default defineConfig({
     exclude: ["node_modules", "dist", ".next", "e2e"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "json", "html", "lcov", "json-summary"],
+      reporter: ["text", "json", "html", "lcov", "json-summary", "text-summary"],
       reportsDirectory: "./coverage",
       exclude: [
         "node_modules/",
@@ -38,6 +38,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "mac-scrollbar": path.resolve(__dirname, "./src/__mocks__/mac-scrollbar.tsx"),
     },
   },
 });
