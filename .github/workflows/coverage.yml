@@ -45,6 +45,7 @@ jobs:
           files: packages/web/coverage/lcov.info
           flags: web
           name: web-coverage
+          disable_search: true
           fail_ci_if_error: false
           verbose: true
 
@@ -55,5 +56,6 @@ jobs:
           files: packages/eslint-plugin-fsd/coverage/lcov.info
           flags: eslint-plugin-fsd
           name: eslint-plugin-fsd-coverage
+          disable_search: true
           fail_ci_if_error: false
           verbose: true
