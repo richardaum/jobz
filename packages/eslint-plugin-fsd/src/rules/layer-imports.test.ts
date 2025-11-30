@@ -113,6 +113,15 @@ ruleTester.run("layer-imports", layerImports as any, {
       code: 'import { User } from "@/entities/user";',
       filename: "@/features/auth/model.ts",
     },
+    // File not in FSD layer structure should be ignored
+    {
+      code: 'import { User } from "entities/user";',
+      filename: "some/random/path.ts",
+    },
+    {
+      code: 'import { something } from "shared/utils";',
+      filename: "some/random/path.ts",
+    },
   ],
   invalid: [
     // Shared cannot import from other layers

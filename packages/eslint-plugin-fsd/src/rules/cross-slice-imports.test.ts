@@ -63,6 +63,15 @@ ruleTester.run("cross-slice-imports", crossSliceImports as any, {
       code: 'import { User } from "@/entities/user/@x/profile";',
       filename: "@/entities/profile/model.ts",
     },
+    // File not in FSD layer structure should be ignored
+    {
+      code: 'import { User } from "entities/user";',
+      filename: "some/random/path.ts",
+    },
+    {
+      code: 'import { User } from "entities/profile";',
+      filename: "some/random/path.ts",
+    },
   ],
   invalid: [
     // Cross-import without @x-notation (same layer, different slice)

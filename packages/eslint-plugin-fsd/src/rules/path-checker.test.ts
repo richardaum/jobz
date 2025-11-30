@@ -58,11 +58,31 @@ ruleTester.run("path-checker", pathChecker as any, {
       filename: "entities/user/model.ts",
       options: [{ alias: "@/src" }],
     },
+    // With alias option and path starting with alias
+    {
+      code: 'import { helper } from "@/src/entities/user/lib/helper";',
+      filename: "entities/user/model.ts",
+      options: [{ alias: "@/src" }],
+    },
     // With @/ alias in path - path-checker doesn't handle @/ alias without options
     // So these would need alias option or the path needs to not have @/
     {
       code: 'import { helper } from "./lib/helper";',
       filename: "@/entities/user/model.ts",
+    },
+    // File not in FSD layer structure should be ignored
+    {
+      code: 'import { something } from "entities/user";',
+      filename: "some/random/path.ts",
+    },
+    {
+      code: 'import { something } from "entities/user/lib/helper";',
+      filename: "some/random/path.ts",
+    },
+    // Import path not in FSD layer structure should be ignored
+    {
+      code: 'import { something } from "some/random/path";',
+      filename: "entities/user/model.ts",
     },
   ],
   invalid: [

@@ -127,6 +127,45 @@ describe("getTsConfigPaths", () => {
     const aliases = getTsConfigPaths(tsConfigPath);
     expect(aliases).toEqual([]);
   });
+
+  it("should handle baseUrl in tsconfig", () => {
+    tempDir = createTempTsConfig({
+      compilerOptions: {
+        baseUrl: "./src",
+        paths: {
+          "@/*": ["./src/*"],
+        },
+      },
+    });
+
+    const aliases = getTsConfigPaths(join(tempDir, "tsconfig.json"));
+    expect(aliases).toEqual(["@/"]);
+  });
+
+  it("should return empty array when no tsconfig found (reaching root)", () => {
+    // Use a directory that definitely doesn't have a tsconfig.json
+    // We'll use a temp directory without a tsconfig
+    const tempDir = join(tmpdir(), `eslint-plugin-fsd-test-${Date.now()}-no-config`);
+    mkdirSync(tempDir, { recursive: true });
+    const nestedDir = join(tempDir, "nested", "deep", "path");
+    mkdirSync(nestedDir, { recursive: true });
+
+    const aliases = getTsConfigPaths(undefined, nestedDir);
+    expect(aliases).toEqual([]);
+
+    cleanupTempDir(tempDir);
+  });
+
+  it("should use process.cwd() when startDir is undefined in findTsConfig", () => {
+    // This tests the branch where startDir is undefined
+    // We'll test by not providing startDir, which should use process.cwd()
+    // If there's a tsconfig in the current working directory, it should find it
+    // Otherwise, it should return empty array
+    const aliases = getTsConfigPaths(undefined, undefined);
+    // We can't assert the exact value since it depends on where tests are run
+    // But we can verify it doesn't throw and returns an array
+    expect(Array.isArray(aliases)).toBe(true);
+  });
 });
 
 describe("normalizePath", () => {

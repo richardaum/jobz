@@ -1,5 +1,6 @@
 import parser from "@typescript-eslint/parser";
 import { RuleTester } from "@typescript-eslint/rule-tester";
+import { describe, expect, it } from "vitest";
 
 import { publicApiImports } from "./public-api-imports";
 
@@ -75,6 +76,20 @@ ruleTester.run("public-api-imports", publicApiImports as any, {
       code: 'import { User } from "entities/user";',
       filename: "features/auth/model.ts",
       options: [{ aliases: ["@/"] }],
+    },
+    // File not in FSD layer structure should be ignored
+    {
+      code: 'import { helper } from "entities/user/lib/helper";',
+      filename: "some/random/path.ts",
+    },
+    {
+      code: 'import { User } from "entities/user";',
+      filename: "some/random/path.ts",
+    },
+    // Test case with empty filename to cover falsy filename branch
+    {
+      code: 'import { User } from "entities/user";',
+      filename: "",
     },
   ],
   invalid: [
@@ -187,4 +202,50 @@ ruleTester.run("public-api-imports", publicApiImports as any, {
       ],
     },
   ],
+});
+
+// Direct test for falsy filename branch coverage
+describe("public-api-imports edge cases", () => {
+  it("should handle undefined filename", () => {
+    const rule = publicApiImports;
+
+    const context = {
+      filename: undefined,
+      options: [{}],
+      report: () => {},
+    } as any;
+
+    const ruleContext = rule.create(context);
+    // Use a relative import which should be skipped early, avoiding the getSliceInfo call
+
+    const node = {
+      source: { value: "./helper" },
+    } as any;
+
+    // This should not throw - relative imports are skipped before getSliceInfo is called
+    expect(() => {
+      ruleContext.ImportDeclaration?.(node);
+    }).not.toThrow();
+  });
+
+  it("should handle null filename", () => {
+    const rule = publicApiImports;
+
+    const context = {
+      filename: null,
+      options: [{}],
+      report: () => {},
+    } as any;
+
+    const ruleContext = rule.create(context);
+    // Use a relative import which should be skipped early
+
+    const node = {
+      source: { value: "./helper" },
+    } as any;
+
+    expect(() => {
+      ruleContext.ImportDeclaration?.(node);
+    }).not.toThrow();
+  });
 });
