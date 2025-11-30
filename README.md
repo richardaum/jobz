@@ -12,11 +12,19 @@ A monorepo for the Jobz project.
 ```
 jobz/
 ├── packages/
-│   ├── chrome-extension/  # Chrome extension built with Vite
-│   ├── web/              # Next.js web application
-│   └── ai/               # AI functions and utilities
+│   ├── [chrome-extension](./packages/chrome-extension/)  # Chrome extension built with Vite
+│   ├── [web](./packages/web/)              # Next.js web application
+│   ├── [ai](./packages/ai/)               # AI functions and utilities
+│   └── [eslint-plugin-fsd](./packages/eslint-plugin-fsd/)  # ESLint plugin for Feature-Sliced Design
 └── package.json
 ```
+
+### Packages
+
+- **[chrome-extension](./packages/chrome-extension/)** - Chrome extension built with Vite
+- **[web](./packages/web/)** - Next.js web application
+- **[ai](./packages/ai/)** - AI functions and utilities
+- **[eslint-plugin-fsd](./packages/eslint-plugin-fsd/)** - ESLint plugin for Feature-Sliced Design
 
 ## Getting Started
 
