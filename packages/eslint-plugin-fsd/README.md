@@ -2,7 +2,7 @@
 
 ESLint plugin for Feature-Sliced Design (FSD) architecture.
 
-[![codecov](https://codecov.io/gh/YOUR_USERNAME/YOUR_REPO/branch/main/graph/badge.svg?flag=eslint-plugin-fsd)](https://codecov.io/gh/YOUR_USERNAME/YOUR_REPO?flag=eslint-plugin-fsd)
+[![codecov](https://codecov.io/gh/richardaum/jobz/branch/main/graph/badge.svg?flag=eslint-plugin-fsd)](https://codecov.io/gh/richardaum/jobz?flag=eslint-plugin-fsd)
 
 ## Installation
 
