@@ -8,23 +8,21 @@ import { getOpenAIApiKey } from "@/shared/config/storage";
 import { useStream } from "@/shared/stream";
 
 import {
-  buildChatbotContext,
   ChatbotApiError,
+  hasResumeData,
+  log,
   type ResumeContext,
-  sendChatbotMessage,
-  sendChatbotMessageStream,
+  sendChatbotMessageWithStream,
+  shouldSummarizeConversation,
+  summarizeConversation,
 } from "../lib";
+import {
+  createConversationStateManager,
+  hasInputDataChanged,
+  isInitialHydration,
+} from "../lib/chatbot-conversation-state";
 import { useResumeStore } from "../stores/resume-store";
-
-const MESSAGE_THRESHOLD = 50;
-
-// Debug logging utility - simplified
-const DEBUG = true;
-const log = (category: string, message: string, data?: unknown) => {
-  if (DEBUG) {
-    console.log(`[Chatbot:${category}]`, message, data || "");
-  }
-};
+import { useFollowUpQuestions } from "./use-follow-up-questions";
 
 // Use ChatbotMessage type from the queue hook
 type ChatbotMessage = ChatbotMessageType;
@@ -33,8 +31,6 @@ export function useResumeChatbot() {
   // UI State
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [followUpQuestions, setFollowUpQuestions] = useState<string[]>([]);
-  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
 
   // Use chatbot queue hook for managing messages (now uses global Zustand store)
   const {
@@ -42,7 +38,7 @@ export function useResumeChatbot() {
     setMessages,
     clearMessages: queueClearMessages,
   } = useChatbotQueue({
-    debug: DEBUG,
+    debug: true,
   });
 
   // Business Data from Store
@@ -54,12 +50,8 @@ export function useResumeChatbot() {
   const changes = useResumeStore((state) => state.changes);
   const sections = useResumeStore((state) => state.sections);
 
-  // Track conversation state
-  const conversationStateRef = useRef({
-    isActive: false,
-    lastMessageTime: null as number | null,
-    currentAssistantMsgId: null as string | null,
-  });
+  // Track conversation state using business logic manager
+  const conversationStateManagerRef = useRef(createConversationStateManager());
 
   // Track previous input data to detect changes
   const prevInputDataRef = useRef<{
@@ -72,9 +64,6 @@ export function useResumeChatbot() {
 
   // Ref to track current assistant message ID during streaming
   const currentAssistantMsgIdRef = useRef<string | null>(null);
-
-  // Ref to track last time questions were generated to avoid duplicate calls
-  const lastQuestionsGenerationRef = useRef<number>(0);
 
   // Generic stream hook for managing streaming operations
   const streamHook = useStream({
@@ -99,8 +88,33 @@ export function useResumeChatbot() {
   // Track if we've received the first chunk of the current stream
   const hasReceivedFirstChunkRef = useRef(false);
 
-  // Computed: Check if we have data to chat about
-  const hasData = !!adaptedResume.trim() || !!gaps.trim() || !!matchResult;
+  // Build resume context for business logic
+  const getResumeContext = useCallback((): ResumeContext => {
+    return {
+      resume,
+      jobDescription,
+      adaptedResume,
+      gaps,
+      matchResult,
+      changes,
+      sections,
+    };
+  }, [resume, jobDescription, adaptedResume, gaps, matchResult, changes, sections]);
+
+  // Computed: Check if we have data to chat about (using business logic)
+  const resumeContext = getResumeContext();
+  const hasData = hasResumeData(resumeContext);
+
+  // Follow-up questions management (isolated in separate hook)
+  const {
+    followUpQuestions,
+    generateQuestions: generateFollowUpQuestionsUI,
+    clearQuestions,
+  } = useFollowUpQuestions({
+    resumeContext,
+    messages,
+    isLoading,
+  });
 
   // Clear messages when INPUT data changes (resume or jobDescription)
   useEffect(() => {
@@ -120,9 +134,8 @@ export function useResumeChatbot() {
       return;
     }
 
-    // Check if input data changed
-    const inputDataChanged =
-      prevData.resume !== currentData.resume || prevData.jobDescription !== currentData.jobDescription;
+    // Check if input data changed (using business logic)
+    const inputDataChanged = hasInputDataChanged(prevData, currentData);
 
     if (!inputDataChanged) {
       // No input change, just update ref
@@ -130,15 +143,8 @@ export function useResumeChatbot() {
       return;
     }
 
-    // Don't clear during initial hydration (when store is loading from localStorage)
-    const isInitialHydration =
-      !isHydratedRef.current &&
-      prevData.resume === "" &&
-      prevData.jobDescription === "" &&
-      (currentData.resume !== "" || currentData.jobDescription !== "") &&
-      messages.length > 0;
-
-    if (isInitialHydration) {
+    // Don't clear during initial hydration (using business logic)
+    if (isInitialHydration(isHydratedRef.current, prevData, currentData, messages.length)) {
       log("useEffect:clearMessages", "Skipping clear during initial hydration", {
         prevData,
         currentData,
@@ -153,19 +159,15 @@ export function useResumeChatbot() {
     }
 
     log("useEffect:clearMessages", "Input changed", {
-      isActive: conversationStateRef.current.isActive,
-      lastMessageTime: conversationStateRef.current.lastMessageTime,
+      isActive: conversationStateManagerRef.current.state.isActive,
+      lastMessageTime: conversationStateManagerRef.current.state.lastMessageTime,
       messageCount: messages.length,
     });
 
-    // Protection checks - don't clear if conversation is active or recent
-    const state = conversationStateRef.current;
-    const shouldProtect =
-      state.isActive || (state.lastMessageTime !== null && Date.now() - state.lastMessageTime < 10000);
-
-    if (shouldProtect) {
+    // Protection checks - don't clear if conversation is active or recent (using business logic)
+    if (conversationStateManagerRef.current.shouldProtect()) {
       log("useEffect:clearMessages", "Protected", {
-        reason: state.isActive ? "active" : "recent",
+        reason: conversationStateManagerRef.current.state.isActive ? "active" : "recent",
       });
       prevInputDataRef.current = currentData;
       return;
@@ -177,174 +179,11 @@ export function useResumeChatbot() {
     prevInputDataRef.current = currentData;
   }, [resume, jobDescription, queueClearMessages, messages.length]);
 
-  // Build resume context for business logic
-  const getResumeContext = useCallback((): ResumeContext => {
-    return {
-      resume,
-      jobDescription,
-      adaptedResume,
-      gaps,
-      matchResult,
-      changes,
-      sections,
-    };
-  }, [resume, jobDescription, adaptedResume, gaps, matchResult, changes, sections]);
-
-  // Generate follow-up questions using AI
-  const generateFollowUpQuestions = useCallback(async () => {
-    if (!hasData) {
-      setFollowUpQuestions([]);
-      return;
-    }
-
-    const apiKey = getOpenAIApiKey();
-    if (!apiKey) {
-      setFollowUpQuestions([]);
-      return;
-    }
-
-    // Avoid duplicate calls within 2 seconds
-    const now = Date.now();
-    if (now - lastQuestionsGenerationRef.current < 2000) {
-      return;
-    }
-    lastQuestionsGenerationRef.current = now;
-
-    setIsGeneratingQuestions(true);
-    try {
-      const resumeContext = getResumeContext();
-      const contextString = buildChatbotContext(resumeContext);
-
-      // Build conversation history for context
-      const conversationHistory = messages
-        .filter((msg) => msg.content.trim() !== "")
-        .map((msg) => ({
-          role: msg.role as "user" | "assistant",
-          content: msg.content,
-        }));
-
-      // Create prompt that considers both context and chat history
-      let prompt = `Based on the resume, job description, gaps analysis, and match results provided`;
-
-      if (conversationHistory.length > 0) {
-        prompt += `, and considering the conversation history below, generate exactly 3 relevant follow-up questions that a user might want to ask next.`;
-      } else {
-        prompt += `, generate exactly 3 relevant follow-up questions that a user might want to ask.`;
-      }
-
-      prompt += `\n\nThe questions should be:
-- Specific and relevant to the resume adaptation context`;
-
-      if (conversationHistory.length > 0) {
-        prompt += ` and the current conversation`;
-      }
-
-      prompt += `
-- Helpful for understanding the resume, job match, or gaps
-- Short and concise (one sentence each)
-- Different from each other
-- Not repeating questions that were already asked in the conversation`;
-
-      if (conversationHistory.length > 0) {
-        prompt += `\n\nCONVERSATION HISTORY:\n${conversationHistory.map((msg) => `${msg.role}: ${msg.content}`).join("\n\n")}`;
-      }
-
-      prompt += `\n\nReturn ONLY a JSON array of exactly 3 strings, nothing else. Example format: ["Question 1?", "Question 2?", "Question 3?"]`;
-
-      const messagesForApi =
-        conversationHistory.length > 0
-          ? [...conversationHistory, { role: "user" as const, content: prompt }]
-          : [{ role: "user" as const, content: prompt }];
-
-      const response = await sendChatbotMessage({
-        messages: messagesForApi,
-        context: contextString,
-        apiKey,
-      });
-
-      // Try to parse the response as JSON array
-      try {
-        const questions = JSON.parse(response.content.trim());
-        if (Array.isArray(questions) && questions.length > 0) {
-          // Take up to 3 questions
-          setFollowUpQuestions(questions.slice(0, 3));
-        } else {
-          // Fallback: try to extract questions from text
-          const lines = response.content
-            .split("\n")
-            .map((line) => line.trim())
-            .filter((line) => line.length > 0 && (line.includes("?") || line.match(/^\d+[.)]/)));
-          if (lines.length > 0) {
-            setFollowUpQuestions(lines.slice(0, 3));
-          } else {
-            setFollowUpQuestions([]);
-          }
-        }
-      } catch (parseError) {
-        // If JSON parsing fails, try to extract questions from text
-        const lines = response.content
-          .split("\n")
-          .map((line) =>
-            line
-              .trim()
-              .replace(/^[-•*]\s*/, "")
-              .replace(/^\d+[.)]\s*/, "")
-          )
-          .filter((line) => line.length > 0 && line.includes("?"));
-        if (lines.length > 0) {
-          setFollowUpQuestions(lines.slice(0, 3));
-        } else {
-          setFollowUpQuestions([]);
-        }
-      }
-    } catch (error) {
-      log("generateFollowUpQuestions", "Error", { error });
-      setFollowUpQuestions([]);
-    } finally {
-      setIsGeneratingQuestions(false);
-    }
-  }, [hasData, getResumeContext, messages]);
-
-  // Summarize conversation when it reaches threshold
-  const summarizeConversation = useCallback(
+  // Summarize conversation when it reaches threshold (UI wrapper around business logic)
+  const summarizeConversationUI = useCallback(
     async (messagesToSummarize: ChatbotMessage[]): Promise<string> => {
-      log("summarizeConversation", "Starting", { messageCount: messagesToSummarize.length });
-
-      const apiKey = getOpenAIApiKey();
-      if (!apiKey) {
-        throw new ChatbotApiError("OpenAI API key not configured");
-      }
-
       const resumeContext = getResumeContext();
-      const contextString = buildChatbotContext(resumeContext);
-
-      // Build conversation history for summarization
-      const conversationHistory = messagesToSummarize.map((msg) => ({
-        role: msg.role as "user" | "assistant",
-        content: msg.content,
-      }));
-
-      // Add summarize prompt
-      const summarizePrompt = `Summarize the messages sent and received in the chat.`;
-
-      conversationHistory.push({
-        role: "user",
-        content: summarizePrompt,
-      });
-
-      try {
-        const response = await sendChatbotMessage({
-          messages: conversationHistory,
-          context: contextString,
-          apiKey,
-        });
-
-        log("summarizeConversation", "Complete", { summaryLength: response.content.length });
-        return response.content;
-      } catch (error) {
-        log("summarizeConversation", "Failed", { error });
-        throw error;
-      }
+      return summarizeConversation(resumeContext, messagesToSummarize);
     },
     [getResumeContext]
   );
@@ -378,17 +217,17 @@ export function useResumeChatbot() {
         timestamp: new Date(),
       };
 
-      // Check if we need to summarize before adding new messages
+      // Check if we need to summarize before adding new messages (using business logic)
       const currentMessageCount = messages.length;
       let messagesToUse = messages;
 
-      if (currentMessageCount >= MESSAGE_THRESHOLD) {
+      if (shouldSummarizeConversation(currentMessageCount)) {
         log("sendMessage", "Summarizing", { currentCount: currentMessageCount });
         setIsLoading(true);
         try {
           // Summarize all messages except empty assistant messages
           const messagesToSummarize = messages.filter((msg) => msg.content.trim() !== "");
-          const summary = await summarizeConversation(messagesToSummarize);
+          const summary = await summarizeConversationUI(messagesToSummarize);
 
           // Replace old messages with summary
           const summaryMsg: ChatbotMessage = {
@@ -418,12 +257,8 @@ export function useResumeChatbot() {
         timestamp: new Date(),
       };
 
-      // Update conversation state BEFORE adding messages
-      conversationStateRef.current = {
-        isActive: true,
-        lastMessageTime: timestamp,
-        currentAssistantMsgId: assistantMsgId,
-      };
+      // Update conversation state BEFORE adding messages (using business logic)
+      conversationStateManagerRef.current.setActive(assistantMsgId);
 
       // Add both user message and empty assistant message in a single state update
       log("sendMessage", "Adding messages", { userMsgId, assistantMsgId });
@@ -437,10 +272,6 @@ export function useResumeChatbot() {
       hasReceivedFirstChunkRef.current = false;
 
       try {
-        // Build context using business logic
-        const resumeContext = getResumeContext();
-        const contextString = buildChatbotContext(resumeContext);
-
         // Build conversation history for API (use summarized messages if available)
         const conversationHistory = messagesToUse.map((msg) => ({
           role: msg.role as "user" | "assistant",
@@ -458,16 +289,10 @@ export function useResumeChatbot() {
         // Set the current assistant message ID for the stream callback
         currentAssistantMsgIdRef.current = assistantMsgId;
 
-        // Use generic stream hook for managing streaming
+        // Use generic stream hook for managing streaming (using business logic)
+        const resumeContext = getResumeContext();
         await streamHook.stream(async (onChunk: (chunk: string) => void) => {
-          await sendChatbotMessageStream(
-            {
-              messages: conversationHistory,
-              context: contextString,
-              apiKey,
-            },
-            onChunk
-          );
+          await sendChatbotMessageWithStream(resumeContext, conversationHistory, onChunk);
         });
 
         log("sendMessage", "Stream complete", {
@@ -479,7 +304,7 @@ export function useResumeChatbot() {
         currentAssistantMsgIdRef.current = null;
 
         // Generate new follow-up questions after assistant response
-        generateFollowUpQuestions();
+        generateFollowUpQuestionsUI();
       } catch (error) {
         log("sendMessage", "Error", { error, assistantMsgId });
 
@@ -502,17 +327,13 @@ export function useResumeChatbot() {
       } finally {
         setIsLoading(false);
 
-        // Reset the active flag immediately
+        // Reset the active flag immediately (using business logic)
         // The useEffect will check the state on the next render cycle
         log("sendMessage", "Resetting state");
-        conversationStateRef.current = {
-          ...conversationStateRef.current,
-          isActive: false,
-          currentAssistantMsgId: null,
-        };
+        conversationStateManagerRef.current.setInactive();
       }
     },
-    [hasData, messages, getResumeContext, summarizeConversation, setMessages, streamHook, generateFollowUpQuestions]
+    [hasData, messages, getResumeContext, summarizeConversationUI, setMessages, streamHook, generateFollowUpQuestionsUI]
   );
 
   const toggle = useCallback(() => {
@@ -522,47 +343,9 @@ export function useResumeChatbot() {
   const clearMessages = useCallback(() => {
     log("clearMessages", "Manual clear", { messageCount: messages.length });
     queueClearMessages();
-    setFollowUpQuestions([]);
-    conversationStateRef.current = {
-      isActive: false,
-      lastMessageTime: null,
-      currentAssistantMsgId: null,
-    };
-  }, [messages.length, queueClearMessages]);
-
-  // Generate follow-up questions when:
-  // 1. There are no messages and we have data (initial state)
-  // 2. After assistant finishes responding (handled in sendMessage)
-  // 3. When messages change significantly (to update questions based on new context)
-  useEffect(() => {
-    // Only generate if not currently loading or generating
-    if (isLoading || isGeneratingQuestions) {
-      return;
-    }
-
-    // Generate initial questions when there are no messages
-    if (messages.length === 0 && hasData) {
-      generateFollowUpQuestions();
-      return;
-    }
-
-    // Update questions when we have messages and the last message is from assistant
-    // This ensures questions are updated after each assistant response
-    // Note: This is a fallback - the main generation happens in sendMessage after stream completes
-    if (messages.length > 0 && hasData) {
-      const lastMessage = messages[messages.length - 1];
-      // Only regenerate if the last message is from assistant and has content
-      // And if enough time has passed since last generation (to avoid duplicate calls)
-      const timeSinceLastGen = Date.now() - lastQuestionsGenerationRef.current;
-      if (lastMessage.role === "assistant" && lastMessage.content.trim() && timeSinceLastGen > 2000) {
-        // Small delay to ensure state is settled
-        const timeoutId = setTimeout(() => {
-          generateFollowUpQuestions();
-        }, 1000);
-        return () => clearTimeout(timeoutId);
-      }
-    }
-  }, [messages, hasData, isLoading, isGeneratingQuestions, generateFollowUpQuestions]);
+    clearQuestions();
+    conversationStateManagerRef.current.reset();
+  }, [messages.length, queueClearMessages, clearQuestions]);
 
   return {
     isOpen,
