@@ -11,7 +11,7 @@ on:
       - master
 
 jobs:
-  coverage:
+  coverage-web:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,17 +28,12 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Run tests with coverage (Web)
+      - name: Run tests with coverage
         run: |
           cd packages/web
           bun run test:coverage
 
-      - name: Run tests with coverage (ESLint Plugin)
-        run: |
-          cd packages/eslint-plugin-fsd
-          bun run test:coverage
-
-      - name: Upload web coverage to Codecov
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -49,7 +44,29 @@ jobs:
           fail_ci_if_error: false
           verbose: true
 
-      - name: Upload eslint-plugin-fsd coverage to Codecov
+  coverage-eslint-plugin:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for Codecov to calculate base coverage
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run tests with coverage
+        run: |
+          cd packages/eslint-plugin-fsd
+          bun run test:coverage
+
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
