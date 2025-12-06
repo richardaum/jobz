@@ -1,36 +1,36 @@
 #!/bin/bash
 
-# Script para executar type-check apenas nos packages que tiveram alterações
-# Detecta arquivos staged (--cached) e modificados (working tree)
+# Script to run type-check only on packages that have changes
+# Detects staged files (--cached) and modified files (working tree)
 
-# Cores para output
+# Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-# Função para obter arquivos alterados
+# Function to get changed files
 get_changed_files() {
-  # Arquivos staged (prontos para commit)
+  # Staged files (ready for commit)
   git diff --cached --name-only --diff-filter=ACM 2>/dev/null
   
-  # Arquivos modificados no working tree
+  # Modified files in working tree
   git diff --name-only --diff-filter=ACM 2>/dev/null
 }
 
-# Função para extrair packages alterados dos arquivos
+# Function to extract changed packages from files
 get_changed_packages() {
   local changed_files="$1"
   local packages=()
   
   while IFS= read -r file; do
-    # Ignora arquivos vazios
+    # Ignore empty files
     [ -z "$file" ] && continue
     
-    # Extrai o nome do package do caminho
+    # Extract package name from path
     if [[ "$file" =~ ^packages/([^/]+)/ ]]; then
       local package="${BASH_REMATCH[1]}"
-      # Adiciona apenas se ainda não estiver na lista
+      # Add only if not already in the list
       if [[ ! " ${packages[*]} " =~ " ${package} " ]]; then
         packages+=("$package")
       fi
@@ -40,13 +40,13 @@ get_changed_packages() {
   echo "${packages[@]}"
 }
 
-# Função para executar type-check em um package
+# Function to run type-check on a package
 type_check_package() {
   local package="$1"
   local tsconfig_path="packages/$package/tsconfig.json"
   
   if [ ! -f "$tsconfig_path" ]; then
-    echo -e "${YELLOW}⚠️  Package $package não tem tsconfig.json, pulando...${NC}"
+    echo -e "${YELLOW}⚠️  Package $package does not have tsconfig.json, skipping...${NC}"
     return 0
   fi
   
@@ -55,23 +55,23 @@ type_check_package() {
     echo -e "${GREEN}✅ $package: OK${NC}"
     return 0
   else
-    echo -e "${RED}❌ $package: ERRO${NC}"
+    echo -e "${RED}❌ $package: ERROR${NC}"
     return 1
   fi
 }
 
 # Main
 main() {
-  echo -e "${GREEN}🔍 Detectando packages alterados...${NC}"
+  echo -e "${GREEN}🔍 Detecting changed packages...${NC}"
   
-  # Obtém arquivos alterados
+  # Get changed files
   changed_files=$(get_changed_files | sort -u)
   
-  # Se não houver arquivos alterados, verifica se deve rodar em todos
+  # If no changed files, check if should run on all
   if [ -z "$changed_files" ]; then
-    echo -e "${YELLOW}⚠️  Nenhum arquivo alterado detectado.${NC}"
-    echo -e "${YELLOW}   Executando type-check em todos os packages...${NC}"
-    # Fallback: executa em todos os packages
+    echo -e "${YELLOW}⚠️  No changed files detected.${NC}"
+    echo -e "${YELLOW}   Running type-check on all packages...${NC}"
+    # Fallback: run on all packages
     for dir in packages/*/; do
       package=$(basename "$dir")
       type_check_package "$package" || exit 1
@@ -79,18 +79,18 @@ main() {
     exit 0
   fi
   
-  # Extrai packages alterados
+  # Extract changed packages
   changed_packages=($(get_changed_packages "$changed_files"))
   
   if [ ${#changed_packages[@]} -eq 0 ]; then
-    echo -e "${GREEN}✅ Nenhum package alterado detectado.${NC}"
+    echo -e "${GREEN}✅ No changed packages detected.${NC}"
     exit 0
   fi
   
-  echo -e "${GREEN}📦 Packages alterados: ${changed_packages[*]}${NC}"
+  echo -e "${GREEN}📦 Changed packages: ${changed_packages[*]}${NC}"
   echo ""
   
-  # Executa type-check em cada package alterado
+  # Run type-check on each changed package
   failed=0
   for package in "${changed_packages[@]}"; do
     type_check_package "$package" || failed=1
@@ -98,11 +98,11 @@ main() {
   done
   
   if [ $failed -eq 1 ]; then
-    echo -e "${RED}❌ Type-check falhou em um ou mais packages${NC}"
+    echo -e "${RED}❌ Type-check failed in one or more packages${NC}"
     exit 1
   fi
   
-  echo -e "${GREEN}✅ Todos os type-checks passaram!${NC}"
+  echo -e "${GREEN}✅ All type-checks passed!${NC}"
   exit 0
 }
 

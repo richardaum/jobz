@@ -175,8 +175,6 @@ export function Toolbar({
             </Tooltip>
           );
         })()}
-      </div>
-      <div className="flex items-center gap-2 shrink-0">
         <Menu open={isMoreMenuOpen} onOpenChange={setIsMoreMenuOpen}>
           <MenuAnchor asChild>
             <Button
@@ -213,6 +211,8 @@ export function Toolbar({
             </MenuItem>
           </MenuContent>
         </Menu>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
         <Menu open={isClearMenuOpen} onOpenChange={setIsClearMenuOpen}>
           <MenuAnchor asChild>
             <Button
