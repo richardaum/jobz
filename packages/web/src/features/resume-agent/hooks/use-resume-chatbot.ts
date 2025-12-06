@@ -33,6 +33,8 @@ export function useResumeChatbot() {
   // UI State
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [followUpQuestions, setFollowUpQuestions] = useState<string[]>([]);
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
 
   // Use chatbot queue hook for managing messages (now uses global Zustand store)
   const {
@@ -70,6 +72,9 @@ export function useResumeChatbot() {
 
   // Ref to track current assistant message ID during streaming
   const currentAssistantMsgIdRef = useRef<string | null>(null);
+
+  // Ref to track last time questions were generated to avoid duplicate calls
+  const lastQuestionsGenerationRef = useRef<number>(0);
 
   // Generic stream hook for managing streaming operations
   const streamHook = useStream({
@@ -170,7 +175,7 @@ export function useResumeChatbot() {
     log("useEffect:clearMessages", "Clearing", { messageCount: messages.length });
     queueClearMessages();
     prevInputDataRef.current = currentData;
-  }, [resume, jobDescription, queueClearMessages]);
+  }, [resume, jobDescription, queueClearMessages, messages.length]);
 
   // Build resume context for business logic
   const getResumeContext = useCallback((): ResumeContext => {
@@ -184,6 +189,121 @@ export function useResumeChatbot() {
       sections,
     };
   }, [resume, jobDescription, adaptedResume, gaps, matchResult, changes, sections]);
+
+  // Generate follow-up questions using AI
+  const generateFollowUpQuestions = useCallback(async () => {
+    if (!hasData) {
+      setFollowUpQuestions([]);
+      return;
+    }
+
+    const apiKey = getOpenAIApiKey();
+    if (!apiKey) {
+      setFollowUpQuestions([]);
+      return;
+    }
+
+    // Avoid duplicate calls within 2 seconds
+    const now = Date.now();
+    if (now - lastQuestionsGenerationRef.current < 2000) {
+      return;
+    }
+    lastQuestionsGenerationRef.current = now;
+
+    setIsGeneratingQuestions(true);
+    try {
+      const resumeContext = getResumeContext();
+      const contextString = buildChatbotContext(resumeContext);
+
+      // Build conversation history for context
+      const conversationHistory = messages
+        .filter((msg) => msg.content.trim() !== "")
+        .map((msg) => ({
+          role: msg.role as "user" | "assistant",
+          content: msg.content,
+        }));
+
+      // Create prompt that considers both context and chat history
+      let prompt = `Based on the resume, job description, gaps analysis, and match results provided`;
+
+      if (conversationHistory.length > 0) {
+        prompt += `, and considering the conversation history below, generate exactly 3 relevant follow-up questions that a user might want to ask next.`;
+      } else {
+        prompt += `, generate exactly 3 relevant follow-up questions that a user might want to ask.`;
+      }
+
+      prompt += `\n\nThe questions should be:
+- Specific and relevant to the resume adaptation context`;
+
+      if (conversationHistory.length > 0) {
+        prompt += ` and the current conversation`;
+      }
+
+      prompt += `
+- Helpful for understanding the resume, job match, or gaps
+- Short and concise (one sentence each)
+- Different from each other
+- Not repeating questions that were already asked in the conversation`;
+
+      if (conversationHistory.length > 0) {
+        prompt += `\n\nCONVERSATION HISTORY:\n${conversationHistory.map((msg) => `${msg.role}: ${msg.content}`).join("\n\n")}`;
+      }
+
+      prompt += `\n\nReturn ONLY a JSON array of exactly 3 strings, nothing else. Example format: ["Question 1?", "Question 2?", "Question 3?"]`;
+
+      const messagesForApi =
+        conversationHistory.length > 0
+          ? [...conversationHistory, { role: "user" as const, content: prompt }]
+          : [{ role: "user" as const, content: prompt }];
+
+      const response = await sendChatbotMessage({
+        messages: messagesForApi,
+        context: contextString,
+        apiKey,
+      });
+
+      // Try to parse the response as JSON array
+      try {
+        const questions = JSON.parse(response.content.trim());
+        if (Array.isArray(questions) && questions.length > 0) {
+          // Take up to 3 questions
+          setFollowUpQuestions(questions.slice(0, 3));
+        } else {
+          // Fallback: try to extract questions from text
+          const lines = response.content
+            .split("\n")
+            .map((line) => line.trim())
+            .filter((line) => line.length > 0 && (line.includes("?") || line.match(/^\d+[.)]/)));
+          if (lines.length > 0) {
+            setFollowUpQuestions(lines.slice(0, 3));
+          } else {
+            setFollowUpQuestions([]);
+          }
+        }
+      } catch (parseError) {
+        // If JSON parsing fails, try to extract questions from text
+        const lines = response.content
+          .split("\n")
+          .map((line) =>
+            line
+              .trim()
+              .replace(/^[-•*]\s*/, "")
+              .replace(/^\d+[.)]\s*/, "")
+          )
+          .filter((line) => line.length > 0 && line.includes("?"));
+        if (lines.length > 0) {
+          setFollowUpQuestions(lines.slice(0, 3));
+        } else {
+          setFollowUpQuestions([]);
+        }
+      }
+    } catch (error) {
+      log("generateFollowUpQuestions", "Error", { error });
+      setFollowUpQuestions([]);
+    } finally {
+      setIsGeneratingQuestions(false);
+    }
+  }, [hasData, getResumeContext, messages]);
 
   // Summarize conversation when it reaches threshold
   const summarizeConversation = useCallback(
@@ -357,6 +477,9 @@ export function useResumeChatbot() {
 
         // Clear the ref after streaming is complete
         currentAssistantMsgIdRef.current = null;
+
+        // Generate new follow-up questions after assistant response
+        generateFollowUpQuestions();
       } catch (error) {
         log("sendMessage", "Error", { error, assistantMsgId });
 
@@ -389,7 +512,7 @@ export function useResumeChatbot() {
         };
       }
     },
-    [hasData, messages, getResumeContext, summarizeConversation, setMessages, streamHook]
+    [hasData, messages, getResumeContext, summarizeConversation, setMessages, streamHook, generateFollowUpQuestions]
   );
 
   const toggle = useCallback(() => {
@@ -399,12 +522,47 @@ export function useResumeChatbot() {
   const clearMessages = useCallback(() => {
     log("clearMessages", "Manual clear", { messageCount: messages.length });
     queueClearMessages();
+    setFollowUpQuestions([]);
     conversationStateRef.current = {
       isActive: false,
       lastMessageTime: null,
       currentAssistantMsgId: null,
     };
   }, [messages.length, queueClearMessages]);
+
+  // Generate follow-up questions when:
+  // 1. There are no messages and we have data (initial state)
+  // 2. After assistant finishes responding (handled in sendMessage)
+  // 3. When messages change significantly (to update questions based on new context)
+  useEffect(() => {
+    // Only generate if not currently loading or generating
+    if (isLoading || isGeneratingQuestions) {
+      return;
+    }
+
+    // Generate initial questions when there are no messages
+    if (messages.length === 0 && hasData) {
+      generateFollowUpQuestions();
+      return;
+    }
+
+    // Update questions when we have messages and the last message is from assistant
+    // This ensures questions are updated after each assistant response
+    // Note: This is a fallback - the main generation happens in sendMessage after stream completes
+    if (messages.length > 0 && hasData) {
+      const lastMessage = messages[messages.length - 1];
+      // Only regenerate if the last message is from assistant and has content
+      // And if enough time has passed since last generation (to avoid duplicate calls)
+      const timeSinceLastGen = Date.now() - lastQuestionsGenerationRef.current;
+      if (lastMessage.role === "assistant" && lastMessage.content.trim() && timeSinceLastGen > 2000) {
+        // Small delay to ensure state is settled
+        const timeoutId = setTimeout(() => {
+          generateFollowUpQuestions();
+        }, 1000);
+        return () => clearTimeout(timeoutId);
+      }
+    }
+  }, [messages, hasData, isLoading, isGeneratingQuestions, generateFollowUpQuestions]);
 
   return {
     isOpen,
@@ -414,5 +572,6 @@ export function useResumeChatbot() {
     isLoading,
     hasData,
     clearMessages,
+    followUpQuestions,
   };
 }
