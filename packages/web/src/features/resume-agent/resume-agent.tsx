@@ -8,7 +8,9 @@ import { Grid, GridItem } from "@/shared/ui";
 
 import { EmptyState } from "./components/empty-state";
 import { OutputCard } from "./components/output-card";
+import { ResumeChatbot } from "./components/resume-chatbot";
 import { Toolbar } from "./components/toolbar";
+import { useResumeChatbot } from "./hooks/use-resume-chatbot";
 import { useResumeProcessing } from "./hooks/use-resume-processing";
 import { useRewriteSection } from "./hooks/use-rewrite-section";
 import { useCardsVisibilityStore } from "./stores/cards-visibility-store";
@@ -145,6 +147,9 @@ export function ResumeAgent() {
   const isAdaptedResumeVisible = visibleCards.has("adapted-resume");
   const isGapsAnalysisVisible = visibleCards.has("gaps-analysis");
 
+  // Chatbot integration
+  const chatbot = useResumeChatbot();
+
   // Show nothing during SSR to prevent hydration mismatch
   if (!isClient) {
     return (
@@ -155,6 +160,8 @@ export function ResumeAgent() {
             isProcessing={processing.isLoading}
             matchResult={currentMatchResult}
             isMatching={processing.isMatching}
+            onToggleChatbot={chatbot.toggle}
+            hasChatbotData={chatbot.hasData}
           />
         </div>
         <div className="flex-1 flex items-center justify-center">
@@ -224,6 +231,13 @@ export function ResumeAgent() {
           </Grid>
         </div>
       )}
+      <ResumeChatbot
+        isOpen={chatbot.isOpen}
+        onToggle={chatbot.toggle}
+        messages={chatbot.messages}
+        onSendMessage={chatbot.sendMessage}
+        isLoading={chatbot.isLoading}
+      />
     </div>
   );
 }

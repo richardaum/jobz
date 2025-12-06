@@ -7,6 +7,7 @@ import {
   IconEye,
   IconFileText,
   IconHistory,
+  IconMessage,
   IconSettings,
   IconTrash,
 } from "@tabler/icons-react";
@@ -27,9 +28,18 @@ interface ToolbarProps {
   isProcessing: boolean;
   matchResult: MatchResult | null;
   isMatching: boolean;
+  onToggleChatbot?: () => void;
+  hasChatbotData?: boolean;
 }
 
-export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: ToolbarProps) {
+export function Toolbar({
+  onProcess,
+  isProcessing,
+  matchResult,
+  isMatching,
+  onToggleChatbot,
+  hasChatbotData,
+}: ToolbarProps) {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isPromptOpen, setIsPromptOpen] = useState(false);
   const [isClearMenuOpen, setIsClearMenuOpen] = useState(false);
@@ -136,6 +146,18 @@ export function Toolbar({ onProcess, isProcessing, matchResult, isMatching }: To
           <IconCode className="h-4 w-4 mr-2" />
           Show Prompt
         </Button>
+        {hasChatbotData && onToggleChatbot && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onToggleChatbot}
+            type="button"
+            title="Ask questions about your resume"
+          >
+            <IconMessage className="h-4 w-4 mr-2" />
+            Ask about 🤖
+          </Button>
+        )}
       </div>
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" onClick={() => setIsHistoryOpen(true)} type="button">
