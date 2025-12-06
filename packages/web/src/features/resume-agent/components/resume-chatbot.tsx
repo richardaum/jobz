@@ -11,6 +11,7 @@ interface ResumeChatbotProps {
   onSendMessage: (message: string) => Promise<void>;
   onClearMessages?: () => void;
   isLoading: boolean;
+  followUpQuestions?: string[];
 }
 
 /**
@@ -24,6 +25,7 @@ export function ResumeChatbot({
   onSendMessage,
   onClearMessages,
   isLoading,
+  followUpQuestions,
 }: ResumeChatbotProps) {
   // Convert feature-specific messages to shared ChatMessage type
   const sharedMessages: ChatMessage[] = messages.map((msg) => ({
@@ -53,11 +55,7 @@ export function ResumeChatbot({
         },
         placeholder: "Ask a question...",
         position: "bottom-right",
-        followUpQuestions: [
-          "What are the key strengths of my resume?",
-          "How well does my resume match the job description?",
-          "What gaps should I address in my resume?",
-        ],
+        followUpQuestions,
       }}
     />
   );

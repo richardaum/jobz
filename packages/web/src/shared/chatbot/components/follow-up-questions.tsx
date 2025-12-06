@@ -12,7 +12,7 @@ export function FollowUpQuestions({ questions, onQuestionClick, isLoading }: Fol
   }
 
   return (
-    <div className="px-4 pb-4 space-y-2">
+    <div className="p-4 space-y-2">
       {questions.map((question, index) => (
         <button
           key={index}

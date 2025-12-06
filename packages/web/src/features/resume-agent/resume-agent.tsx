@@ -240,6 +240,7 @@ export function ResumeAgent() {
         onSendMessage={chatbot.sendMessage}
         onClearMessages={chatbot.clearMessages}
         isLoading={chatbot.isLoading}
+        followUpQuestions={chatbot.followUpQuestions}
       />
     </div>
   );
