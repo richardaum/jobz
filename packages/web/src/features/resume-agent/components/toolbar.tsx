@@ -81,13 +81,14 @@ export function Toolbar({
   };
 
   return (
-    <div className="flex items-center justify-between gap-2 mb-4">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 min-w-0">
         {/* Input Group */}
         <ResumePopover value={resume} onChange={setResume}>
-          <Button variant="outline" size="sm" type="button">
+          <Button variant="outline" size="sm" type="button" className="shrink-0">
             <IconFileText className="h-4 w-4 mr-2" />
-            {resume.trim() ? "Edit Resume" : "Add Resume"}
+            <span className="hidden sm:inline">{resume.trim() ? "Edit Resume" : "Add Resume"}</span>
+            <span className="sm:hidden">Resume</span>
           </Button>
         </ResumePopover>
         <JobDescriptionPopover
@@ -97,19 +98,23 @@ export function Toolbar({
           isMatching={isMatching}
           hasResume={!!resume.trim()}
         >
-          <Button variant="outline" size="sm" type="button">
+          <Button variant="outline" size="sm" type="button" className="shrink-0">
             <IconBriefcase className="h-4 w-4 mr-2" />
-            {jobDescription.trim() ? "Edit Job Description" : "Add Job Description"}
+            <span className="hidden md:inline">
+              {jobDescription.trim() ? "Edit Job Description" : "Add Job Description"}
+            </span>
+            <span className="md:hidden">Job</span>
           </Button>
         </JobDescriptionPopover>
         <PersonalPreferencesPopover value={personalPreferences} onChange={setPersonalPreferences}>
-          <Button variant="outline" size="sm" type="button">
+          <Button variant="outline" size="sm" type="button" className="shrink-0">
             <IconSettings className="h-4 w-4 mr-2" />
-            Add Personal Preference
+            <span className="hidden lg:inline">Add Personal Preference</span>
+            <span className="lg:hidden">Preferences</span>
           </Button>
         </PersonalPreferencesPopover>
 
-        <Divider className="mx-2" />
+        <Divider className="mx-2 hidden sm:block" />
 
         {/* Info Group - Hoverable buttons */}
         <JobMatchButton
@@ -120,19 +125,33 @@ export function Toolbar({
         />
         <ChecklistButton checklist={matchResult?.checklist} />
 
-        <Divider className="mx-2" />
+        <Divider className="mx-2 hidden sm:block" />
 
         {/* Actions Group */}
         {isAdaptedResumeHidden && (
-          <Button variant="outline" size="sm" onClick={() => showCard("adapted-resume")} type="button">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => showCard("adapted-resume")}
+            type="button"
+            className="shrink-0"
+          >
             <IconEye className="h-4 w-4 mr-2" />
-            Show Adapted Resume
+            <span className="hidden lg:inline">Show Adapted Resume</span>
+            <span className="lg:hidden">Show Resume</span>
           </Button>
         )}
         {isGapsAnalysisHidden && (
-          <Button variant="outline" size="sm" onClick={() => showCard("gaps-analysis")} type="button">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => showCard("gaps-analysis")}
+            type="button"
+            className="shrink-0"
+          >
             <IconEye className="h-4 w-4 mr-2" />
-            Show Gaps Analysis
+            <span className="hidden lg:inline">Show Gaps Analysis</span>
+            <span className="lg:hidden">Show Gaps</span>
           </Button>
         )}
         <Button
@@ -141,26 +160,36 @@ export function Toolbar({
           onClick={() => setIsPromptOpen(true)}
           type="button"
           disabled={!resume.trim() || !jobDescription.trim()}
+          className="shrink-0"
         >
           <IconCode className="h-4 w-4 mr-2" />
-          Show Prompt
+          <span className="hidden lg:inline">Show Prompt</span>
+          <span className="lg:hidden">Prompt</span>
         </Button>
         {(() => {
           const isButtonDisabled = !hasChatbotData || !onToggleChatbot;
           return (
             <Tooltip disabled={!isButtonDisabled} content={<p>Process your resume first to ask questions about it</p>}>
-              <Button variant="outline" size="sm" onClick={onToggleChatbot} type="button" disabled={isButtonDisabled}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onToggleChatbot}
+                type="button"
+                disabled={isButtonDisabled}
+                className="shrink-0"
+              >
                 <span className="mr-2">🤖</span>
-                Ask about Resume
+                <span className="hidden lg:inline">Ask about Resume</span>
+                <span className="lg:hidden">Ask</span>
               </Button>
             </Tooltip>
           );
         })()}
       </div>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={() => setIsHistoryOpen(true)} type="button">
-          <IconHistory className="h-4 w-4 mr-2" />
-          History
+      <div className="flex items-center gap-2 shrink-0">
+        <Button variant="outline" size="sm" onClick={() => setIsHistoryOpen(true)} type="button" className="shrink-0">
+          <IconHistory className="h-4 w-4 sm:mr-2" />
+          <span className="hidden sm:inline">History</span>
         </Button>
         <Menu open={isClearMenuOpen} onOpenChange={setIsClearMenuOpen}>
           <MenuAnchor asChild>
@@ -169,11 +198,11 @@ export function Toolbar({
               size="sm"
               type="button"
               onClick={() => setIsClearMenuOpen(!isClearMenuOpen)}
-              className="text-red-700 hover:text-red-900 hover:bg-red-50"
+              className="text-red-700 hover:text-red-900 hover:bg-red-50 shrink-0"
             >
-              <IconTrash className="h-4 w-4 mr-2" />
-              Clear
-              <IconChevronDown className="h-4 w-4 ml-2" />
+              <IconTrash className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Clear</span>
+              <IconChevronDown className="h-4 w-4 sm:ml-2" />
             </Button>
           </MenuAnchor>
           <MenuContent align="end" className="w-64">
@@ -200,6 +229,7 @@ export function Toolbar({
           onClick={onProcess}
           disabled={isProcessing || !resume.trim() || !jobDescription.trim()}
           type="button"
+          className="shrink-0"
         >
           {isProcessing ? "Processing..." : "Start 🚀"}
         </Button>

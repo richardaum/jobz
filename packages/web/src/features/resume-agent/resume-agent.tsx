@@ -179,6 +179,8 @@ export function ResumeAgent() {
           isProcessing={processing.isLoading}
           matchResult={currentMatchResult}
           isMatching={processing.isMatching}
+          onToggleChatbot={chatbot.toggle}
+          hasChatbotData={chatbot.hasData}
         />
       </div>
       {showEmptyState ? (
