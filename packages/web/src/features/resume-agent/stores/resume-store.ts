@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import type { MatchResult } from "@/entities/match-result";
-import type { ResumeChange } from "@/entities/resume";
+import type { ResumeChange, ResumeSection } from "@/entities/resume";
 import type { ResumeHistoryItem } from "@/entities/resume-history";
 
 // Re-export entity types for backward compatibility
@@ -21,14 +21,18 @@ export interface ResumeStore {
 
   // Outputs
   adaptedResume: string;
+  sections: ResumeSection[]; // Structured sections of the resume
   gaps: string;
   matchResult: MatchResult | null;
   changes: ResumeChange[];
+  rawResponseJson: string | null; // Full JSON response from AI
   updateOutputs: (data: {
     adaptedResume: string;
+    sections?: ResumeSection[];
     gaps: string;
     matchResult: MatchResult;
     changes: ResumeChange[];
+    rawResponseJson?: string;
   }) => void;
 
   // Computed
@@ -74,9 +78,11 @@ export const useResumeStore = create<ResumeStore>()(
         jobDescription: "",
         personalPreferences: "",
         adaptedResume: "",
+        sections: [],
         gaps: "",
         matchResult: null,
         changes: [],
+        rawResponseJson: null,
 
         // Inputs
         setResume: (resume: string) => set({ resume: resume || "" }),
@@ -87,15 +93,19 @@ export const useResumeStore = create<ResumeStore>()(
         // Outputs
         updateOutputs: (data: {
           adaptedResume: string;
+          sections?: ResumeSection[];
           gaps: string;
           matchResult: MatchResult;
           changes: ResumeChange[];
+          rawResponseJson?: string;
         }) =>
           set({
             adaptedResume: data.adaptedResume || "",
+            sections: data.sections || [],
             gaps: data.gaps || "",
             matchResult: data.matchResult,
             changes: data.changes || [],
+            rawResponseJson: data.rawResponseJson || null,
           }),
 
         // Computed
@@ -108,9 +118,11 @@ export const useResumeStore = create<ResumeStore>()(
         clearResults: () =>
           set({
             adaptedResume: "",
+            sections: [],
             gaps: "",
             matchResult: null,
             changes: [],
+            rawResponseJson: null,
           }),
 
         // Clear all data
@@ -120,9 +132,11 @@ export const useResumeStore = create<ResumeStore>()(
             jobDescription: "",
             personalPreferences: "",
             adaptedResume: "",
+            sections: [],
             gaps: "",
             matchResult: null,
             changes: [],
+            rawResponseJson: null,
           }),
       };
     },
@@ -134,9 +148,11 @@ export const useResumeStore = create<ResumeStore>()(
         jobDescription: state.jobDescription || "",
         personalPreferences: state.personalPreferences || "",
         adaptedResume: state.adaptedResume || "",
+        sections: state.sections || [],
         gaps: state.gaps || "",
         matchResult: state.matchResult,
         changes: state.changes || [],
+        rawResponseJson: state.rawResponseJson || null,
       }),
       // Ensure we always have string defaults on rehydration
       merge: (persistedState: unknown, currentState) => {
@@ -147,9 +163,11 @@ export const useResumeStore = create<ResumeStore>()(
           jobDescription: persisted?.jobDescription ?? "",
           personalPreferences: persisted?.personalPreferences ?? "",
           adaptedResume: persisted?.adaptedResume ?? "",
+          sections: persisted?.sections ?? [],
           gaps: persisted?.gaps ?? "",
           matchResult: persisted?.matchResult ?? null,
           changes: persisted?.changes ?? [],
+          rawResponseJson: persisted?.rawResponseJson ?? null,
         };
       },
     }

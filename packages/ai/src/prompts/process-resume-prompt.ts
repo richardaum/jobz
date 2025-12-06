@@ -17,8 +17,7 @@ export function buildProcessResumePrompt(
   const adaptResumePrompt = buildAdaptResumePrompt(jobDescription, resume, tone, focus);
   const analyzeGapsPrompt = buildAnalyzeGapsPrompt(resume, jobDescription);
 
-  return `You are an expert career advisor helping a candidate with job application preparation. 
-You need to perform three comprehensive analyses in a single response.
+  return `Perform three analyses in a single response.
 
 Job Description:
 ${jobDescription}
@@ -28,40 +27,61 @@ ${resume}
 
 ---
 
-**TASK 1: Job Matching Analysis**
-
+TASK 1: Job Matching Analysis
 ${matchJobPrompt}
 
 ---
 
-**TASK 2: Resume Adaptation**
-
+TASK 2: Resume Adaptation
 ${adaptResumePrompt}
+
+IMPORTANT: If the resume contains sections in different languages, preserve each section's original language throughout the adaptation process.
 
 ---
 
-**TASK 3: Gap Analysis**
-
+TASK 3: Gap Analysis
 ${analyzeGapsPrompt}
 
 ---
 
-**IMPORTANT**: You must return a single JSON object containing all three analyses with this exact structure:
+Return single JSON:
 {
   "matchJob": {
-    "matchPercentage": <number 0-100>,
-    "analysis": "<2-3 sentences in second person addressing the candidate directly>",
-    "checklist": [<array of ChecklistItem objects with category, checked (boolean), and description>]
+    "matchPercentage": <0-100>,
+    "analysis": "<2-3 sentences, second person>",
+    "checklist": [<ChecklistItem: category, checked, description>]
   },
   "adaptResume": {
-    "adaptedResume": "<complete adapted resume as ready-to-use document, well-structured and professional>",
-    "changes": [<array of objects with section (string) and description (string)>],
-    "keywords": [<array of keywords from job description that were incorporated>]
+    "adaptedResume": "<complete adapted resume>",
+    "sections": [
+      {
+        "name": "<Section name (e.g., 'Summary', 'Experience', 'Skills')>",
+        "subsections": [
+          {
+            "name": "<Subsection name (e.g., 'Company Name', 'Job Title', 'Skill Category')>",
+            "content": "<Content of this subsection>"
+          }
+        ]
+      }
+    ],
+    "changes": [<{section, description, originalText?, newText?, reason?, position?}>],
+    "keywords": [<string>]
   },
   "analyzeGaps": {
-    "gaps": "<2-3 paragraphs in first person (I, my) explaining gaps and how to address them>"
+    "gaps": "<2-3 paragraphs, first person>"
   }
 }
 
-Ensure all three analyses are comprehensive, accurate, and follow their respective instructions and tone requirements.`;
+IMPORTANT for adaptResume.sections:
+- Array of all sections in the resume. Each section must have a "name" and "subsections" array.
+- subsections: Break down each section into granular subsections. For example:
+  * "Professional Experience" section → subsections for each job/position
+  * "Skills" section → subsections for each skill category or group
+  * "Education" section → subsections for each degree/certification
+  * "Summary" section → can have a single subsection or break into paragraphs
+- Each subsection must have a "name" (identifying the subsection) and "content" (the text content).
+- The combined content of all subsections in a section must exactly match the corresponding section in "adaptedResume".
+- Maintain the same order of sections and subsections as they appear in adaptedResume.
+- Section names should match common resume section names (Summary, Professional Experience, Work Experience, Skills, Education, etc.).
+- Subsection names should be descriptive but concise (e.g., "Software Engineer at Company X", "Technical Skills", "Bachelor's Degree").`;
 }

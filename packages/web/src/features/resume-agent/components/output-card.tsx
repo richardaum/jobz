@@ -1,7 +1,9 @@
-import { IconCopy, IconDownload, IconLoader2, IconX } from "@tabler/icons-react";
+import { IconCode, IconCopy, IconDownload, IconLoader2, IconX } from "@tabler/icons-react";
+import { toast } from "sonner";
 
-import { AdaptedResumeButton, type ResumeChange } from "@/entities/resume";
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Label, Textarea } from "@/shared/ui";
+import { AdaptedResumeViewer, type ResumeChange, type ResumeSection } from "@/entities/resume";
+import { copyToClipboard } from "@/shared/lib";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Textarea } from "@/shared/ui";
 
 interface OutputCardProps {
   title: string;
@@ -15,7 +17,11 @@ interface OutputCardProps {
   onCopy?: () => void;
   showCopy?: boolean;
   changes?: ResumeChange[];
+  sections?: ResumeSection[];
   onHide?: () => void;
+  useStructuredView?: boolean; // Use AdaptedResumeViewer instead of textarea
+  rawResponseJson?: string | null; // Full JSON response from AI
+  onCopyJson?: () => void;
 }
 
 export function OutputCard({
@@ -30,11 +36,39 @@ export function OutputCard({
   onCopy,
   showCopy = false,
   changes = [],
+  sections,
   onHide,
+  useStructuredView = false,
+  rawResponseJson,
+  onCopyJson,
 }: OutputCardProps) {
-  const hasActions = (showDownload && onDownload && value.trim()) || (showCopy && onCopy && value.trim());
-  const hasChanges = changes.length > 0 && value.trim();
-  const shouldShowAdaptedResumeButton = showDownload && (hasChanges || isLoading);
+  const shouldShowCopy = (showCopy || useStructuredView) && value.trim();
+
+  const handleCopy = async () => {
+    if (onCopy) {
+      await onCopy();
+    } else {
+      const success = await copyToClipboard(value);
+      if (success) {
+        toast.success("Copied to clipboard!");
+      } else {
+        toast.error("Failed to copy to clipboard");
+      }
+    }
+  };
+
+  const handleCopyJson = async () => {
+    if (onCopyJson) {
+      await onCopyJson();
+    } else if (rawResponseJson) {
+      const success = await copyToClipboard(rawResponseJson);
+      if (success) {
+        toast.success("JSON copied to clipboard!");
+      } else {
+        toast.error("Failed to copy JSON to clipboard");
+      }
+    }
+  };
 
   return (
     <Card>
@@ -55,24 +89,29 @@ export function OutputCard({
               </>
             ) : (
               <>
-                {shouldShowAdaptedResumeButton && (
-                  <AdaptedResumeButton changes={changes} hasValue={!!value.trim()} isLoading={isLoading} />
+                {shouldShowCopy && (
+                  <Button variant="outline" size="sm" onClick={handleCopy} type="button">
+                    <IconCopy className="h-4 w-4 mr-2" />
+                    Copy
+                  </Button>
                 )}
-                {hasActions && (
-                  <>
-                    {showCopy && onCopy && value.trim() && (
-                      <Button variant="outline" size="sm" onClick={onCopy} type="button">
-                        <IconCopy className="h-4 w-4 mr-2" />
-                        Copy
-                      </Button>
-                    )}
-                    {showDownload && onDownload && value.trim() && (
-                      <Button variant="outline" size="sm" onClick={onDownload} type="button">
-                        <IconDownload className="h-4 w-4 mr-2" />
-                        Download PDF
-                      </Button>
-                    )}
-                  </>
+                {rawResponseJson && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCopyJson}
+                    type="button"
+                    title="Copy AI JSON response"
+                  >
+                    <IconCode className="h-4 w-4 mr-2" />
+                    Copy JSON
+                  </Button>
+                )}
+                {showDownload && onDownload && value.trim() && (
+                  <Button variant="outline" size="sm" onClick={onDownload} type="button">
+                    <IconDownload className="h-4 w-4 mr-2" />
+                    Download PDF
+                  </Button>
                 )}
                 {onHide && (
                   <Button variant="ghost" size="sm" onClick={onHide} type="button" title="Hide card">
@@ -86,7 +125,6 @@ export function OutputCard({
       </CardHeader>
       <CardContent>
         <div className="space-y-2 flex-1 flex flex-col min-h-0">
-          <Label htmlFor={id}>{title}</Label>
           {isLoading ? (
             <div className="flex-1 flex items-center justify-center min-h-0 border border-input rounded-md bg-muted/50">
               <div className="flex flex-col items-center gap-2">
@@ -96,6 +134,10 @@ export function OutputCard({
                 />
                 <p className="text-sm text-muted-foreground">Processing...</p>
               </div>
+            </div>
+          ) : useStructuredView ? (
+            <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+              <AdaptedResumeViewer content={value} changes={changes} sections={sections} isLoading={isLoading} />
             </div>
           ) : (
             <Textarea id={id} readOnly value={value} placeholder={placeholder} className="flex-1 min-h-0" />

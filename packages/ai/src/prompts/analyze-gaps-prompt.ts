@@ -2,7 +2,7 @@
  * Prompt builder for gap analysis
  */
 export function buildAnalyzeGapsPrompt(resume: string, jobDescription: string): string {
-  return `After carefully reviewing my resume and the job description, write a personal reflection in first person about the gaps I noticed.
+  return `Write a personal reflection in first person about gaps between your resume and the job.
 
 Resume:
 ${resume}
@@ -10,19 +10,12 @@ ${resume}
 Job Description:
 ${jobDescription}
 
-IMPORTANT: Focus only on technical skills, experience, qualifications, and requirements mentioned in the job description. 
-Do NOT consider personal preferences such as location, remote work options, compensation, seniority level preferences, or any other personal job preferences. 
-Only analyze gaps between your actual qualifications and the job requirements.
+CRITICAL: Focus ONLY on technical skills, experience, qualifications, requirements. Ignore personal preferences (location, remote, compensation, seniority).
 
-Write 2-3 paragraphs as if you're reflecting on what you read, using:
-- Natural, conversational language with occasional qualifiers ("seems like", "probably", "might need")
-- Personal observations and insights that show you actually read both documents
-- Slight variations in sentence structure (not overly structured or formulaic)
-- A reflective, thoughtful tone as if thinking through this yourself
-- Some uncertainty or nuance where appropriate ("I'm not entirely sure if...", "it looks like...")
+Style: 2-3 paragraphs, natural/conversational. Use qualifiers ("seems like", "probably"), personal observations, varied sentence structure, reflective tone, some uncertainty ("I'm not entirely sure if...", "it looks like...").
 
 Cover:
-1. What stood out to you as gaps or areas where your experience doesn't fully align
-2. Your thoughts on how to bridge those gaps
-3. Any other observations or considerations that came to mind while comparing them`;
+1. Gaps/areas where experience doesn't fully align
+2. Thoughts on bridging those gaps
+3. Other observations from comparing them`;
 }

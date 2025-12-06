@@ -23,11 +23,26 @@ export interface AdaptResumeRequest {
   focus?: string; // Optional focus area or specific instructions
 }
 
+export interface ResumeSubsection {
+  name: string;
+  content: string;
+}
+
+export interface ResumeSection {
+  name: string;
+  subsections: ResumeSubsection[];
+}
+
 export interface AdaptResumeResponse {
   adaptedResume: string;
+  sections?: ResumeSection[]; // Structured sections of the resume
   changes: {
     section: string;
     description: string;
+    originalText?: string;
+    newText?: string;
+    reason?: string;
+    position?: string;
   }[];
   keywords: string[]; // Keywords from job description that were incorporated
 }
@@ -53,4 +68,17 @@ export interface ProcessResumeResponse {
   matchJob: MatchJobResponse;
   adaptResume: AdaptResumeResponse;
   analyzeGaps: AnalyzeGapsResponse;
+}
+
+export interface RewriteSectionRequest {
+  fullResume: string;
+  jobDescription: string;
+  sectionToRewrite: string;
+  currentText: string;
+  customPrompt: string;
+}
+
+export interface RewriteSectionResponse {
+  rewrittenText: string;
+  reason: string;
 }

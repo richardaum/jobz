@@ -4,6 +4,7 @@ import { adaptResume as adaptResumeFunction } from "../functions/adapt-resume";
 import { analyzeGaps as analyzeGapsFunction } from "../functions/analyze-gaps";
 import { matchJob as matchJobFunction } from "../functions/match-job";
 import { processResume as processResumeFunction } from "../functions/resume-agent";
+import { rewriteSection as rewriteSectionFunction } from "../functions/rewrite-section";
 import type {
   AdaptResumeRequest,
   AdaptResumeResponse,
@@ -13,6 +14,8 @@ import type {
   MatchJobResponse,
   ProcessResumeRequest,
   ProcessResumeResponse,
+  RewriteSectionRequest,
+  RewriteSectionResponse,
 } from "../types";
 
 export class OpenAIClient {
@@ -42,5 +45,9 @@ export class OpenAIClient {
 
   async processResume(request: ProcessResumeRequest): Promise<ProcessResumeResponse> {
     return processResumeFunction(this.client, request);
+  }
+
+  async rewriteSection(request: RewriteSectionRequest): Promise<RewriteSectionResponse> {
+    return rewriteSectionFunction(this.client, request);
   }
 }

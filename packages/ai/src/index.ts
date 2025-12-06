@@ -11,4 +11,6 @@ export type {
   MatchJobResponse,
   ProcessResumeRequest,
   ProcessResumeResponse,
+  RewriteSectionRequest,
+  RewriteSectionResponse,
 } from "./types";

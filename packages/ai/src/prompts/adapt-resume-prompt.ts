@@ -8,19 +8,14 @@ export function buildAdaptResumePrompt(
   focus?: string
 ): string {
   const toneInstructions = {
-    professional:
-      "Maintain a professional, objective tone throughout. Use action verbs and quantify achievements where possible.",
-    confident:
-      "Use a confident, assertive tone that highlights strengths and achievements. Emphasize impact and results.",
-    concise:
-      "Keep descriptions concise and impactful. Focus on key achievements and relevant skills without unnecessary details.",
+    professional: "Professional, objective. Action verbs + quantified achievements.",
+    confident: "Confident, assertive. Emphasize impact and results.",
+    concise: "Concise, impactful. Key achievements only.",
   };
 
-  const focusSection = focus
-    ? `\n\nAdditional Focus: ${focus}\nPlease pay special attention to this aspect when adapting the resume.`
-    : "";
+  const focusNote = focus ? `\n\nFocus: ${focus}` : "";
 
-  return `Adapt the following resume to match the job description provided. The goal is to create a tailored resume that highlights the candidate's most relevant experiences, skills, and achievements for this specific position.
+  return `Adapt resume to match job description.
 
 Job Description:
 ${jobDescription}
@@ -28,71 +23,64 @@ ${jobDescription}
 Current Resume:
 ${resume}
 
-Instructions:
+CRITICAL:
+- Preserve EXACT structure, section order, formatting, spacing, section names
+- ONLY modify content within sections, never structure
+- Use ONLY information from original resume (no additions/inferences)
+- Keep dates, companies, facts unchanged
+- If resume has sections in different languages, preserve each section's original language - do not translate or mix languages
 
-1. **Keyword Integration**: Identify and naturally incorporate key terms, skills, and technologies mentioned in the job description into the resume. Ensure keywords appear in relevant sections (summary, skills, experience descriptions).
+Content Adaptation:
+- Keywords: Integrate key terms/technologies from job description into summary, skills, experience
+- Experience: Keep original order. Align descriptions with job posting. Use STAR naturally. Quantify achievements
+- Skills: Maintain original structure/grouping. Prioritize matching skills. No new skills
+- Summary: Align with job focus. Keep original length/style
+- Tone: ${toneInstructions[tone]}
 
-2. **Experience Alignment**: 
-   - Reorder and emphasize experiences that are most relevant to the job requirements
-   - Rewrite job descriptions to highlight responsibilities and achievements that align with the job posting
-   - Use the STAR method (Situation, Task, Action, Result) framework when describing experiences, but keep it natural and not forced
-   - Quantify achievements with metrics, numbers, and percentages where possible
+Format:
+- Preserve formatting, line breaks, spacing, indentation
+- ASCII only: "- " bullets, regular quotes/apostrophes, regular dashes, "..." ellipsis
+- ATS-compatible
 
-3. **Skills Section**: 
-   - Prioritize skills that match the job requirements
-   - Only include skills that are explicitly mentioned in the original resume
-   - Do not add new skills, even if they appear in the job description
-   - Group skills logically (technical, soft skills, tools, etc.)
+${focusNote}
 
-4. **Professional Summary/Objective**: 
-   - Rewrite to align with the job's focus and requirements
-   - Highlight the most relevant qualifications and career goals for this position
-
-5. **Tone and Style**: ${toneInstructions[tone]}
-
-6. **Preserve Original Writing Style**: 
-   - Maintain the candidate's original writing style, voice, and phrasing patterns
-   - When rephrasing, keep the same level of detail and specificity as the original
-   - Preserve the candidate's natural way of describing their experiences
-   - Only adjust wording to incorporate keywords, not to change the fundamental style
-
-7. **Maintain Authenticity - Strict Rules**: 
-   - ONLY use information that is explicitly stated in the original resume
-   - Do NOT add, infer, or fabricate any experiences, skills, achievements, or qualifications
-   - Do NOT add skills from the job description that aren't in the original resume
-   - Do NOT add responsibilities or achievements that weren't explicitly mentioned
-   - Do NOT expand on experiences beyond what was originally written
-   - Keep all dates, company names, and factual information exactly as they appear
-   - Your role is to reorganize, rephrase, and emphasize existing content, NOT to add new content
-
-8. **Format**: 
-   - Maintain a clean, professional format
-   - Use consistent formatting throughout
-   - Ensure the resume is ATS-friendly (Applicant Tracking System compatible)
-   - Fix line breaks if needed to ensure proper formatting and readability
-
-9. **Character Usage - IMPORTANT**: 
-   - Use ONLY simple ASCII characters and standard punctuation
-   - For bullet points, use a simple dash followed by a space: "- " (NOT special bullet characters like •, ●, etc.)
-   - Use regular quotes (") and apostrophes (') instead of smart quotes (" " ' ')
-   - Use regular dashes (-) instead of em dashes (—) or en dashes (–)
-   - Use three dots (...) instead of ellipsis character (…)
-   - Avoid any special Unicode characters, symbols, or decorative elements
-   - This ensures maximum compatibility with PDF generation and ATS systems
-
-${focusSection}
-
-Return a JSON object with the following structure:
+Return JSON:
 {
-  "adaptedResume": "The complete adapted resume as a ready-to-use document, well-structured and professional",
-  "changes": [
+  "adaptedResume": "Complete adapted resume",
+  "sections": [
     {
-      "section": "Section name (e.g., 'Professional Summary', 'Work Experience - Company X', 'Skills')",
-      "description": "Brief description of what was changed and why"
+      "name": "Section name (e.g., 'Summary', 'Experience', 'Skills')",
+      "subsections": [
+        {
+          "name": "Subsection name (e.g., 'Company Name', 'Job Title', 'Skill Category')",
+          "content": "Content of this subsection"
+        }
+      ]
     }
   ],
-  "keywords": ["keyword1", "keyword2", ...] // List of important keywords from the job description that were incorporated
+  "changes": [{
+    "section": "Section name",
+    "description": "What changed and why",
+    "originalText": "Exact original text with context",
+    "newText": "Exact new text (must match adaptedResume)",
+    "reason": "Why this improves alignment",
+    "position": "Location context"
+  }],
+  "keywords": ["keyword1", "keyword2"]
 }
 
-Make sure the adapted resume is complete, well-structured, professional, and optimized for the specific job posting.`;
+IMPORTANT:
+- sections: Array of all sections in the resume. Each section must have a "name" and "subsections" array.
+- subsections: Break down each section into granular subsections. For example:
+  * "Professional Experience" section → subsections for each job/position
+  * "Skills" section → subsections for each skill category or group
+  * "Education" section → subsections for each degree/certification
+  * "Summary" section → can have a single subsection or break into paragraphs
+- Each subsection must have a "name" (identifying the subsection) and "content" (the text content).
+- The combined content of all subsections in a section must exactly match the corresponding section in "adaptedResume".
+- Maintain the same order of sections and subsections as they appear in adaptedResume.
+- Section names should match common resume section names (Summary, Professional Experience, Work Experience, Skills, Education, etc.).
+- Subsection names should be descriptive but concise (e.g., "Software Engineer at Company X", "Technical Skills", "Bachelor's Degree").
+
+Changes: originalText/newText must exactly match resume content. Include context to identify location.`;
 }

@@ -60,6 +60,7 @@ export async function processResume(
       },
       adaptResume: {
         adaptedResume: content.adaptResume?.adaptedResume || "",
+        sections: content.adaptResume?.sections || [],
         changes: content.adaptResume?.changes || [],
         keywords: content.adaptResume?.keywords || [],
       },

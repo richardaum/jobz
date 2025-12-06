@@ -71,7 +71,9 @@ const GridItem = React.forwardRef<HTMLDivElement, GridItemProps>(({ className, c
       }[rowSpan]
     : undefined;
 
-  return <div ref={ref} className={cn("h-full", colSpanClass, rowSpanClass, className)} {...props} />;
+  return (
+    <div ref={ref} className={cn("h-full min-h-0 max-h-full", colSpanClass, rowSpanClass, className)} {...props} />
+  );
 });
 GridItem.displayName = "GridItem";
 

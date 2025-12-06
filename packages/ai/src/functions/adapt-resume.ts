@@ -48,6 +48,7 @@ export async function adaptResume(client: AxiosInstance, request: AdaptResumeReq
     const content = JSON.parse(response.data.choices[0].message.content);
     return {
       adaptedResume: content.adaptedResume || "",
+      sections: content.sections || [],
       changes: content.changes || [],
       keywords: content.keywords || [],
     };

@@ -4,16 +4,18 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 
 import type { MatchResult } from "@/entities/match-result";
-import type { ResumeChange } from "@/entities/resume";
+import type { ResumeChange, ResumeSection } from "@/entities/resume";
 import { useSettingsStore } from "@/shared/stores";
 
 import { ApiKeyError, useResumeAgent } from "./resume-agent";
 
 interface ProcessedData {
   adaptedResume: string;
+  sections?: ResumeSection[];
   gaps: string;
   matchResult: MatchResult;
   changes: ResumeChange[];
+  rawResponseJson?: string;
 }
 
 interface UseResumeProcessingParams {
@@ -70,11 +72,24 @@ export function useResumeProcessing({ onSuccess }: UseResumeProcessingParams) {
 
       const matchResult = createMatchResult(result);
 
+      // Format the full JSON response
+      const rawResponseJson = JSON.stringify(
+        {
+          matchJob: result.matchJob,
+          adaptResume: result.adaptResume,
+          analyzeGaps: result.analyzeGaps,
+        },
+        null,
+        2
+      );
+
       onSuccess({
         adaptedResume: result.adaptResume.adaptedResume,
+        sections: result.adaptResume.sections,
         gaps: result.analyzeGaps.gaps,
         matchResult,
         changes: result.adaptResume.changes || [],
+        rawResponseJson,
       });
 
       toast.success("Resume processed successfully!");
