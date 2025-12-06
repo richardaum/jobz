@@ -4,6 +4,7 @@ import {
   IconBriefcase,
   IconChevronDown,
   IconCode,
+  IconDotsVertical,
   IconEye,
   IconFileText,
   IconHistory,
@@ -42,6 +43,7 @@ export function Toolbar({
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isPromptOpen, setIsPromptOpen] = useState(false);
   const [isClearMenuOpen, setIsClearMenuOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const resume = useResumeStore((state) => state.resume);
   const jobDescription = useResumeStore((state) => state.jobDescription);
   const personalPreferences = useResumeStore((state) => state.personalPreferences);
@@ -154,18 +156,6 @@ export function Toolbar({
             <span className="lg:hidden">Show Gaps</span>
           </Button>
         )}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsPromptOpen(true)}
-          type="button"
-          disabled={!resume.trim() || !jobDescription.trim()}
-          className="shrink-0"
-        >
-          <IconCode className="h-4 w-4 mr-2" />
-          <span className="hidden lg:inline">Show Prompt</span>
-          <span className="lg:hidden">Prompt</span>
-        </Button>
         {(() => {
           const isButtonDisabled = !hasChatbotData || !onToggleChatbot;
           return (
@@ -187,10 +177,42 @@ export function Toolbar({
         })()}
       </div>
       <div className="flex items-center gap-2 shrink-0">
-        <Button variant="outline" size="sm" onClick={() => setIsHistoryOpen(true)} type="button" className="shrink-0">
-          <IconHistory className="h-4 w-4 sm:mr-2" />
-          <span className="hidden sm:inline">History</span>
-        </Button>
+        <Menu open={isMoreMenuOpen} onOpenChange={setIsMoreMenuOpen}>
+          <MenuAnchor asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
+              className="shrink-0"
+            >
+              <IconDotsVertical className="h-4 w-4" />
+            </Button>
+          </MenuAnchor>
+          <MenuContent align="end">
+            <MenuItem
+              onClick={() => {
+                setIsHistoryOpen(true);
+                setIsMoreMenuOpen(false);
+              }}
+              className="cursor-pointer"
+            >
+              <IconHistory className="h-4 w-4 mr-2" />
+              History
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                setIsPromptOpen(true);
+                setIsMoreMenuOpen(false);
+              }}
+              disabled={!resume.trim() || !jobDescription.trim()}
+              className="cursor-pointer"
+            >
+              <IconCode className="h-4 w-4 mr-2" />
+              Show Prompt
+            </MenuItem>
+          </MenuContent>
+        </Menu>
         <Menu open={isClearMenuOpen} onOpenChange={setIsClearMenuOpen}>
           <MenuAnchor asChild>
             <Button
