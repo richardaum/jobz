@@ -73,6 +73,8 @@ function ChatContent({
         messages={messages}
         isLoading={isLoading}
         emptyState={config.emptyState}
+        followUpQuestions={config.followUpQuestions}
+        onQuestionClick={onSendMessage}
         onScrollToBottom={() => {}}
       />
       <ChatbotInput

@@ -27,4 +27,5 @@ export interface ChatbotConfig {
   position?: "bottom-right" | "bottom-left" | "top-right" | "top-left";
   width?: string;
   height?: string;
+  followUpQuestions?: string[];
 }
