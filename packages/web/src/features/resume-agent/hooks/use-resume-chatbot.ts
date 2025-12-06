@@ -87,10 +87,14 @@ export function useResumeChatbot() {
     sections: typeof sections;
   } | null>(null);
 
+  // Track if we're in an active conversation to prevent clearing messages during streaming
+  const isActiveConversationRef = useRef(false);
+
   // Computed: Check if we have data to chat about
   const hasData = !!adaptedResume.trim() || !!gaps.trim() || !!matchResult;
 
   // Clear messages when data changes (inputs or outputs)
+  // But only if we're not in an active conversation
   useEffect(() => {
     const prevData = prevDataRef.current;
     const currentData = {
@@ -105,6 +109,13 @@ export function useResumeChatbot() {
 
     // Skip on initial mount
     if (prevData === null) {
+      prevDataRef.current = currentData;
+      return;
+    }
+
+    // Don't clear messages if we're in an active conversation
+    if (isActiveConversationRef.current) {
+      // Still update the ref for next comparison
       prevDataRef.current = currentData;
       return;
     }
@@ -235,9 +246,6 @@ Keep the summary brief but comprehensive enough to maintain context for future m
         }
       }
 
-      setMessages((prev) => [...prev, userMsg]);
-      setIsLoading(true);
-
       // Create assistant message placeholder for streaming
       const assistantMsgId = `assistant-${Date.now()}`;
       const assistantMsg: ChatbotMessage = {
@@ -247,8 +255,11 @@ Keep the summary brief but comprehensive enough to maintain context for future m
         timestamp: new Date(),
       };
 
-      // Add empty assistant message to UI state
-      setMessages((prev) => [...prev, assistantMsg]);
+      // Add both user message and empty assistant message in a single state update
+      // This prevents race conditions where the assistant message might be added before the user message
+      setMessages((prev) => [...prev, userMsg, assistantMsg]);
+      setIsLoading(true);
+      isActiveConversationRef.current = true;
 
       try {
         // Build context using business logic
@@ -296,6 +307,7 @@ Keep the summary brief but comprehensive enough to maintain context for future m
         setMessages((prev) => prev.map((msg) => (msg.id === assistantMsgId ? { ...msg, content: errorMessage } : msg)));
       } finally {
         setIsLoading(false);
+        isActiveConversationRef.current = false;
       }
     },
     [hasData, messages, getResumeContext, summarizeConversation, setMessages]
