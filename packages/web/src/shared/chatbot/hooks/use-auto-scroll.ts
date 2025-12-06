@@ -40,6 +40,7 @@ export function useAutoScroll({
   const scrollContainerRef = useRef<HTMLElement | null>(null);
   const isUserScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hasInitialScrolledRef = useRef(false);
 
   // Helper to find and store scroll container
   const findScrollContainer = useCallback((): HTMLElement | null => {
@@ -109,7 +110,14 @@ export function useAutoScroll({
     };
   }, [enabled, findScrollContainer]);
 
-  // Auto-scroll only if user is near bottom
+  // Reset initial scroll flag when disabled
+  useEffect(() => {
+    if (!enabled) {
+      hasInitialScrolledRef.current = false;
+    }
+  }, [enabled]);
+
+  // Auto-scroll only if user is near bottom (or on initial mount)
   useEffect(() => {
     if (!enabled) return;
 
@@ -118,9 +126,12 @@ export function useAutoScroll({
       return;
     }
 
-    // Check if user is near the bottom of the scroll container
     const container = findScrollContainer();
-    if (container) {
+    const isInitialScroll = !hasInitialScrolledRef.current;
+
+    // On initial scroll, always scroll to bottom regardless of position
+    // After initial scroll, only scroll if user is near the bottom
+    if (!isInitialScroll && container) {
       const { scrollTop, scrollHeight, clientHeight } = container;
       const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
       // Only auto-scroll if user is near the bottom (within threshold)
@@ -129,22 +140,35 @@ export function useAutoScroll({
       }
     }
 
-    if (onScrollToBottom) {
+    const performScroll = () => {
       // Small delay to ensure MacScrollbar is rendered
       setTimeout(() => {
+        let scrolled = false;
         if (messagesEndRef.current) {
           // Try scrollIntoView first
           if (typeof messagesEndRef.current.scrollIntoView === "function") {
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            scrolled = true;
           }
           // Also try scrolling the parent container (MacScrollbar)
           const scrollContainer = messagesEndRef.current?.closest(".ms-container");
           if (scrollContainer && typeof scrollContainer.scrollTo === "function") {
             scrollContainer.scrollTo({ top: scrollContainer.scrollHeight, behavior: "smooth" });
+            scrolled = true;
           }
         }
-        onScrollToBottom();
+
+        // Only mark as scrolled if we actually found a container to scroll
+        if (isInitialScroll && scrolled) {
+          hasInitialScrolledRef.current = true;
+        }
+
+        if (onScrollToBottom) {
+          onScrollToBottom();
+        }
       }, SCROLL_DELAY_MS);
-    }
+    };
+
+    performScroll();
   }, [enabled, messagesEndRef, onScrollToBottom, findScrollContainer, ...dependencies]);
 }
