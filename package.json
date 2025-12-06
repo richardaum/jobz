@@ -42,6 +42,11 @@
     "test:coverage:fsd": "bun run --filter 'eslint-plugin-fsd' test:coverage",
     "test:fsd": "bun run --filter 'eslint-plugin-fsd' test:run",
     "test:fsd:ui": "bun run --filter 'eslint-plugin-fsd' test:ui",
+    "test:web:unit": "bun run --filter '@jobz/web' test:unit",
+    "test:web:integration": "bun run --filter '@jobz/web' test:integration",
+    "test:web:e2e": "bun run --filter '@jobz/web' test:e2e",
+    "test:web:all": "bun run --filter '@jobz/web' test:all",
+    "test:all": "bun run test:fsd && bun run test:web:all",
     "prepare": "husky"
   },
   "lint-staged": {
