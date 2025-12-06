@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { cn } from "@/shared/lib";
-import { Dialog, DialogContent } from "@/shared/ui";
+import { Dialog, DialogContent, DialogTitle } from "@/shared/ui";
 
 import { ChatbotHeader } from "./components/chatbot-header";
 import { ChatbotInput } from "./components/chatbot-input";
@@ -102,6 +102,7 @@ export function Chatbot({
           hideCloseButton
           className={cn("max-w-2xl h-[90vh] max-h-[90vh] flex flex-col p-0 overflow-hidden", className)}
         >
+          <DialogTitle className="sr-only">{finalConfig.header.title}</DialogTitle>
           <div className="flex flex-col h-full min-h-0 overflow-hidden">
             <ChatContent
               config={finalConfig}
