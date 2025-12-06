@@ -9,6 +9,7 @@ interface ResumeChatbotProps {
   onToggle: () => void;
   messages: ChatbotMessage[];
   onSendMessage: (message: string) => Promise<void>;
+  onClearMessages?: () => void;
   isLoading: boolean;
 }
 
@@ -16,7 +17,14 @@ interface ResumeChatbotProps {
  * Resume-specific chatbot wrapper that uses the generic Chatbot component
  * Converts feature-specific types to shared types
  */
-export function ResumeChatbot({ isOpen, onToggle, messages, onSendMessage, isLoading }: ResumeChatbotProps) {
+export function ResumeChatbot({
+  isOpen,
+  onToggle,
+  messages,
+  onSendMessage,
+  onClearMessages,
+  isLoading,
+}: ResumeChatbotProps) {
   // Convert feature-specific messages to shared ChatMessage type
   const sharedMessages: ChatMessage[] = messages.map((msg) => ({
     id: msg.id,
@@ -31,6 +39,7 @@ export function ResumeChatbot({ isOpen, onToggle, messages, onSendMessage, isLoa
       onToggle={onToggle}
       messages={sharedMessages}
       onSendMessage={onSendMessage}
+      onClearMessages={onClearMessages}
       isLoading={isLoading}
       config={{
         header: {

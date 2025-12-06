@@ -8,6 +8,7 @@ interface ChatbotInputProps {
   placeholder?: string;
   isLoading: boolean;
   onSend: (message: string) => Promise<void>;
+  onClear?: () => void;
   autoFocus?: boolean;
 }
 
@@ -15,6 +16,7 @@ export function ChatbotInput({
   placeholder = "Type your message...",
   isLoading,
   onSend,
+  onClear,
   autoFocus = false,
 }: ChatbotInputProps) {
   const [input, setInput] = useState("");
@@ -58,7 +60,12 @@ export function ChatbotInput({
         />
       </div>
       {/* Toolbar */}
-      <div className="px-4 pb-4 flex justify-end">
+      <div className="px-4 pb-4 flex justify-end gap-2">
+        {onClear && (
+          <Button onClick={onClear} disabled={isLoading} size="sm" type="button" variant="outline">
+            Clear
+          </Button>
+        )}
         <Button onClick={handleSend} disabled={!input.trim() || isLoading} size="sm" type="button">
           Send
         </Button>

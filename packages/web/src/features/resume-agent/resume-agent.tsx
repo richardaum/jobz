@@ -238,6 +238,7 @@ export function ResumeAgent() {
         onToggle={chatbot.toggle}
         messages={chatbot.messages}
         onSendMessage={chatbot.sendMessage}
+        onClearMessages={chatbot.clearMessages}
         isLoading={chatbot.isLoading}
       />
     </div>

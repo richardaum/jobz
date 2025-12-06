@@ -15,6 +15,7 @@ interface ChatbotProps {
   onToggle: () => void;
   messages: ChatMessage[];
   onSendMessage: (message: string) => Promise<void>;
+  onClearMessages?: () => void;
   isLoading?: boolean;
   config?: Partial<ChatbotConfig>;
   className?: string;
@@ -47,6 +48,7 @@ interface ChatContentProps {
   messages: ChatMessage[];
   isLoading: boolean;
   onSendMessage: (message: string) => Promise<void>;
+  onClearMessages?: () => void;
   isModal: boolean;
   onToggleModal: () => void;
   onClose: () => void;
@@ -58,6 +60,7 @@ function ChatContent({
   messages,
   isLoading,
   onSendMessage,
+  onClearMessages,
   isModal,
   onToggleModal,
   onClose,
@@ -72,7 +75,13 @@ function ChatContent({
         emptyState={config.emptyState}
         onScrollToBottom={() => {}}
       />
-      <ChatbotInput placeholder={config.placeholder} isLoading={isLoading} onSend={onSendMessage} autoFocus={isOpen} />
+      <ChatbotInput
+        placeholder={config.placeholder}
+        isLoading={isLoading}
+        onSend={onSendMessage}
+        onClear={onClearMessages}
+        autoFocus={isOpen}
+      />
     </>
   );
 }
@@ -82,6 +91,7 @@ export function Chatbot({
   onToggle,
   messages,
   onSendMessage,
+  onClearMessages,
   isLoading = false,
   config = {},
   className,
@@ -109,6 +119,7 @@ export function Chatbot({
               messages={messages}
               isLoading={isLoading}
               onSendMessage={onSendMessage}
+              onClearMessages={onClearMessages}
               isModal={isModal}
               onToggleModal={() => setIsModal(!isModal)}
               onClose={onToggle}
@@ -135,6 +146,7 @@ export function Chatbot({
         messages={messages}
         isLoading={isLoading}
         onSendMessage={onSendMessage}
+        onClearMessages={onClearMessages}
         isModal={isModal}
         onToggleModal={() => setIsModal(!isModal)}
         onClose={onToggle}
