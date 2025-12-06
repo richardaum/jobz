@@ -37,16 +37,16 @@ export function ChatbotMessages({ messages, isLoading, emptyState, onScrollToBot
   return (
     <div className="flex-1 min-h-0">
       <MacScrollbar className="h-full w-full" skin="dark">
-        <div className="p-4 space-y-4">
-          {visibleMessages.length === 0 ? (
-            <div className="flex items-center justify-center h-full min-h-[400px] text-center">
-              <div className="text-muted-foreground">
-                <p className="text-sm font-medium mb-1">{emptyState?.title || "Start a conversation"}</p>
-                {emptyState?.description && <p className="text-xs">{emptyState.description}</p>}
-              </div>
+        {visibleMessages.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-center p-4">
+            <div className="text-muted-foreground">
+              <p className="text-sm font-medium mb-1">{emptyState?.title || "Start a conversation"}</p>
+              {emptyState?.description && <p className="text-xs">{emptyState.description}</p>}
             </div>
-          ) : (
-            visibleMessages.map((message) => (
+          </div>
+        ) : (
+          <div className="p-4 space-y-4">
+            {visibleMessages.map((message) => (
               <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
                   className={`max-w-[80%] rounded-lg px-3 py-2 ${
@@ -56,30 +56,30 @@ export function ChatbotMessages({ messages, isLoading, emptyState, onScrollToBot
                   <MarkdownMessage content={message.content} />
                 </div>
               </div>
-            ))
-          )}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-muted rounded-lg px-3 py-2">
-                <div className="flex gap-1">
-                  <div
-                    className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
-                    style={{ animationDelay: "0ms" }}
-                  />
-                  <div
-                    className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
-                    style={{ animationDelay: "150ms" }}
-                  />
-                  <div
-                    className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
-                    style={{ animationDelay: "300ms" }}
-                  />
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-muted rounded-lg px-3 py-2">
+                  <div className="flex gap-1">
+                    <div
+                      className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                      style={{ animationDelay: "0ms" }}
+                    />
+                    <div
+                      className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                      style={{ animationDelay: "150ms" }}
+                    />
+                    <div
+                      className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                      style={{ animationDelay: "300ms" }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
       </MacScrollbar>
     </div>
   );
