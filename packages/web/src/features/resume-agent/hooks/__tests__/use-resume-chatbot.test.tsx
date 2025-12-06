@@ -19,8 +19,21 @@ vi.mock("../../lib", () => ({
   },
   sendChatbotMessage: vi.fn(),
   sendChatbotMessageStream: vi.fn(),
+  hasResumeData: vi.fn(() => true),
+  shouldSummarizeConversation: vi.fn((count: number) => count >= 50),
+  summarizeConversation: vi.fn(),
+  sendChatbotMessageWithStream: vi.fn(),
+  log: vi.fn(),
+  generateFollowUpQuestions: vi.fn(),
 }));
 vi.mock("../../stores/resume-store");
+vi.mock("../use-follow-up-questions", () => ({
+  useFollowUpQuestions: vi.fn(() => ({
+    followUpQuestions: [],
+    generateQuestions: vi.fn(),
+    clearQuestions: vi.fn(),
+  })),
+}));
 vi.mock("sonner", () => ({
   toast: {
     error: vi.fn(),
