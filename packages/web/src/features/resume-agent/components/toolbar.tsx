@@ -7,7 +7,6 @@ import {
   IconEye,
   IconFileText,
   IconHistory,
-  IconMessage,
   IconSettings,
   IconTrash,
 } from "@tabler/icons-react";
@@ -16,7 +15,7 @@ import { useState } from "react";
 import { JobDescriptionPopover, PersonalPreferencesPopover } from "@/entities/job";
 import { ChecklistButton, JobMatchButton, type MatchResult } from "@/entities/match-result";
 import { ResumePopover } from "@/entities/resume";
-import { Button, Divider, Menu, MenuAnchor, MenuContent, MenuItem } from "@/shared/ui";
+import { Button, Divider, Menu, MenuAnchor, MenuContent, MenuItem, Tooltip } from "@/shared/ui";
 
 import { useCardsVisibilityStore } from "../stores/cards-visibility-store";
 import { useResumeStore } from "../stores/resume-store";
@@ -146,18 +145,17 @@ export function Toolbar({
           <IconCode className="h-4 w-4 mr-2" />
           Show Prompt
         </Button>
-        {hasChatbotData && onToggleChatbot && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onToggleChatbot}
-            type="button"
-            title="Ask questions about your resume"
-          >
-            <IconMessage className="h-4 w-4 mr-2" />
-            Ask about 🤖
-          </Button>
-        )}
+        {(() => {
+          const isButtonDisabled = !hasChatbotData || !onToggleChatbot;
+          return (
+            <Tooltip disabled={!isButtonDisabled} content={<p>Process your resume first to ask questions about it</p>}>
+              <Button variant="outline" size="sm" onClick={onToggleChatbot} type="button" disabled={isButtonDisabled}>
+                <span className="mr-2">🤖</span>
+                Ask about Resume
+              </Button>
+            </Tooltip>
+          );
+        })()}
       </div>
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" onClick={() => setIsHistoryOpen(true)} type="button">

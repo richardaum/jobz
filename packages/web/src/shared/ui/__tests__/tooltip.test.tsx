@@ -1,17 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../tooltip";
+import { Tooltip } from "../tooltip";
 
 describe("Tooltip", () => {
   it("should render tooltip trigger", () => {
     render(
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>Hover me</TooltipTrigger>
-          <TooltipContent>Tooltip content</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip content="Tooltip content">
+        <button>Hover me</button>
+      </Tooltip>
     );
     expect(screen.getByText("Hover me")).toBeInTheDocument();
   });
@@ -20,12 +17,9 @@ describe("Tooltip", () => {
     // Note: Radix UI tooltip may render content in multiple places (including aria-describedby)
     // This test verifies the component structure
     render(
-      <TooltipProvider>
-        <Tooltip open>
-          <TooltipTrigger>Hover me</TooltipTrigger>
-          <TooltipContent>Tooltip content</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip open content="Tooltip content">
+        <button>Hover me</button>
+      </Tooltip>
     );
     // Verify trigger is rendered
     expect(screen.getByText("Hover me")).toBeInTheDocument();
@@ -34,16 +28,13 @@ describe("Tooltip", () => {
     expect(screen.getAllByText("Tooltip content").length).toBeGreaterThan(0);
   });
 
-  it("should apply custom className to TooltipContent", () => {
+  it("should apply custom className to tooltip content", () => {
     // Note: Tooltip content is rendered in a portal, so it may not be immediately accessible
     // This test verifies the component accepts className prop
     render(
-      <TooltipProvider>
-        <Tooltip open>
-          <TooltipTrigger>Trigger</TooltipTrigger>
-          <TooltipContent className="custom-class">Content</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip open content="Content" className="custom-class">
+        <button>Trigger</button>
+      </Tooltip>
     );
     // Verify trigger is rendered
     expect(screen.getByText("Trigger")).toBeInTheDocument();
@@ -53,14 +44,23 @@ describe("Tooltip", () => {
 
   it("should use custom delayDuration", () => {
     render(
-      <TooltipProvider delayDuration={500}>
-        <Tooltip>
-          <TooltipTrigger>Trigger</TooltipTrigger>
-          <TooltipContent>Content</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip content="Content" delayDuration={500}>
+        <button>Trigger</button>
+      </Tooltip>
     );
-    // TooltipProvider doesn't render anything visible, but we can verify it's rendered
+    // Verify trigger is rendered
     expect(screen.getByText("Trigger")).toBeInTheDocument();
+  });
+
+  it("should render children when disabled", () => {
+    render(
+      <Tooltip disabled content="Content">
+        <button>Trigger</button>
+      </Tooltip>
+    );
+    // When disabled, should render children without tooltip wrapper
+    expect(screen.getByText("Trigger")).toBeInTheDocument();
+    // Content should not be rendered when disabled
+    expect(screen.queryByText("Content")).not.toBeInTheDocument();
   });
 });

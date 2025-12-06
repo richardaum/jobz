@@ -3,7 +3,7 @@
 import { IconChecklist } from "@tabler/icons-react";
 import { MacScrollbar } from "mac-scrollbar";
 
-import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui";
+import { Button, Tooltip } from "@/shared/ui";
 
 import type { ChecklistItem } from "../types";
 
@@ -24,77 +24,73 @@ export function ChecklistButton({ checklist }: ChecklistButtonProps) {
     const successes = checklist.filter((item) => item.checked);
 
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="hoverable" size="sm" type="button" disabled={false} className="gap-2">
-              <IconChecklist className="h-4 w-4 text-primary" />
-              Checklist: {checkedCount}/{totalCount}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="max-w-md">
-            <div className="space-y-3">
-              <div className="font-semibold text-sm">
-                Checklist: {checkedCount}/{totalCount} items
-              </div>
-              <MacScrollbar className="max-h-96" skin="dark">
-                <div className="pr-2 space-y-4">
-                  {/* Gaps Section */}
-                  {gaps.length > 0 && (
-                    <div className="space-y-2">
-                      <div className="font-medium text-sm text-red-800 dark:text-red-300">Gaps ({gaps.length})</div>
-                      {gaps.map((item, index) => (
-                        <div key={`gap-${index}`} className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 shrink-0 text-gray-400">○</div>
-                          <div className="flex-1">
-                            <div className="font-medium">{item.category}</div>
-                            <div className="text-muted-foreground text-xs mt-0.5">{item.description}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Successes Section */}
-                  {successes.length > 0 && (
-                    <div className="space-y-2">
-                      {gaps.length > 0 && <div className="border-t border-border pt-2" />}
-                      <div className="font-medium text-sm text-green-800 dark:text-green-300">
-                        Success ({successes.length})
-                      </div>
-                      {successes.map((item, index) => (
-                        <div key={`success-${index}`} className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 shrink-0 text-green-800 dark:text-green-300">✓</div>
-                          <div className="flex-1">
-                            <div className="font-medium">{item.category}</div>
-                            <div className="text-muted-foreground text-xs mt-0.5">{item.description}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </MacScrollbar>
+      <Tooltip
+        side="bottom"
+        className="max-w-md"
+        content={
+          <div className="space-y-3">
+            <div className="font-semibold text-sm">
+              Checklist: {checkedCount}/{totalCount} items
             </div>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+            <MacScrollbar className="max-h-96" skin="dark">
+              <div className="pr-2 space-y-4">
+                {/* Gaps Section */}
+                {gaps.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="font-medium text-sm text-red-800 dark:text-red-300">Gaps ({gaps.length})</div>
+                    {gaps.map((item, index) => (
+                      <div key={`gap-${index}`} className="flex items-start gap-2 text-sm">
+                        <div className="mt-0.5 shrink-0 text-gray-400">○</div>
+                        <div className="flex-1">
+                          <div className="font-medium">{item.category}</div>
+                          <div className="text-muted-foreground text-xs mt-0.5">{item.description}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Successes Section */}
+                {successes.length > 0 && (
+                  <div className="space-y-2">
+                    {gaps.length > 0 && <div className="border-t border-border pt-2" />}
+                    <div className="font-medium text-sm text-green-800 dark:text-green-300">
+                      Success ({successes.length})
+                    </div>
+                    {successes.map((item, index) => (
+                      <div key={`success-${index}`} className="flex items-start gap-2 text-sm">
+                        <div className="mt-0.5 shrink-0 text-green-800 dark:text-green-300">✓</div>
+                        <div className="flex-1">
+                          <div className="font-medium">{item.category}</div>
+                          <div className="text-muted-foreground text-xs mt-0.5">{item.description}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </MacScrollbar>
+          </div>
+        }
+      >
+        <Button variant="hoverable" size="sm" type="button" disabled={false} className="gap-2">
+          <IconChecklist className="h-4 w-4 text-primary" />
+          Checklist: {checkedCount}/{totalCount}
+        </Button>
+      </Tooltip>
     );
   }
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="hoverable" size="sm" type="button" disabled={isDisabled} className="gap-2">
-            <IconChecklist className="h-4 w-4 text-muted-foreground" />
-            Checklist
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom" className="max-w-sm">
-          <p className="text-sm">Process your resume to see the checklist of requirements and gaps</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip
+      side="bottom"
+      className="max-w-sm"
+      content={<p className="text-sm">Process your resume to see the checklist of requirements and gaps</p>}
+    >
+      <Button variant="hoverable" size="sm" type="button" disabled={isDisabled} className="gap-2">
+        <IconChecklist className="h-4 w-4 text-muted-foreground" />
+        Checklist
+      </Button>
+    </Tooltip>
   );
 }
